@@ -22,4 +22,7 @@ public class PackageCourse extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Course course;
 
+    public void mappingToCourse(Course course) {
+        this.course = course;
+    }
 }
