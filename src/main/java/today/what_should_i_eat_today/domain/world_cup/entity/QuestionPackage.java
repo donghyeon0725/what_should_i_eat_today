@@ -21,4 +21,8 @@ public class QuestionPackage extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Question question;
+
+    public void mappingToPackage(Package packages) {
+        this.packages = packages;
+    }
 }
