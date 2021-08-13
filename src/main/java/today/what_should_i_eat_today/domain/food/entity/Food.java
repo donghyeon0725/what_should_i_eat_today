@@ -29,7 +29,7 @@ public class Food extends BaseEntity {
     private String name;
 
     @Enumerated(EnumType.STRING)
-    private Status status;
+    private FoodStatus status;
 
     private Boolean deleted;
 

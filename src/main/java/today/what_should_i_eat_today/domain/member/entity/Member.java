@@ -24,6 +24,6 @@ public class Member extends BaseEntity {
     private String nickName;
 
     @Enumerated(EnumType.STRING)
-    private Status status;
+    private MemberStatus status;
 
 }
