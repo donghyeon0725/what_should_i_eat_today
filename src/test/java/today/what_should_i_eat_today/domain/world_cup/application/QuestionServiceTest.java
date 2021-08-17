@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import today.what_should_i_eat_today.domain.tag.entity.Tag;
 import today.what_should_i_eat_today.domain.tag.entity.TagStatus;
@@ -27,41 +28,13 @@ import static org.junit.jupiter.api.Assertions.*;
  * */
 @SpringBootTest
 @Transactional
-class WorldCupServiceTest {
+class QuestionServiceTest {
 
     @Autowired
     private EntityManager em;
 
     @Autowired
-    private PackageService packageService;
-
-    @Autowired
     private QuestionService questionService;
-
-    @Test
-    @DisplayName("패키지 리스트 테스트")
-    void test1() {
-
-        for (int i=0; i<50; i++) {
-            Package p = Package.builder().createAt(LocalDateTime.now()).subject("주제" + i).build();
-
-            em.persist(p);
-        }
-
-        em.flush();
-        em.clear();
-
-
-        PageRequest pageable = PageRequest.of(0, 10);
-        Page<Package> case1 = packageService.getPackageList(null, pageable);
-        Page<Package> case2 = packageService.getPackageList("주제", pageable);
-        Page<Package> case3 = packageService.getPackageList("주제49", pageable);
-
-        assertEquals(10, case1.getContent().size(), () -> "페이징이 정확하게 처리 되어야 한다");
-        assertEquals(10, case2.getContent().size(), () -> "페이징이 정확하게 처리 되어야 한다");
-        assertEquals(1, case3.getContent().size(), () -> "검색이 알맞게 되어야 한다");
-        assertEquals("주제49", case3.getContent().get(0).getSubject(), () -> "검색이 알맞게 되어야 한다");
-    }
 
     @Test
     @DisplayName("질문 리스트 테스트")
@@ -159,16 +132,52 @@ class WorldCupServiceTest {
         em.flush();
         em.clear();
 
-        QuestionRequest request1 = QuestionRequest.builder().questionId(question1.getId()).build();
-        questionService.deleteQuestion(request1);
+        questionService.deleteQuestion(question1.getId());
         Question findQuestion = em.find(Question.class, question1.getId());
 
         QuestionRequest request2 = QuestionRequest.builder().questionId(question2.getId()).build();
 
 
         assertNull(findQuestion);
-        assertThrows(CannotExecuteException.class, () -> questionService.deleteQuestion(request2), () -> "질문으로 만든 묶음이 존재하는 경우 삭제할 수 없습니다");
+        assertThrows(CannotExecuteException.class, () -> questionService.deleteQuestion(question2.getId()), () -> "질문으로 만든 묶음이 존재하는 경우 삭제할 수 없습니다");
     }
 
+    @Test
+    @DisplayName("태그로 질문 찾기")
+    void test6() {
+        Tag tagHot = Tag.builder().name("차가운").status(TagStatus.USE).build();
+        Tag tagCold = Tag.builder().name("뜨거운").status(TagStatus.USE).build();
+        Tag tagOily = Tag.builder().name("기름진").status(TagStatus.USE).build();
+
+        Question questionHot = Question.builder().content("차가운 음식 좋아하세요?").tag(tagHot).build();
+        Question questionCold = Question.builder().content("뜨거운 음식 좋아하세요?").tag(tagCold).build();
+        Question questionOily = Question.builder().content("기름진 음식 좋아하세요?").tag(tagOily).build();
+
+        em.persist(tagHot);
+        em.persist(tagCold);
+        em.persist(tagOily);
+        em.persist(questionHot);
+        em.persist(questionCold);
+        em.persist(questionOily);
+
+        Pageable pageable = PageRequest.of(0, 10);
+
+        Page<Question> nothing = questionService.findQuestionsByTag("아무것도 없는", pageable);
+        Page<Question> resultHot = questionService.findQuestionsByTag("뜨거운", pageable);
+        Page<Question> resultCold = questionService.findQuestionsByTag("차가운", pageable);
+        Page<Question> resultOily = questionService.findQuestionsByTag("기름진", pageable);
+
+        assertAll(
+                () -> assertEquals(0, nothing.getContent().size()),
+                () -> assertEquals(1, resultHot.getContent().size()),
+                () -> assertEquals(1, resultCold.getContent().size()),
+                () -> assertEquals(1, resultOily.getContent().size())
+        );
+        assertAll(
+                () -> assertEquals("뜨거운 음식 좋아하세요?", resultHot.getContent().get(0).getContent()),
+                () -> assertEquals("차가운 음식 좋아하세요?", resultCold.getContent().get(0).getContent()),
+                () -> assertEquals("기름진 음식 좋아하세요?", resultOily.getContent().get(0).getContent())
+        );
+    }
 
 }
