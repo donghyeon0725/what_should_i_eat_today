@@ -17,6 +17,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString(of = {"subject"})
 public class Package extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,6 +34,10 @@ public class Package extends BaseEntity {
     public void addQuestionMapping(QuestionPackage questionPackage) {
         this.questionPackages.add(questionPackage);
         questionPackage.mappingToPackage(this);
+    }
+
+    public void changeSubject(String subject) {
+        this.subject = subject;
     }
 
 }
