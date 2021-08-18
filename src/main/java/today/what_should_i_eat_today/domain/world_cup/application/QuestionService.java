@@ -12,6 +12,7 @@ import today.what_should_i_eat_today.domain.tag.entity.TagValidator;
 import today.what_should_i_eat_today.domain.world_cup.dao.QuestionPackageRepository;
 import today.what_should_i_eat_today.domain.world_cup.dao.QuestionRepository;
 import today.what_should_i_eat_today.domain.world_cup.dto.QuestionRequest;
+import today.what_should_i_eat_today.domain.world_cup.entity.Package;
 import today.what_should_i_eat_today.domain.world_cup.entity.Question;
 import today.what_should_i_eat_today.domain.world_cup.entity.QuestionValidator;
 import today.what_should_i_eat_today.global.error.ErrorCode;
@@ -31,6 +32,13 @@ public class QuestionService {
     private final TagValidator tagValidator;
 
     private final QuestionValidator questionValidator;
+
+
+    public Question findById(Long id) {
+        return questionRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND));
+    }
+
+
 
     public Page<Question> getQuestionList(String content, Pageable pageable) {
         return questionRepository.findByContent(content, pageable);
@@ -68,14 +76,16 @@ public class QuestionService {
     }
 
     @Transactional
-    public void deleteQuestion(QuestionRequest request) {
-        request.deleteValidateCheck();
-
-        Question question = questionRepository.findById(request.getQuestionId()).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND));
+    public void deleteQuestion(Long questionId) {
+        Question question = questionRepository.findById(questionId).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND));
 
         // 질문으로 만든 묶음이 있을 경우 예외 => Question 를 삭제하는 상황이기 때문에 Question 에서 유효성 검사를 진행할 수 없고 서비스 측에서 호출
         questionValidator.validateForDelete(question);
         questionRepository.delete(question);
+    }
+
+    public Page<Question> findQuestionsByTag(String tagName, Pageable pageable) {
+        return questionRepository.findByContent(tagName, pageable);
     }
 
 }

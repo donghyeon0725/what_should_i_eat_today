@@ -7,8 +7,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import today.what_should_i_eat_today.domain.tag.entity.QTag;
 import today.what_should_i_eat_today.domain.world_cup.entity.Question;
 
+import static today.what_should_i_eat_today.domain.tag.entity.QTag.tag;
 import static today.what_should_i_eat_today.domain.world_cup.entity.QQuestion.question;
 
 /**
@@ -32,6 +34,22 @@ public class QuestionDslRepositoryImpl implements QuestionDslRepository {
                 .fetchResults();
 
         return new PageImpl(results.getResults(), pageable, results.getTotal());
+    }
+
+    @Override
+    public Page<Question> findByTagName(String tagName, Pageable pageable) {
+
+        QueryResults<Question> results = queryFactory
+                .selectFrom(question)
+                .innerJoin(question.tag, tag)
+                .where(tagNameContains(tagName))
+                .fetchResults();
+
+        return new PageImpl(results.getResults(), pageable, results.getTotal());
+    }
+
+    private BooleanExpression tagNameContains(String tagName) {
+        return tagName != null ? tag.name.contains(tagName) : null;
     }
 
     private BooleanExpression contentContains(String content) {

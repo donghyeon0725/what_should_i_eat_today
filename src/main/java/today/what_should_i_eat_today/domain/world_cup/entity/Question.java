@@ -7,6 +7,7 @@ import today.what_should_i_eat_today.domain.tag.entity.Tag;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Builder
 @Entity
@@ -34,5 +35,18 @@ public class Question extends BaseEntity {
         // validator 에게 유효성 검사 위임
         validator.validateTag(tag);
         this.tag = tag;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Question question = (Question) o;
+        return Objects.equals(getId(), question.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
     }
 }
