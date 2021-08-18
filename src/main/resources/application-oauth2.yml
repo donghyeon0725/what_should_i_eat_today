@@ -1,0 +1,12 @@
+spring:
+  config:
+    import:
+      - classpath:/oauth2/application-naver.yml
+      - classpath:/oauth2/application-kakao.yml
+      - classpath:/oauth2/application-google.yml
+  profiles:
+    group:
+      - naver
+      - kakao
+      - google
+

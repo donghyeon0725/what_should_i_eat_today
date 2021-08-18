@@ -1,22 +1,11 @@
 spring:
   profiles:
+    group:
+      local:
+        - h2
+        - app
+        - oauth2
+      prod:
+        - h2
+        - app
     active: local
-  datasource:
-    url: jdbc:h2:mem:testdb
-    username: sa
-    password:
-    driver-class-name: org.h2.Driver
-  jpa:
-    hibernate:
-      ddl-auto: create
-  properties:
-    hibernate:
-      show_sql: true
-      format_sql: true
-      use_sql_comments: true
-
-
-logging.level:
-  org.hibernate.SQL: debug
-  com.querydsl.sql: debug
-# org.hibernate.type: trace

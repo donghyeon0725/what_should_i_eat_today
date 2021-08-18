@@ -1,0 +1,9 @@
+app:
+  auth:
+    tokenSecret: 926D9DC90030DD58429D2751AC1BDBBC
+    tokenExpirationMsec: 864000000
+  oauth2:
+    authorizedRedirectUris:
+      - http://localhost:3000/oauth2/redirect
+      - myandroidapp://oauth2/redirect
+      - myiosapp://oauth2/redirect

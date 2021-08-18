@@ -35,6 +35,9 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
     implementation 'com.querydsl:querydsl-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
 }
 
 test {
