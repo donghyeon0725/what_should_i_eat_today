@@ -35,6 +35,9 @@ gradlew clear
 * 2021-08-11 : (+) h2
 * 2021-08-11 : (+) mysql-connector-java
 * 2021-08-11 : (+) spring-boot-starter-test
+* 2021-08-17 : (+) spring-boot-starter-oauth2-client
+* 2021-08-17 : (+) spring-boot-configuration-processor
+* 2021-08-17 : (+) jsonwebtoken
 
 📌 기타
 -
