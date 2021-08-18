@@ -69,6 +69,15 @@ public class ErrorResponse {
         this.date = new Date();
     }
 
+    private ErrorResponse(final ErrorCode code, String message) {
+        this.message = code.getMessage();
+        this.status = code.getStatus();
+        this.detail = message;
+        this.code = code.getCode();
+        this.errors = new ArrayList<>();
+        this.date = new Date();
+    }
+
 
     public static ErrorResponse of(final ErrorCode code, final BindingResult bindingResult) {
         return new ErrorResponse(code, FieldError.of(bindingResult));
@@ -77,6 +86,11 @@ public class ErrorResponse {
     public static ErrorResponse of(final ErrorCode code, Exception e) {
         return new ErrorResponse(code, e);
     }
+
+    public static ErrorResponse of(final ErrorCode code, String message) {
+        return new ErrorResponse(code, message);
+    }
+
 
 
     public static ErrorResponse of(final ErrorCode code, final List<FieldError> errors) {
