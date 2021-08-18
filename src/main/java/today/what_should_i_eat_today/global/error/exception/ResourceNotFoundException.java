@@ -13,6 +13,11 @@ public class ResourceNotFoundException extends RuntimeException {
         this.errorCode = errorCode;
     }
 
+    public ResourceNotFoundException(String entity, String field, Long id) {
+        super(String.format("%s is not found - field: %s - id: %d", entity, field, id));
+        this.errorCode = ErrorCode.ENTITY_NOT_FOUND;
+    }
+
     public ErrorCode getErrorCode() {
         return errorCode;
     }
