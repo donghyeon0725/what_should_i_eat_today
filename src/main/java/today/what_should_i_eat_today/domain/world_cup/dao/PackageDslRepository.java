@@ -9,4 +9,6 @@ import today.what_should_i_eat_today.domain.world_cup.entity.Package;
  * */
 public interface PackageDslRepository {
     Page<Package> findBySubject(String subject, Pageable pageable);
+
+    Page<Package> findByQuestionId(Long questionId, Pageable pageable);
 }

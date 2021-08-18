@@ -28,9 +28,4 @@ public class QuestionRequest {
         if (tagId == null)
             throw new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND);
     }
-
-    public void deleteValidateCheck() {
-        if (questionId == null)
-            throw new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND);
-    }
 }
