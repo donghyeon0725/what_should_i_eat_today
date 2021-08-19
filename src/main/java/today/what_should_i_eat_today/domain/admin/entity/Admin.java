@@ -1,6 +1,7 @@
 package today.what_should_i_eat_today.domain.admin.entity;
 
 import lombok.*;
+import org.springframework.security.core.Authentication;
 import today.what_should_i_eat_today.global.common.entity.BaseEntity;
 
 import javax.persistence.Entity;
@@ -21,4 +22,5 @@ public class Admin extends BaseEntity {
     private String email;
 
     private String password;
+
 }
