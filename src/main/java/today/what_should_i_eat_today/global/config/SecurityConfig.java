@@ -1,9 +1,8 @@
 package today.what_should_i_eat_today.global.config;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -23,6 +22,7 @@ import today.what_should_i_eat_today.global.security.oauth2.HttpCookieOAuth2Auth
 import today.what_should_i_eat_today.global.security.oauth2.OAuth2AuthenticationFailureHandler;
 import today.what_should_i_eat_today.global.security.oauth2.OAuth2AuthenticationSuccessHandler;
 
+@Profile({"prod", "local"})
 @EnableWebSecurity
 @RequiredArgsConstructor
 @EnableGlobalMethodSecurity(
