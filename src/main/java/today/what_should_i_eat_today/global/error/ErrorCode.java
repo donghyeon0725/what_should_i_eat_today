@@ -19,6 +19,7 @@ public enum ErrorCode {
 
     // Member
     EMAIL_DUPLICATION(400, "M001", "Email is Duplication"),
+    Nickname_DUPLICATION(400, "M001", "Nickname is Duplication"),
     LOGIN_INPUT_INVALID(400, "M002", "Login input is invalid"),
 
     // Coupon

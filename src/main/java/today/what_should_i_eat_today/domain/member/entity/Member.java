@@ -1,6 +1,7 @@
 package today.what_should_i_eat_today.domain.member.entity;
 
 import lombok.*;
+import org.springframework.util.StringUtils;
 import today.what_should_i_eat_today.domain.model.AuthProvider;
 import today.what_should_i_eat_today.global.common.entity.BaseEntity;
 
@@ -37,5 +38,10 @@ public class Member extends BaseEntity {
     public void updateNameAndImage(String name, String imageUrl) {
         this.name = name;
         this.profileImg = imageUrl;
+    }
+
+    public void updateNickNameAndImage(String nickName, String imageUrl) {
+        this.nickName = StringUtils.hasText(nickName) ? nickName : name;
+        this.profileImg = StringUtils.hasText(imageUrl) ? imageUrl : profileImg;
     }
 }
