@@ -2,6 +2,7 @@ package today.what_should_i_eat_today.domain.world_cup.dao;
 
 import com.querydsl.core.QueryFactory;
 import com.querydsl.core.QueryResults;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -32,5 +33,22 @@ public class CourseDslRepositoryImpl implements CourseDslRepository {
 
 
         return new PageImpl(results.getResults(), pageable, results.getTotal());
+    }
+
+    @Override
+    public Page<Course> findBySubject(String subject, Pageable pageable) {
+
+        QueryResults<Course> results = queryFactory
+                .selectFrom(course)
+                .where(subjectContains(subject))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetchResults();
+
+        return new PageImpl(results.getResults(), pageable, results.getTotal());
+    }
+
+    private BooleanExpression subjectContains(String subject) {
+        return subject != null ? course.subject.contains(subject) : null;
     }
 }
