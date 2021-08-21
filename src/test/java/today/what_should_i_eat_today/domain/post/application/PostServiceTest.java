@@ -11,6 +11,8 @@ import today.what_should_i_eat_today.domain.post.entity.Post;
 
 import javax.persistence.EntityManager;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -40,8 +42,13 @@ class PostServiceTest {
         em.clear();
 
         boolean isLike = postService.updateLike(post.getId(), member.getId());
+        Post findPost = em.find(Post.class, post.getId());
+        List<Likes> findLikesList = em.createQuery("SELECT l from Likes l", Likes.class).getResultList();
 
         assertThat(isLike).isTrue();
+        assertThat(findPost.getLikesSet()).hasSize(1);
+        assertThat(findLikesList).hasSize(1);
+
     }
 
     @Test
@@ -66,8 +73,13 @@ class PostServiceTest {
         em.clear();
 
         boolean isLike = postService.updateLike(post.getId(), member.getId());
+        Post findPost = em.find(Post.class, post.getId());
+        List<Likes> findLikesList = em.createQuery("SELECT l from Likes l", Likes.class).getResultList();
 
         assertThat(isLike).isFalse();
+        assertThat(findPost.getLikesSet()).isEmpty();
+        assertThat(findLikesList).isEmpty();
+
     }
 
 }
