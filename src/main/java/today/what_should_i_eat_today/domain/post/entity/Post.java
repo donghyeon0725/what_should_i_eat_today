@@ -32,7 +32,7 @@ public class Post extends BaseEntity {
     @Lob
     private String content;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     Set<Likes> likesSet = new HashSet<>();
 
     public void removeLike(Likes likes) {
