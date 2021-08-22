@@ -1,8 +1,9 @@
-package today.what_should_i_eat_today.domain.food.entity;
+package today.what_should_i_eat_today.domain.category.entity;
 
 
 import lombok.*;
 import today.what_should_i_eat_today.domain.category.entity.Category;
+import today.what_should_i_eat_today.domain.food.entity.Food;
 import today.what_should_i_eat_today.global.common.entity.BaseEntity;
 
 import javax.persistence.*;
@@ -23,4 +24,8 @@ public class FoodCategory extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Category category;
+
+    public void addCategoryMapping(Category category) {
+        this.category = category;
+    }
 }

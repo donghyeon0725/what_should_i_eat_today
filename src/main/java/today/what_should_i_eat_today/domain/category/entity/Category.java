@@ -5,6 +5,8 @@ import today.what_should_i_eat_today.domain.admin.entity.Admin;
 import today.what_should_i_eat_today.global.common.entity.BaseEntity;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Builder
 @Entity
@@ -27,5 +29,28 @@ public class Category extends BaseEntity {
 
 
     private Boolean visible;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<FoodCategory> foodCategories = new ArrayList<>();
+
+    public void addFoodMapping(FoodCategory foodCategory) {
+        foodCategories.add(foodCategory);
+        foodCategory.addCategoryMapping(this);
+    }
+
+    public void changeName(String name, CategoryValidator validator) {
+        validator.validateName(name);
+        this.name = name;
+    }
+
+    public void changeDescription(String description) {
+        this.description = description;
+    }
+
+    public void changeVisible(Boolean visible) {
+        if (visible != null)
+            this.visible = visible;
+    }
 
 }
