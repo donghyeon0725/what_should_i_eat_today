@@ -8,4 +8,8 @@ spring:
       prod:
         - h2
         - app
+        - oauth2
+      test:
+        - h2
+        - app
     active: local

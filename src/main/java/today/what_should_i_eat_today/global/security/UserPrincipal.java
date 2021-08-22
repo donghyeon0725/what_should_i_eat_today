@@ -8,10 +8,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import today.what_should_i_eat_today.domain.member.entity.Member;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Getter
 public class UserPrincipal implements OAuth2User, UserDetails {
@@ -43,6 +41,14 @@ public class UserPrincipal implements OAuth2User, UserDetails {
         UserPrincipal userPrincipal = UserPrincipal.create(member);
         userPrincipal.setAttributes(attributes);
         return userPrincipal;
+    }
+
+    public static UserPrincipal create(Member member, String[] roles) {
+        List<SimpleGrantedAuthority> authorities = Arrays.stream(roles)
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
+
+        return new UserPrincipal(member.getId(), member.getEmail(), authorities);
     }
 
     @Override
