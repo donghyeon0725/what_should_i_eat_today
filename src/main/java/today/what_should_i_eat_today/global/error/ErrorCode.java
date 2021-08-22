@@ -13,8 +13,10 @@ public enum ErrorCode {
     INVALID_TYPE_VALUE(400, "C005", " Invalid Type Value"),
     HANDLE_ACCESS_DENIED(403, "C006", "Access is Denied"),
     RESOURCE_NOT_FOUND(404, "C007", " Resource Not Found"),
-    RESOURCE_CONFLICT(409, "C008", " Resource Conflict"),
-    INVALID_INPUT_VALUE_ARGUMENT(400, "C008", "Invalid Input Value Argument"),
+    USER_NOT_FOUND(404, "C008", "User Not Found"),
+    RESOURCE_CONFLICT(409, "C009", " Resource Conflict"),
+    ALREADY_EXIST_RESOURCE(409, "C010", " Resource is Already Exist"),
+    INVALID_INPUT_VALUE_ARGUMENT(400, "C011", "Invalid Input Value Argument"),
 
 
     // Member
@@ -36,7 +38,8 @@ public enum ErrorCode {
     WRONG_PASSWORD(401, "L001", "Wrong password"),
 
     // auth
-    UNAUTHORIZED_VALUE(401, "", "No auth about this resource");
+    UNAUTHORIZED_VALUE(401, "", "No auth about this resource"),
+    UNAUTHORIZED_USER(401, "", "No auth about this resource");
 
     private final String code;
     private final String message;

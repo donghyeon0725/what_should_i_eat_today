@@ -32,9 +32,11 @@ public class Question extends BaseEntity {
     }
 
     public void changeTag(Tag tag, TagValidator validator) {
-        // validator 에게 유효성 검사 위임
-        validator.validateTag(tag);
-        this.tag = tag;
+        if (tag != null) {
+            // validator 에게 유효성 검사 위임
+            validator.validateTagForChange(tag);
+            this.tag = tag;
+        }
     }
 
     @Override
