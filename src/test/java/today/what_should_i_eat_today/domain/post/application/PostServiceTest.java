@@ -4,16 +4,23 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.transaction.annotation.Transactional;
+import today.what_should_i_eat_today.domain.activity.dto.PostCreateCommand;
+import today.what_should_i_eat_today.domain.food.entity.Food;
 import today.what_should_i_eat_today.domain.likes.entity.Likes;
 import today.what_should_i_eat_today.domain.member.entity.Member;
 import today.what_should_i_eat_today.domain.post.entity.Post;
+import today.what_should_i_eat_today.global.error.exception.InvalidStatusException;
+import today.what_should_i_eat_today.global.error.exception.ResourceNotFoundException;
 
 import javax.persistence.EntityManager;
-
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 @SpringBootTest
@@ -82,4 +89,145 @@ class PostServiceTest {
 
     }
 
+    @Test
+    @DisplayName("글 작성 성공")
+    void test3() throws IOException {
+
+        // given
+        String fileName = ".gitignore";
+        String contentType = "gitignore";
+        String filePath = ".gitignore";
+        MockMultipartFile mockMultipartFile = getMockMultipartFile(fileName, contentType, filePath);
+
+        Member member = Member.builder()
+                .name("martin")
+                .build();
+
+        Food food = Food.builder()
+                .member(member)
+                .name("rice")
+                .build();
+
+        em.persist(member);
+        em.persist(food);
+        em.clear();
+
+        PostCreateCommand command = PostCreateCommand.builder()
+                .memberId(member.getId())
+                .foodId(food.getId())
+                .file(mockMultipartFile)
+                .title("글의 제목")
+                .content("글의 내용")
+                .build();
+
+        // when
+        Post post = postService.createPost(command);
+
+
+        // then
+        assertThat(post).isNotNull();
+        assertThat(post.getTitle()).isEqualTo("글의 제목");
+        assertThat(post.getMember().getName()).isEqualTo("martin");
+        assertThat(post.getFood().getName()).isEqualTo("rice");
+
+        List<Food> foods = em.createQuery("SELECT f FROM Food f", Food.class).getResultList();
+        assertThat(foods).hasSize(1);
+    }
+
+    @Test
+    @DisplayName("멤버가 존재하지 않는 경우 글 작성 실패")
+    void test4() throws IOException {
+
+        // given
+        String fileName = ".gitignore";
+        String contentType = "gitignore";
+        String filePath = ".gitignore";
+        MockMultipartFile mockMultipartFile = getMockMultipartFile(fileName, contentType, filePath);
+
+        Member member = Member.builder()
+                .name("martin")
+                .build();
+
+        Food food = Food.builder()
+                .member(member)
+                .name("rice")
+                .build();
+
+        em.persist(food);
+        em.clear();
+
+        PostCreateCommand command = PostCreateCommand.builder()
+                .memberId(1L) // member 를 persist 하지 않았기 때문에 null 이 됨으로 직접 1L 를 주었습니다
+                .foodId(food.getId())
+                .file(mockMultipartFile)
+                .title("글의 제목")
+                .content("글의 내용")
+                .build();
+
+        // when & then
+        assertThrows(ResourceNotFoundException.class, () -> postService.createPost(command));
+    }
+
+    @Test
+    @DisplayName("음식이 존재하지 않는 경우 글 작성 실패")
+    void test5() throws IOException {
+
+        // given
+        String fileName = ".gitignore";
+        String contentType = "gitignore";
+        String filePath = ".gitignore";
+        MockMultipartFile mockMultipartFile = getMockMultipartFile(fileName, contentType, filePath);
+
+        Member member = Member.builder()
+                .name("martin")
+                .build();
+
+        em.persist(member);
+        em.clear();
+
+        PostCreateCommand command = PostCreateCommand.builder()
+                .memberId(member.getId())
+                .foodId(1L)
+                .file(mockMultipartFile)
+                .title("글의 제목")
+                .content("글의 내용")
+                .build();
+
+        // when & then
+        assertThrows(ResourceNotFoundException.class, () -> postService.createPost(command));
+    }
+
+    @Test
+    @DisplayName("음식 사진이 존재하지 않는 경우 실패한다")
+    void test6() throws IOException {
+
+        // given
+        Member member = Member.builder()
+                .name("martin")
+                .build();
+
+        Food food = Food.builder()
+                .member(member)
+                .name("rice")
+                .build();
+
+        em.persist(member);
+        em.persist(food);
+        em.clear();
+
+        PostCreateCommand command = PostCreateCommand.builder()
+                .memberId(member.getId())
+                .foodId(food.getId())
+                .title("글의 제목")
+                .content("글의 내용")
+                .build();
+
+        // when & then
+        assertThrows(InvalidStatusException.class, () -> postService.createPost(command));
+    }
+
+    public static MockMultipartFile getMockMultipartFile(String fileName, String contentType, String path) throws IOException {
+        FileInputStream fileInputStream = new FileInputStream(path);
+        return new MockMultipartFile(fileName, fileName + "." + contentType, contentType, fileInputStream);
+    }
 }
