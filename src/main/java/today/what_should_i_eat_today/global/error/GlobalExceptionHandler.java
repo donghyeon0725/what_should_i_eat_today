@@ -1,11 +1,9 @@
 package today.what_should_i_eat_today.global.error;
 
-import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 import today.what_should_i_eat_today.global.common.ErrorResponse;
 
@@ -24,6 +22,6 @@ public class GlobalExceptionHandler {
                 // getDescription 은 에러 내용에 관한 것 같다.
                 ErrorResponse.of(ErrorCode.UNEXPECTED_SERVER_ACTION, ex);
 
-        return new ResponseEntity(exceptionResponse, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
