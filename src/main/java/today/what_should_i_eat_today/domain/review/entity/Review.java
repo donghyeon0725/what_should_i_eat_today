@@ -29,9 +29,25 @@ public class Review {
     @JoinColumn(name = "parent_id")
     private Review parent;
 
-    @OneToMany(mappedBy = "parent")
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Review> child = new ArrayList<>();
 
     private String content;
+
+    public void changeContent(String content, ReviewValidator validator) {
+        validator.contentValidate(content);
+        this.content = content;
+    }
+
+    public void addParentReview(Review parent) {
+        this.parent = parent;
+    }
+
+    public void addChildReview(Review review, ReviewValidator validator) {
+        validator.childAddValidate(this);
+
+        this.child.add(review);
+        review.addParentReview(this);
+    }
 
 }
