@@ -27,7 +27,6 @@ import today.what_should_i_eat_today.global.security.oauth2.OAuth2Authentication
 @Profile({"prod", "local"})
 @EnableWebSecurity
 @RequiredArgsConstructor
-@Profile("production")
 @EnableGlobalMethodSecurity(
         securedEnabled = true,
         jsr250Enabled = true,
