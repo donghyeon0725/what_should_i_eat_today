@@ -14,10 +14,7 @@ import javax.validation.constraints.Size;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PostRequest {
-
-    @NotNull
-    private Long foodId;
+public class PostUpdateRequest {
 
     @NotNull(message = "음식사진은 반드시 있어야 합니다")
     private MultipartFile file;
@@ -28,13 +25,11 @@ public class PostRequest {
     @Size(min = 1, max = 3000, message = "내용은 최소 1자 이상 3000자 이하입니다")
     private String content;
 
-    public PostCreateCommand toCommand(Long memberId) {
-
-
-        return PostCreateCommand.builder()
+    public PostUpdateCommand toCommand(Long memberId, Long postId) {
+        return PostUpdateCommand.builder()
                 .memberId(memberId)
+                .postId(postId)
                 .file(file)
-                .foodId(foodId)
                 .title(title)
                 .content(content)
                 .build();

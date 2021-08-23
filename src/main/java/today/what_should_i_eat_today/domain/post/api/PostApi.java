@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import today.what_should_i_eat_today.domain.activity.dto.PostCreateCommand;
-import today.what_should_i_eat_today.domain.activity.dto.PostRequest;
+import today.what_should_i_eat_today.domain.activity.dto.PostCreateRequest;
+import today.what_should_i_eat_today.domain.activity.dto.PostUpdateCommand;
+import today.what_should_i_eat_today.domain.activity.dto.PostUpdateRequest;
 import today.what_should_i_eat_today.domain.post.application.PostService;
 import today.what_should_i_eat_today.domain.post.entity.Post;
 import today.what_should_i_eat_today.global.security.CurrentUser;
@@ -28,11 +30,21 @@ public class PostApi {
     }
 
     @PostMapping("/posts")
-    public ResponseEntity<?> createPost(@CurrentUser UserPrincipal principal, @ModelAttribute @Valid PostRequest requestDto) {
+    public ResponseEntity<?> createPost(@CurrentUser UserPrincipal principal, @ModelAttribute @Valid PostCreateRequest requestDto) {
 
         PostCreateCommand postCreateCommand = requestDto.toCommand(principal.getId());
 
         Post post = postService.createPost(postCreateCommand);
+
+        return ResponseEntity.ok(post);
+    }
+
+    @PutMapping("/posts/{id}")
+    public ResponseEntity<?> updatePost(@CurrentUser UserPrincipal principal, @ModelAttribute @Valid PostUpdateRequest requestDto, @PathVariable("id") Long postId) {
+
+        PostUpdateCommand postUpdateCommand = requestDto.toCommand(principal.getId(), postId);
+
+        Post post = postService.updatePost(postUpdateCommand);
 
         return ResponseEntity.ok(post);
     }
