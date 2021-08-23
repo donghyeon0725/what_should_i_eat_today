@@ -46,4 +46,15 @@ public class Post extends BaseEntity {
     public void addLike(Likes likes) {
         likesSet.add(likes);
     }
+
+    public boolean isPostCreator(Long memberId) {
+        return this.member.getId().equals(memberId);
+    }
+
+    public Post update(Attachment attachment, String title, String content) {
+        this.attachment = attachment;
+        this.title = title;
+        this.content = content;
+        return this;
+    }
 }

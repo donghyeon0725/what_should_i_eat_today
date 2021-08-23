@@ -10,11 +10,11 @@ import org.springframework.web.multipart.MultipartFile;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PostCreateCommand {
+public class PostUpdateCommand {
 
     private Long memberId;
 
-    private Long foodId;
+    private Long postId;
 
     private MultipartFile file;
 

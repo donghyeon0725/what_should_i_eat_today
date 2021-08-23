@@ -5,8 +5,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 import today.what_should_i_eat_today.domain.activity.dto.PostCreateCommand;
+import today.what_should_i_eat_today.domain.activity.dto.PostUpdateCommand;
 import today.what_should_i_eat_today.domain.food.entity.Food;
 import today.what_should_i_eat_today.domain.likes.entity.Likes;
 import today.what_should_i_eat_today.domain.member.entity.Member;
@@ -23,6 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
+@ActiveProfiles("local")
 @SpringBootTest
 @Transactional
 class PostServiceTest {
@@ -94,9 +97,9 @@ class PostServiceTest {
     void test3() throws IOException {
 
         // given
-        String fileName = ".gitignore";
-        String contentType = "gitignore";
-        String filePath = ".gitignore";
+        String fileName = ".gitignore1";   // saved FileName
+        String contentType = "gitignore2"; // saved FileExtension
+        String filePath = ".gitignore";    // upload FilePath/FileName
         MockMultipartFile mockMultipartFile = getMockMultipartFile(fileName, contentType, filePath);
 
         Member member = Member.builder()
@@ -226,8 +229,63 @@ class PostServiceTest {
         assertThrows(InvalidStatusException.class, () -> postService.createPost(command));
     }
 
+    @Test
+    @DisplayName("글 수정하기 성공")
+    void test7() throws IOException {
+        // save init
+        String fileName = "createFile";   // saved FileName
+        String contentType = "txt"; // saved FileExtension
+        String filePath = ".gitignore";    // upload FilePath/FileName
+        MockMultipartFile mockMultipartFile = getMockMultipartFile(fileName, contentType, filePath);
+        Member member = Member.builder()
+                .name("martin")
+                .build();
+        Food food = Food.builder()
+                .member(member)
+                .name("rice")
+                .build();
+        em.persist(member);
+        em.persist(food);
+        em.clear();
+        PostCreateCommand createCommand = PostCreateCommand.builder()
+                .memberId(member.getId())
+                .foodId(food.getId())
+                .file(mockMultipartFile)
+                .title("글의 제목")
+                .content("글의 내용")
+                .build();
+        Post post = postService.createPost(createCommand);
+        assertThat(post).isNotNull();
+        assertThat(post.getTitle()).isEqualTo("글의 제목");
+        assertThat(post.getContent()).isEqualTo("글의 내용");
+        assertThat(post.getMember().getName()).isEqualTo("martin");
+        assertThat(post.getFood().getName()).isEqualTo("rice");
+
+
+        // given
+        String updateFilename = "updateFile";   // saved FileName
+        MockMultipartFile updateMockMultipartFile = getMockMultipartFile(updateFilename, contentType, filePath);
+
+        PostUpdateCommand updateCommand = PostUpdateCommand.builder()
+                .postId(1L)
+                .memberId(1L)
+                .title("수정된 제목")
+                .content("수정된 내용")
+                .file(updateMockMultipartFile)
+                .build();
+
+        // when
+        Post updatedPost = postService.updatePost(updateCommand);
+
+        // then
+        assertThat(updatedPost.getTitle()).isEqualTo("수정된 제목");
+        assertThat(updatedPost.getContent()).isEqualTo("수정된 내용");
+        assertThat(updatedPost.getAttachment().getName()).isEqualTo("updateFile.txt");
+    }
+
     public static MockMultipartFile getMockMultipartFile(String fileName, String contentType, String path) throws IOException {
         FileInputStream fileInputStream = new FileInputStream(path);
         return new MockMultipartFile(fileName, fileName + "." + contentType, contentType, fileInputStream);
     }
+
 }
