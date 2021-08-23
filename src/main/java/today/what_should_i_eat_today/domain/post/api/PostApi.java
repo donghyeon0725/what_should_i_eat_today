@@ -48,4 +48,12 @@ public class PostApi {
 
         return ResponseEntity.ok(post);
     }
+
+    @DeleteMapping("/posts/{id}")
+    public ResponseEntity<?> deletePost(@CurrentUser UserPrincipal principal, @PathVariable("id") Long postId) {
+
+        postService.deletePost(postId, principal.getId());
+
+        return ResponseEntity.ok("deleted");
+    }
 }

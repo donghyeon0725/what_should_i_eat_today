@@ -12,6 +12,7 @@ import today.what_should_i_eat_today.domain.activity.dto.PostUpdateCommand;
 import today.what_should_i_eat_today.domain.food.entity.Food;
 import today.what_should_i_eat_today.domain.likes.entity.Likes;
 import today.what_should_i_eat_today.domain.member.entity.Member;
+import today.what_should_i_eat_today.domain.model.Attachment;
 import today.what_should_i_eat_today.domain.post.entity.Post;
 import today.what_should_i_eat_today.global.error.exception.InvalidStatusException;
 import today.what_should_i_eat_today.global.error.exception.ResourceNotFoundException;
@@ -282,6 +283,40 @@ class PostServiceTest {
         assertThat(updatedPost.getContent()).isEqualTo("수정된 내용");
         assertThat(updatedPost.getAttachment().getName()).isEqualTo("updateFile.txt");
     }
+
+    @Test
+    @DisplayName("글 삭제 성공")
+    void test8() {
+        // given
+        Member member = Member.builder()
+                .name("martin")
+                .build();
+        Food food = Food.builder()
+                .member(member)
+                .name("rice")
+                .build();
+
+        Post post = Post.builder()
+                .member(member)
+                .food(food)
+                .title("글의 제목")
+                .content("글의 내용")
+                .attachment(Attachment.builder().build())
+                .build();
+
+        em.persist(member);
+        em.persist(food);
+        em.persist(post);
+        em.clear();
+
+        // when
+        postService.deletePost(post.getId(), member.getId());
+
+        // then
+        Post deletedPost = em.find(Post.class, 1L);
+        assertThat(deletedPost.isArchived()).isTrue();
+    }
+
 
     public static MockMultipartFile getMockMultipartFile(String fileName, String contentType, String path) throws IOException {
         FileInputStream fileInputStream = new FileInputStream(path);

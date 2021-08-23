@@ -35,9 +35,9 @@ public class PostService {
 
 
     @Transactional
-    public boolean updateLike(Long postId, Long userId) {
+    public boolean updateLike(Long postId, Long memberId) {
 
-        Member member = memberRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND));
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND));
 
         Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND));
 
@@ -86,5 +86,18 @@ public class PostService {
         Attachment attachment = storageService.store(command.getFile());
 
         return post.update(attachment, command.getTitle(), command.getContent());
+    }
+
+    @Transactional
+    public void deletePost(Long postId, Long memberId) {
+
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND));
+
+        Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND));
+
+        if (!post.isPostCreator(member.getId()))
+            throw new InvalidStatusException(ErrorCode.INVALID_INPUT_VALUE);
+
+        post.delete();
     }
 }

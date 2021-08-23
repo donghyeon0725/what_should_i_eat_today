@@ -39,6 +39,8 @@ public class Post extends BaseEntity {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Likes> likesSet = new HashSet<>();
 
+    private boolean archived;
+
     public void removeLike(Likes likes) {
         likesSet.remove(likes);
     }
@@ -56,5 +58,9 @@ public class Post extends BaseEntity {
         this.title = title;
         this.content = content;
         return this;
+    }
+
+    public void delete() {
+        this.archived = true;
     }
 }
