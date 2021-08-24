@@ -1,7 +1,8 @@
 package today.what_should_i_eat_today.domain.post.application;
 
-import io.jsonwebtoken.lang.Assert;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import today.what_should_i_eat_today.domain.activity.dto.PostCreateCommand;
@@ -99,5 +100,13 @@ public class PostService {
             throw new InvalidStatusException(ErrorCode.INVALID_INPUT_VALUE);
 
         post.delete();
+    }
+
+    public Page<Post> getPosts(Pageable pageable) {
+        return postRepository.findAll(pageable);
+    }
+
+    public Post getPost(Long postId) {
+        return postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND));
     }
 }

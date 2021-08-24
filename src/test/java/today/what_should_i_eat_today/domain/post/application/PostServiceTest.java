@@ -4,6 +4,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +20,7 @@ import today.what_should_i_eat_today.global.error.exception.InvalidStatusExcepti
 import today.what_should_i_eat_today.global.error.exception.ResourceNotFoundException;
 
 import javax.persistence.EntityManager;
+import javax.sound.midi.SysexMessage;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
@@ -268,8 +271,8 @@ class PostServiceTest {
         MockMultipartFile updateMockMultipartFile = getMockMultipartFile(updateFilename, contentType, filePath);
 
         PostUpdateCommand updateCommand = PostUpdateCommand.builder()
-                .postId(1L)
-                .memberId(1L)
+                .postId(post.getId())
+                .memberId(member.getId())
                 .title("수정된 제목")
                 .content("수정된 내용")
                 .file(updateMockMultipartFile)
@@ -313,10 +316,67 @@ class PostServiceTest {
         postService.deletePost(post.getId(), member.getId());
 
         // then
-        Post deletedPost = em.find(Post.class, 1L);
+        Post deletedPost = em.find(Post.class, post.getId());
         assertThat(deletedPost.isArchived()).isTrue();
     }
 
+    @Test
+    @DisplayName("글 보기 성공")
+    void test9() {
+
+        Attachment attachment = Attachment.builder().name("음식 사진").path("/static/file/").build();
+        Food food = Food.builder().build();
+        Member member = Member.builder().name("martin").email("martin@naver.com").profileImg("img").build();
+
+        Post post = Post.builder()
+                .title("글 제목")
+                .content("글 내용")
+                .attachment(attachment)
+                .food(food)
+                .member(member)
+                .build();
+
+        em.persist(member);
+        em.persist(food);
+        em.persist(post);
+        em.clear();
+
+        Post findPost = postService.getPost(post.getId());
+        assertThat(findPost).isNotNull();
+        assertThat(findPost.getTitle()).isEqualTo("글 제목");
+        assertThat(findPost.getContent()).isEqualTo("글 내용");
+        assertThat(findPost.getMember().getName()).isEqualTo("martin");
+        assertThat(findPost.getMember().getEmail()).isEqualTo("martin@naver.com");
+        assertThat(findPost.getAttachment().getPath()).isEqualTo("/static/file/");
+    }
+
+    @Test
+    @DisplayName("글 리스트 보기 성공")
+    void test10() {
+        for (int i = 0; i < 30; i++) {
+            Attachment attachment = Attachment.builder().name("음식 사진" + i).path("/static/file/" + i).build();
+            Food food = Food.builder().build();
+            Member member = Member.builder().name("martin" + i).nickName("martin@naver.com" + i).profileImg("img" + i).build();
+
+            Post post = Post.builder()
+                    .title("글 제목" + i)
+                    .content("글 내용" + i)
+                    .attachment(attachment)
+                    .food(food)
+                    .member(member)
+                    .build();
+
+            em.persist(post);
+        }
+        em.clear();
+
+        PageRequest pageable = PageRequest.of(0, 10);
+        Page<Post> post = postService.getPosts(pageable);
+
+        assertThat(post.getContent()).hasSize(10);
+        assertThat(post.getContent()).extracting("title").contains("글 제목0", "글 제목1", "글 제목2", "글 제목9");
+
+    }
 
     public static MockMultipartFile getMockMultipartFile(String fileName, String contentType, String path) throws IOException {
         FileInputStream fileInputStream = new FileInputStream(path);

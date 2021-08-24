@@ -8,4 +8,5 @@ public interface StorageService {
     void init();
 
     Attachment store(MultipartFile file);
+
 }
