@@ -60,8 +60,9 @@ public class EventPublisherAspect implements ApplicationEventPublisherAware {
             // save 메소드 호출할 때 남은 이벤트 가져와서 다시 raise
             Queue<DomainEvent> delayEvent = Events.getDelayEvent();
 
-            while (!delayEvent.isEmpty())
-                Events.raise(delayEvent.poll());
+            if (delayEvent != null)
+                while (!delayEvent.isEmpty())
+                    Events.raise(delayEvent.poll());
         }
     }
 

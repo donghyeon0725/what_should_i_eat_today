@@ -3,6 +3,8 @@ package today.what_should_i_eat_today.domain;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 import today.what_should_i_eat_today.domain.qna.entity.Qna;
 import today.what_should_i_eat_today.domain.qna.entity.QnaReview;
 
@@ -10,7 +12,8 @@ import javax.persistence.EntityManager;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@DataJpaTest
+@SpringBootTest
+@Transactional
 class QnaTests {
 
     @Autowired

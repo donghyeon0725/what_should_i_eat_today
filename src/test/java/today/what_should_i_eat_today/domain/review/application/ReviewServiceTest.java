@@ -47,17 +47,17 @@ class ReviewServiceTest {
         Member member = Member.builder().name("member").nickName("test").build();
         Post post = Post.builder().content("test").title("test").build();
 
-        Review root1 = Review.builder().content("root").parent(null).member(member).post(post).build();
-        Review child1 = Review.builder().content("child1").member(member).post(post).parent(root1).build();
-        Review child2 = Review.builder().content("child2").member(member).post(post).parent(root1).build();
+        Review root1 = Review.builder().content("root").status(ReviewStatus.SHOW).parent(null).member(member).post(post).build();
+        Review child1 = Review.builder().content("child1").status(ReviewStatus.SHOW).member(member).post(post).parent(root1).build();
+        Review child2 = Review.builder().content("child2").status(ReviewStatus.SHOW).member(member).post(post).parent(root1).build();
 
-        Review root2 = Review.builder().content("root").parent(null).member(member).post(post).build();
-        Review child3 = Review.builder().content("child1").member(member).post(post).parent(root2).build();
-        Review child4 = Review.builder().content("child2").member(member).post(post).parent(root2).build();
+        Review root2 = Review.builder().content("root").status(ReviewStatus.SHOW).parent(null).member(member).post(post).build();
+        Review child3 = Review.builder().content("child1").status(ReviewStatus.SHOW).member(member).post(post).parent(root2).build();
+        Review child4 = Review.builder().content("child2").status(ReviewStatus.SHOW).member(member).post(post).parent(root2).build();
 
-        Review root3 = Review.builder().content("root").parent(null).member(member).post(post).build();
-        Review child5 = Review.builder().content("child1").member(member).post(post).parent(root3).build();
-        Review child6 = Review.builder().content("child2").member(member).post(post).parent(root3).build();
+        Review root3 = Review.builder().content("root").status(ReviewStatus.SHOW).parent(null).member(member).post(post).build();
+        Review child5 = Review.builder().content("child1").status(ReviewStatus.SHOW).member(member).post(post).parent(root3).build();
+        Review child6 = Review.builder().content("child2").status(ReviewStatus.SHOW).member(member).post(post).parent(root3).build();
 
         em.persist(child1);
         em.persist(child2);
