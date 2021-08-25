@@ -5,6 +5,7 @@ spring:
         - h2
         - app
         - oauth2
+        - file
       prod:
         - h2
         - app
