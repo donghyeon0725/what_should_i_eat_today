@@ -9,4 +9,6 @@ public interface StorageService {
 
     Attachment store(MultipartFile file);
 
+    void delete(String fileName);
+
 }

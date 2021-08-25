@@ -2,6 +2,7 @@ package today.what_should_i_eat_today.global.common.application.file;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
 import today.what_should_i_eat_today.domain.model.Attachment;
 import today.what_should_i_eat_today.global.config.AppProperties;
@@ -51,6 +52,18 @@ public class FileSystemStorageService implements StorageService {
                     .path(resolvePath.toUri().getPath())
                     .name(file.getOriginalFilename())
                     .build();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new InvalidStatusException(ErrorCode.INVALID_INPUT_VALUE_ARGUMENT);
+        }
+    }
+
+    @Override
+    public void delete(String fileName) {
+        try {
+
+            FileSystemUtils.deleteRecursively(rootLocation.resolve(fileName));
 
         } catch (IOException e) {
             e.printStackTrace();
