@@ -1,6 +1,7 @@
 package today.what_should_i_eat_today.domain.activity.entity;
 
 import lombok.*;
+import today.what_should_i_eat_today.domain.report.entity.ReportType;
 import today.what_should_i_eat_today.global.common.entity.BaseEntity;
 import today.what_should_i_eat_today.domain.review.entity.Review;
 import today.what_should_i_eat_today.domain.member.entity.Member;
@@ -35,6 +36,9 @@ public class Activity extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private ActivityType type;
+
+    @Enumerated(EnumType.STRING)
+    private ReportType reportType;
 
     private String details;
 
