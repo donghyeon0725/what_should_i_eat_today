@@ -22,6 +22,6 @@ public class GlobalExceptionHandler {
                 // getDescription 은 에러 내용에 관한 것 같다.
                 ErrorResponse.of(ErrorCode.UNEXPECTED_SERVER_ACTION, ex);
 
-        return new ResponseEntity(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

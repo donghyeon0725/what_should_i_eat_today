@@ -36,8 +36,13 @@ public class Post extends BaseEntity {
     @Lob
     private String content;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Member member;
+
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    Set<Likes> likesSet = new HashSet<>();
+    private Set<Likes> likesSet = new HashSet<>();
+
+    private boolean archived;
 
     public void removeLike(Likes likes) {
         likesSet.remove(likes);
@@ -45,5 +50,20 @@ public class Post extends BaseEntity {
 
     public void addLike(Likes likes) {
         likesSet.add(likes);
+    }
+
+    public boolean isPostCreator(Long memberId) {
+        return this.member.getId().equals(memberId);
+    }
+
+    public Post update(Attachment attachment, String title, String content) {
+        this.attachment = attachment;
+        this.title = title;
+        this.content = content;
+        return this;
+    }
+
+    public void delete() {
+        this.archived = true;
     }
 }
