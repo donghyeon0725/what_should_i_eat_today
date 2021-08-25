@@ -16,11 +16,11 @@ import today.what_should_i_eat_today.domain.likes.entity.Likes;
 import today.what_should_i_eat_today.domain.member.entity.Member;
 import today.what_should_i_eat_today.domain.model.Attachment;
 import today.what_should_i_eat_today.domain.post.entity.Post;
+import today.what_should_i_eat_today.global.common.application.file.FileSystemStorageService;
 import today.what_should_i_eat_today.global.error.exception.InvalidStatusException;
 import today.what_should_i_eat_today.global.error.exception.ResourceNotFoundException;
 
 import javax.persistence.EntityManager;
-import javax.sound.midi.SysexMessage;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
@@ -39,6 +39,9 @@ class PostServiceTest {
 
     @Autowired
     private PostService postService;
+
+    @Autowired
+    private FileSystemStorageService storageService;
 
     @Test
     @DisplayName("좋아요 하지않은 글에 좋아요 하기")
@@ -139,6 +142,8 @@ class PostServiceTest {
 
         List<Food> foods = em.createQuery("SELECT f FROM Food f", Food.class).getResultList();
         assertThat(foods).hasSize(1);
+
+        storageService.delete(String.format("%s.%s", fileName, contentType));
     }
 
     @Test
@@ -285,6 +290,9 @@ class PostServiceTest {
         assertThat(updatedPost.getTitle()).isEqualTo("수정된 제목");
         assertThat(updatedPost.getContent()).isEqualTo("수정된 내용");
         assertThat(updatedPost.getAttachment().getName()).isEqualTo("updateFile.txt");
+
+        storageService.delete(String.format("%s.%s", fileName, contentType));
+        storageService.delete(String.format("%s.%s", updateFilename, contentType));
     }
 
     @Test
