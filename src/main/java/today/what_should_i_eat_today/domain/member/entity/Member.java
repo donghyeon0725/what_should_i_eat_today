@@ -34,6 +34,9 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private MemberStatus status;
 
+    public void changeToDefaultProfile() {
+        this.profileImg = Profile.DEFAULT.getPath();
+    }
 
     public void updateNameAndImage(String name, String imageUrl) {
         this.name = name;

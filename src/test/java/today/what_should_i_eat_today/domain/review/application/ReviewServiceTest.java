@@ -15,6 +15,7 @@ import today.what_should_i_eat_today.domain.member.mock.CustomMockUser;
 import today.what_should_i_eat_today.domain.post.entity.Post;
 import today.what_should_i_eat_today.domain.review.dto.ReviewCommand;
 import today.what_should_i_eat_today.domain.review.entity.Review;
+import today.what_should_i_eat_today.domain.review.entity.ReviewStatus;
 import today.what_should_i_eat_today.domain.review.entity.ReviewType;
 
 import javax.persistence.EntityManager;
@@ -133,10 +134,10 @@ class ReviewServiceTest {
         Member member = Member.builder().name("member").nickName("test").build();
         Post post = Post.builder().content("test").title("test").build();
 
-        Review root = Review.builder().content("root").parent(null).member(member).post(post).build();
-        Review child1_1 = Review.builder().content("child1_1").member(member).post(post).parent(root).build();
-        Review child1_2 = Review.builder().content("child1_2").member(member).post(post).parent(root).build();
-        Review child2_1 = Review.builder().content("child2_1").member(member).post(post).parent(child1_1).build();
+        Review root = Review.builder().content("root").parent(null).member(member).status(ReviewStatus.SHOW).post(post).build();
+        Review child1_1 = Review.builder().content("child1_1").member(member).status(ReviewStatus.SHOW).post(post).parent(root).build();
+        Review child1_2 = Review.builder().content("child1_2").member(member).status(ReviewStatus.SHOW).post(post).parent(root).build();
+        Review child2_1 = Review.builder().content("child2_1").member(member).status(ReviewStatus.SHOW).post(post).parent(child1_1).build();
 
         em.persist(member);
         em.persist(post);
@@ -178,7 +179,6 @@ class ReviewServiceTest {
 
         assertEquals("수정합니다", findReview.getContent());
     }
-
 
     @Test
     @DisplayName("댓글 삭제하기 테스트")

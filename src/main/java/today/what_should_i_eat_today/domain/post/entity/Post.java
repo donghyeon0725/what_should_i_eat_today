@@ -33,6 +33,9 @@ public class Post extends BaseEntity {
 
     private String title;
 
+    @Enumerated(EnumType.STRING)
+    private PostStatus status;
+
     @Lob
     private String content;
 
@@ -45,5 +48,16 @@ public class Post extends BaseEntity {
 
     public void addLike(Likes likes) {
         likesSet.add(likes);
+    }
+
+    /**
+     * 병화씨, 이 메소드 호출만 하면 돼요
+     * */
+    public void show() {
+        this.status = PostStatus.SHOW;
+    }
+
+    public void blind() {
+        this.status = PostStatus.BLIND;
     }
 }
