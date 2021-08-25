@@ -36,9 +36,6 @@ public class Post extends BaseEntity {
     @Lob
     private String content;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Member member;
-
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Likes> likesSet = new HashSet<>();
 

@@ -18,6 +18,10 @@ import today.what_should_i_eat_today.global.error.ErrorCode;
 import today.what_should_i_eat_today.global.error.exception.ResourceNotFoundException;
 import today.what_should_i_eat_today.global.security.UserPrincipal;
 
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -41,7 +45,8 @@ public class ReviewService {
         Post findPost = postRepository.findById(command.getPostId()).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND));
 
         Review review = Review.builder().post(findPost).member(findMember).parent(null).content(command.getContent()).build();
-        review.placeReview(reviewValidator);
+        review.placeReview();
+        review.show();
         reviewRepository.save(review);
 
         return review.getId();
@@ -58,7 +63,8 @@ public class ReviewService {
         Review child = Review.builder().post(findPost).member(findMember).content(command.getContent()).build();
 
         findReview.addChildReview(child, reviewValidator);
-        child.placeReply(reviewValidator);
+        child.placeReply();
+        child.show();
 
         reviewRepository.save(child);
 
@@ -81,9 +87,14 @@ public class ReviewService {
     // 포스트에 해당하는 리뷰 리스트
     public Page<Review> getReviewList(ReviewCommand command, Pageable pageable) {
         Page<Review> review = reviewRepository.findAllReviewByPostIdAndParentNull(command.getPostId(), pageable);
-        review.forEach(s -> {
+
+        review.forEach(s-> {
             s.getChild().forEach(c -> c.getId());
         });
+
+        // 성능 최적화를 위해 Map으로
+//        Map<Long, List<Review>> collect = reviewRepository.findByParentReviewIn(review.getContent()).stream().collect(Collectors.groupingBy(c -> c.getParent().getId()));
+
         return review;
     }
 
