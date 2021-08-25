@@ -31,6 +31,7 @@ public class ReviewService {
 
     private final PostRepository postRepository;
 
+
     @Transactional
     public Long createReview(ReviewCommand command) {
         command.createValidate();
@@ -40,6 +41,7 @@ public class ReviewService {
         Post findPost = postRepository.findById(command.getPostId()).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND));
 
         Review review = Review.builder().post(findPost).member(findMember).parent(null).content(command.getContent()).build();
+        review.placeReview(reviewValidator);
         reviewRepository.save(review);
 
         return review.getId();
@@ -53,9 +55,10 @@ public class ReviewService {
         Member findMember = memberRepository.findByEmail(principal.getEmail()).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND));
         Post findPost = postRepository.findById(command.getPostId()).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND));
         Review findReview = reviewRepository.findById(command.getParentId()).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND));
-
         Review child = Review.builder().post(findPost).member(findMember).content(command.getContent()).build();
+
         findReview.addChildReview(child, reviewValidator);
+        child.placeReply(reviewValidator);
 
         reviewRepository.save(child);
 

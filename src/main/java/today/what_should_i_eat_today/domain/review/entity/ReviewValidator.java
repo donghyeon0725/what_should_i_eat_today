@@ -13,11 +13,20 @@ public class ReviewValidator {
     public void contentValidate(String content) {
         if (!StringUtils.hasText(content))
             throw new CannotExecuteException(ErrorCode.INVALID_INPUT_VALUE);
-
     }
 
     public void childAddValidate(Review root) {
         if (root.getParent() != null)
+            throw new CannotExecuteException(ErrorCode.INVALID_INPUT_VALUE);
+    }
+
+    public void createReviewValidate(Review parent) {
+        if (parent != null)
+            throw new CannotExecuteException(ErrorCode.INVALID_INPUT_VALUE);
+    }
+
+    public void createReplyValidate(Review parent) {
+        if (parent == null)
             throw new CannotExecuteException(ErrorCode.INVALID_INPUT_VALUE);
     }
 }
