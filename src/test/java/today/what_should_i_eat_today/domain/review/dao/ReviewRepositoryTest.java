@@ -11,6 +11,7 @@ import today.what_should_i_eat_today.domain.member.entity.Member;
 import today.what_should_i_eat_today.domain.member.entity.MemberStatus;
 import today.what_should_i_eat_today.domain.post.entity.Post;
 import today.what_should_i_eat_today.domain.review.entity.Review;
+import today.what_should_i_eat_today.domain.review.entity.ReviewStatus;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -39,10 +40,10 @@ class ReviewRepositoryTest {
         Member member = Member.builder().name("member").nickName("test").build();
         Post post = Post.builder().content("test").title("test").build();
 
-        Review root = Review.builder().content("root").parent(null).member(member).post(post).build();
-        Review child1_1 = Review.builder().content("child1_1").member(member).post(post).parent(root).build();
-        Review child1_2 = Review.builder().content("child1_2").member(member).post(post).parent(root).build();
-        Review child2_1 = Review.builder().content("child2_1").member(member).post(post).parent(child1_1).build();
+        Review root = Review.builder().status(ReviewStatus.SHOW).content("root").parent(null).member(member).post(post).build();
+        Review child1_1 = Review.builder().content("child1_1").status(ReviewStatus.SHOW).member(member).post(post).parent(root).build();
+        Review child1_2 = Review.builder().content("child1_2").status(ReviewStatus.SHOW).member(member).post(post).parent(root).build();
+        Review child2_1 = Review.builder().content("child2_1").status(ReviewStatus.SHOW).member(member).post(post).parent(child1_1).build();
 
         em.persist(child1_1);
         em.persist(child1_2);
