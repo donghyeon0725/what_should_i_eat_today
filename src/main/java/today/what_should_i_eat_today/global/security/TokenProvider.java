@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import today.what_should_i_eat_today.global.config.AppProperties;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -35,8 +37,13 @@ public class TokenProvider {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + appProperties.getAuth().getTokenExpirationMsec());
 
+        Map<String, Object> map = new HashMap<>();
+        map.put("sub", userPrincipal.getId().toString()); // Claims 의 sub
+        map.put("role", userPrincipal.getAuthorities().toArray()[0]);
+
+
         return Jwts.builder()
-                .setSubject(Long.toString(userPrincipal.getId()))
+                .setClaims(map)
                 .setIssuedAt(new Date())
                 .setExpiration(expiryDate)
                 .signWith(SignatureAlgorithm.HS512, appProperties.getAuth().getTokenSecret())
@@ -50,6 +57,14 @@ public class TokenProvider {
                 .getBody();
 
         return Long.parseLong(claims.getSubject());
+    }
+
+    public Claims getClaims(String token) {
+
+        return Jwts.parser()
+                .setSigningKey(appProperties.getAuth().getTokenSecret())
+                .parseClaimsJws(token)
+                .getBody();
     }
 
     public boolean validateToken(String authToken) {

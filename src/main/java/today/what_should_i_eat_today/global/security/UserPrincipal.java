@@ -6,6 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
+import today.what_should_i_eat_today.domain.admin.entity.Admin;
 import today.what_should_i_eat_today.domain.member.entity.Member;
 
 import java.util.*;
@@ -33,6 +34,17 @@ public class UserPrincipal implements OAuth2User, UserDetails {
         return new UserPrincipal(
                 member.getId(),
                 member.getEmail(),
+                authorities
+        );
+    }
+
+    public static UserPrincipal create(Admin admin) {
+        List<GrantedAuthority> authorities = Collections.
+                singletonList(new SimpleGrantedAuthority("ROLE_ADMIN"));
+
+        return new UserPrincipal(
+                admin.getId(),
+                admin.getEmail(),
                 authorities
         );
     }

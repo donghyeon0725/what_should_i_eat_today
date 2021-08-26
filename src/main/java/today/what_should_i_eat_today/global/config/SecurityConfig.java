@@ -92,6 +92,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/",
                         "/error",
+                        "/api/v1/admin/login",
                         "/favicon.ico",
                         "/h2-console/**")
                 .permitAll()

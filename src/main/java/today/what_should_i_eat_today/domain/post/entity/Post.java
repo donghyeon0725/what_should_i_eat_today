@@ -1,6 +1,7 @@
 package today.what_should_i_eat_today.domain.post.entity;
 
 import lombok.*;
+import org.hibernate.annotations.Where;
 import today.what_should_i_eat_today.domain.food.entity.Food;
 import today.what_should_i_eat_today.domain.likes.entity.Likes;
 import today.what_should_i_eat_today.domain.member.entity.Member;
@@ -16,6 +17,7 @@ import java.util.Set;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
+@Where(clause = "archived = false")
 public class Post extends BaseEntity {
 
     @Id
@@ -36,6 +38,7 @@ public class Post extends BaseEntity {
     @Lob
     private String content;
 
+    @Builder.Default
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Likes> likesSet = new HashSet<>();
 
