@@ -61,3 +61,20 @@ class ReviewRepositoryTest {
         assertEquals(1, findReview.getContent().size(), () -> "root 댓글만 가져와야 한다.");
     }
 }
+
+/*
+ *
+ *    pst <- postId 1건
+ *    post food -1개 - likes -여러개
+ *
+ *    post.getFood().getId()
+ *    post.getLikes().stream()
+ *    return
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ * */

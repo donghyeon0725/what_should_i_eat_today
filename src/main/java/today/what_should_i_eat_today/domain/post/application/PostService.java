@@ -22,6 +22,7 @@ import today.what_should_i_eat_today.global.error.exception.InvalidStatusExcepti
 import today.what_should_i_eat_today.global.error.exception.ResourceNotFoundException;
 
 import javax.persistence.EntityManager;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -110,5 +111,9 @@ public class PostService {
 
     public Post getPost(Long postId) {
         return postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND));
+    }
+
+    public List<Post> getMyPosts(Long memberId) {
+        return postRepository.findAllByMemberId(memberId);
     }
 }
