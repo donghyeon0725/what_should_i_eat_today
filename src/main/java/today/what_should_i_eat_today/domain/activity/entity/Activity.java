@@ -42,4 +42,7 @@ public class Activity extends BaseEntity {
 
     private String details;
 
+    public void validateAuth(ActivityValidator activityValidator) {
+        activityValidator.validateAuth(this);
+    }
 }
