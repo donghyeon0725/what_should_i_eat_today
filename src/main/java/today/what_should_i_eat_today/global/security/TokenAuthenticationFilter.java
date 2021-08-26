@@ -1,5 +1,6 @@
 package today.what_should_i_eat_today.global.security;
 
+import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -32,7 +33,13 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
             String jwt = getJwtFromRequest(request);
 
             if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
-                Long userId = tokenProvider.getUserIdFromToken(jwt);
+
+                // todo : 2021-08-25 : 코드를 개선할 필요가 있어보임
+                Claims claims = tokenProvider.getClaims(jwt);
+                Long userId = Long.parseLong(claims.getSubject());
+
+                // todo : 2021-08-25 : role 타입 변환 후
+                // String role = (String) claims.get("role");
 
                 UserDetails userDetails = customUserDetailsService.loadUserById(userId);
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());

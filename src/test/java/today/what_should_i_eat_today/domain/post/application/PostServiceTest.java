@@ -386,6 +386,28 @@ class PostServiceTest {
 
     }
 
+    @Test
+    @DisplayName("멤버는 제거된 post 를 볼 수 없다")
+    void test11() {
+
+
+        for (int i = 0; i < 50; i++) {
+            Post post = Post.builder()
+                    .title("글 제목" + i)
+                    .content("글 내용" + i)
+                    .archived(i % 2 == 0)
+                    .build();
+            em.persist(post);
+        }
+        em.clear();
+
+        PageRequest pageReq = PageRequest.of(0, 10);
+
+        Page<Post> posts = postService.getPosts(pageReq);
+
+        assertThat(posts.getTotalElements()).isEqualTo(25);
+    }
+
     public static MockMultipartFile getMockMultipartFile(String fileName, String contentType, String path) throws IOException {
         FileInputStream fileInputStream = new FileInputStream(path);
         return new MockMultipartFile(fileName, fileName + "." + contentType, contentType, fileInputStream);
