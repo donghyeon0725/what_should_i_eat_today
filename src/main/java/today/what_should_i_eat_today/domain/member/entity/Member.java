@@ -6,6 +6,7 @@ import today.what_should_i_eat_today.domain.model.AuthProvider;
 import today.what_should_i_eat_today.global.common.entity.BaseEntity;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Builder
 @Entity
@@ -46,5 +47,18 @@ public class Member extends BaseEntity {
     public void updateNickNameAndImage(String nickName, String imageUrl) {
         this.nickName = StringUtils.hasText(nickName) ? nickName : name;
         this.profileImg = StringUtils.hasText(imageUrl) ? imageUrl : profileImg;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || !(o instanceof Member)) return false;
+        Member member = (Member) o;
+        return Objects.equals(getId(), member.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
     }
 }
