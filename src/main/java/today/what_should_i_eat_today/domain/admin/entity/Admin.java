@@ -23,4 +23,7 @@ public class Admin extends BaseEntity {
 
     private String password;
 
+    public boolean matchPassword(String password) {
+        return this.password.equals(password);
+    }
 }

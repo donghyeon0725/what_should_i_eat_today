@@ -21,6 +21,7 @@ import today.what_should_i_eat_today.global.error.ErrorCode;
 import today.what_should_i_eat_today.global.error.exception.InvalidStatusException;
 import today.what_should_i_eat_today.global.error.exception.ResourceNotFoundException;
 
+import javax.persistence.EntityManager;
 import java.util.Optional;
 
 @Service
@@ -33,6 +34,7 @@ public class PostService {
     private final LikesRepository likesRepository;
     private final PostRepository postRepository;
     private final FoodRepository foodRepository;
+    private final EntityManager em;
 
 
     @Transactional
