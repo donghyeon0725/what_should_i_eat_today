@@ -9,6 +9,8 @@ import today.what_should_i_eat_today.domain.activity.entity.Activity;
 import today.what_should_i_eat_today.domain.activity.entity.ActivityType;
 import today.what_should_i_eat_today.domain.member.entity.Member;
 import today.what_should_i_eat_today.domain.post.entity.Post;
+import today.what_should_i_eat_today.domain.qna.entity.Qna;
+import today.what_should_i_eat_today.domain.qna.entity.QnaReview;
 import today.what_should_i_eat_today.domain.report.entity.Report;
 import today.what_should_i_eat_today.domain.report.entity.ReportType;
 import today.what_should_i_eat_today.domain.review.entity.Review;
@@ -137,6 +139,16 @@ public class EventsHandler {
                         .reportType(ReportType.PROFILE)
                         .build()
         );
+    }
+
+    @Async
+    @Transactional
+    @EventListener
+    public void handle(QnaReviewEvent event) {
+        Qna qna = event.getQna();
+        Member qnaOwner = qna.getMember();;
+
+        activityRepository.save(Activity.builder().member(qnaOwner).qna(qna).type(ActivityType.QNA_REVIEW).build());
     }
 
 
