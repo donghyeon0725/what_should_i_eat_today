@@ -8,6 +8,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import today.what_should_i_eat_today.domain.favorite.entity.Favorite;
 import today.what_should_i_eat_today.domain.member.entity.Member;
 import today.what_should_i_eat_today.domain.post.entity.Post;
@@ -65,9 +67,9 @@ class FavoriteRepositoryTest {
         }
         em.clear();
 
-
-        List<Favorite> martinFavorites = favoriteRepository.findAllByMemberId(martinMember.getId());
-        List<Favorite> bennyFavorites = favoriteRepository.findAllByMemberId(bennyMember.getId());
+        PageRequest page = PageRequest.of(0, 50);
+        List<Favorite> martinFavorites = favoriteRepository.findAllByMemberId(martinMember.getId(), page);
+        List<Favorite> bennyFavorites = favoriteRepository.findAllByMemberId(bennyMember.getId(), page);
 
         List<Member> martinMemberOfFavoritePosts = martinFavorites.stream().map(Favorite::getMember).collect(Collectors.toList());
         List<Post> martinFavoritePosts = martinFavorites.stream().map(Favorite::getPost).collect(Collectors.toList());

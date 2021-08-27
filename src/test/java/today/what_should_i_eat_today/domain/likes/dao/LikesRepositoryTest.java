@@ -8,6 +8,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import today.what_should_i_eat_today.domain.likes.entity.Likes;
 import today.what_should_i_eat_today.domain.member.entity.Member;
 import today.what_should_i_eat_today.domain.post.entity.Post;
@@ -58,7 +60,8 @@ class LikesRepositoryTest {
         }
         em.clear();
 
-        List<Likes> likesOfMartin = likesRepository.findAllByMemberId(martinMember.getId());
+        PageRequest page = PageRequest.of(0, 50);
+        List<Likes> likesOfMartin = likesRepository.findAllByMemberId(martinMember.getId(), page);
 
         List<Post> likesPostsFromMartin = likesOfMartin.stream().map(Likes::getPost).collect(Collectors.toList());
 
