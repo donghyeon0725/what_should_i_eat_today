@@ -13,7 +13,10 @@ import today.what_should_i_eat_today.domain.activity.entity.Activity;
 import today.what_should_i_eat_today.domain.member.entity.Member;
 import today.what_should_i_eat_today.domain.member.mock.CustomMockUser;
 import today.what_should_i_eat_today.domain.post.entity.Post;
+import today.what_should_i_eat_today.domain.recommend.entity.Recommend;
+import today.what_should_i_eat_today.domain.recommend.entity.RecommendType;
 import today.what_should_i_eat_today.domain.review.dto.ReviewCommand;
+import today.what_should_i_eat_today.domain.review.dto.ReviewDto;
 import today.what_should_i_eat_today.domain.review.entity.Review;
 import today.what_should_i_eat_today.domain.review.entity.ReviewStatus;
 import today.what_should_i_eat_today.domain.review.entity.ReviewType;
@@ -21,6 +24,9 @@ import today.what_should_i_eat_today.domain.review.entity.ReviewType;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -80,6 +86,111 @@ class ReviewServiceTest {
         boolean loaded = emf.getPersistenceUnitUtil().isLoaded(reviewList.getContent().get(0).getChild());
 
         assertTrue(loaded);
+    }
+
+
+    @Test
+    @DisplayName("댓글 조회하기 테스트. 추천수 정확하게 출력되는지 확인")
+    @CustomMockUser(email = "tester1234@test.com", roles = "USER")
+    void test1_1() {
+        Member creator = Member.builder().name("creator").nickName("creator").build();
+        Member tester = Member.builder().email("tester1234@test.com").name("creator").nickName("tester").build();
+        Member people1 = Member.builder().name("creator").nickName("people1").build();
+        Member people2 = Member.builder().name("creator").nickName("people2").build();
+        Post post = Post.builder().content("test").title("test").build();
+
+        Review root1 = Review.builder().content("root").status(ReviewStatus.SHOW).parent(null).member(creator).post(post).build();
+        Review root2 = Review.builder().content("root").status(ReviewStatus.SHOW).parent(null).member(creator).post(post).build();
+        Review root3 = Review.builder().content("root").status(ReviewStatus.SHOW).parent(null).member(creator).post(post).build();
+
+        Recommend recommend1 = Recommend.builder().review(root1).member(tester).type(RecommendType.RECOMMEND).build();
+        Recommend recommend2 = Recommend.builder().review(root2).member(tester).type(RecommendType.NOT_RECOMMEND).build();
+        Recommend recommend3 = Recommend.builder().review(root2).member(people1).type(RecommendType.RECOMMEND).build();
+        Recommend recommend4 = Recommend.builder().review(root3).member(people2).type(RecommendType.RECOMMEND).build();
+
+        em.persist(root1);
+        em.persist(root2);
+        em.persist(root3);
+        em.persist(post);
+        em.persist(creator);
+        em.persist(tester);
+        em.persist(people1);
+        em.persist(people2);
+        em.persist(recommend1);
+        em.persist(recommend2);
+        em.persist(recommend3);
+        em.persist(recommend4);
+        em.flush();
+        em.clear();
+
+        ReviewCommand command = ReviewCommand.builder().postId(post.getId()).build();
+        PageRequest pageRequest = PageRequest.of(0, 10);
+
+        Page<ReviewDto> reviewList = reviewService.getReviewDtoList(command, pageRequest);
+
+        List<ReviewDto> result1 = reviewList.getContent().stream().filter(s-> s.getId().equals(root1.getId())).collect(Collectors.toList());
+        List<ReviewDto> result2 = reviewList.getContent().stream().filter(s-> s.getId().equals(root2.getId())).collect(Collectors.toList());
+        List<ReviewDto> result3 = reviewList.getContent().stream().filter(s-> s.getId().equals(root3.getId())).collect(Collectors.toList());
+
+
+        assertEquals(1, result1.get(0).getRecommendCount(), "정확하게 1건 검색 되어야 한다.");
+        assertEquals(RecommendType.RECOMMEND, result1.get(0).getRecommendType(), "자신의 추천이 나타나야 한다.");
+        assertEquals(1, result2.get(0).getRecommendCount(), "정확하게 1건 검색 되어야 한다.");
+        assertEquals(1, result2.get(0).getNotRecommendCount(), "정확하게 1건 검색 되어야 한다.");
+        assertEquals(RecommendType.NOT_RECOMMEND,  result2.get(0).getRecommendType(), "자신의 비추천이 나타나야 한다.");
+        assertNull(result3.get(0).getRecommendType(), "추천하지 않은 여부도 나타나야 한다.");
+    }
+
+    @Test
+    @DisplayName("답급 조회하기 테스트. 추천수 정확하게 출력되는지 확인")
+    @CustomMockUser(email = "tester1234@test.com", roles = "USER")
+    void test1_2() {
+        Member creator = Member.builder().name("creator").nickName("creator").build();
+        Member tester = Member.builder().email("tester1234@test.com").name("creator").nickName("tester").build();
+        Member people1 = Member.builder().name("creator").nickName("people1").build();
+        Member people2 = Member.builder().name("creator").nickName("people2").build();
+        Post post = Post.builder().content("test").title("test").build();
+
+        Review root1 = Review.builder().content("root").status(ReviewStatus.SHOW).parent(null).member(creator).post(post).build();
+        Review child1 = Review.builder().content("child1").status(ReviewStatus.SHOW).member(creator).post(post).parent(root1).build();
+        Review child2 = Review.builder().content("child2").status(ReviewStatus.SHOW).member(creator).post(post).parent(root1).build();
+        Review child3 = Review.builder().content("child3").status(ReviewStatus.SHOW).member(creator).post(post).parent(root1).build();
+
+        Recommend recommend1 = Recommend.builder().review(child1).member(tester).type(RecommendType.RECOMMEND).build();
+        Recommend recommend3 = Recommend.builder().review(child1).member(people1).type(RecommendType.RECOMMEND).build();
+        Recommend recommend2 = Recommend.builder().review(child2).member(tester).type(RecommendType.NOT_RECOMMEND).build();
+        Recommend recommend4 = Recommend.builder().review(child2).member(people2).type(RecommendType.RECOMMEND).build();
+
+        em.persist(child1);
+        em.persist(child2);
+        em.persist(child3);
+        em.persist(root1);
+        em.persist(post);
+        em.persist(creator);
+        em.persist(tester);
+        em.persist(people1);
+        em.persist(people2);
+        em.persist(recommend1);
+        em.persist(recommend2);
+        em.persist(recommend3);
+        em.persist(recommend4);
+        em.flush();
+        em.clear();
+
+        PageRequest pageRequest = PageRequest.of(0, 10);
+
+        Page<ReviewDto> reviewList = reviewService.getReplyDtoList(root1.getId(), pageRequest);
+
+        List<ReviewDto> result1 = reviewList.getContent().stream().filter(s-> s.getId().equals(child1.getId())).collect(Collectors.toList());
+        List<ReviewDto> result2 = reviewList.getContent().stream().filter(s-> s.getId().equals(child2.getId())).collect(Collectors.toList());
+        List<ReviewDto> result3 = reviewList.getContent().stream().filter(s-> s.getId().equals(child3.getId())).collect(Collectors.toList());
+
+
+        assertEquals(2, result1.get(0).getRecommendCount(), "정확하게 2건 검색 되어야 한다.");
+        assertEquals(RecommendType.RECOMMEND, result1.get(0).getRecommendType(), "자신의 추천이 나타나야 한다.");
+        assertEquals(1, result2.get(0).getRecommendCount(), "정확하게 1건 검색 되어야 한다.");
+        assertEquals(1, result2.get(0).getNotRecommendCount(), "정확하게 1건 검색 되어야 한다.");
+        assertNull(result3.get(0).getRecommendType(), "추천하지 않은 여부도 나타나야 한다.");
     }
 
     @Test
