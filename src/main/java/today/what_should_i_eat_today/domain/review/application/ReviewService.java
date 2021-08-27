@@ -12,10 +12,12 @@ import today.what_should_i_eat_today.domain.post.dao.PostRepository;
 import today.what_should_i_eat_today.domain.post.entity.Post;
 import today.what_should_i_eat_today.domain.review.dto.ReviewCommand;
 import today.what_should_i_eat_today.domain.review.dao.ReviewRepository;
+import today.what_should_i_eat_today.domain.review.dto.ReviewDto;
 import today.what_should_i_eat_today.domain.review.entity.Review;
 import today.what_should_i_eat_today.domain.review.entity.ReviewValidator;
 import today.what_should_i_eat_today.global.error.ErrorCode;
 import today.what_should_i_eat_today.global.error.exception.ResourceNotFoundException;
+import today.what_should_i_eat_today.global.error.exception.UserNotFoundException;
 import today.what_should_i_eat_today.global.security.UserPrincipal;
 
 import java.util.List;
@@ -35,6 +37,11 @@ public class ReviewService {
 
     private final PostRepository postRepository;
 
+
+    public Member getMember() {
+        UserPrincipal principal = (UserPrincipal)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return memberRepository.findByEmail(principal.getEmail()).orElseThrow(() -> new UserNotFoundException(ErrorCode.USER_NOT_FOUND));
+    }
 
     @Transactional
     public Long createReview(ReviewCommand command) {
@@ -97,6 +104,16 @@ public class ReviewService {
 
         return review;
     }
+
+
+    public Page<ReviewDto> getReviewDtoList(ReviewCommand command, Pageable pageable) {
+        return reviewRepository.findAllDtoByPostIdAndParentNull(command.getPostId(), getMember(), pageable);
+    }
+
+    public Page<ReviewDto> getReplyDtoList(Long reviewId, Pageable pageable) {
+        return reviewRepository.findAllDtoByReview(reviewId, getMember(), pageable);
+    }
+
 
 
 
