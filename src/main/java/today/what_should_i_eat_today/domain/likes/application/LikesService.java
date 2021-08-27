@@ -1,6 +1,7 @@
 package today.what_should_i_eat_today.domain.likes.application;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import today.what_should_i_eat_today.domain.likes.dao.LikesRepository;
@@ -17,9 +18,9 @@ public class LikesService {
 
     private final LikesRepository likesRepository;
 
-    public List<Post> getMyLikesPosts(Long memberId) {
+    public List<Post> getMyLikesPosts(Long memberId, Pageable pageable) {
 
-        List<Likes> likes = likesRepository.findAllByMemberId(memberId);
+        List<Likes> likes = likesRepository.findAllByMemberId(memberId, pageable);
 
         List<Post> collect = likes.stream().map(Likes::getPost).collect(Collectors.toList());
 

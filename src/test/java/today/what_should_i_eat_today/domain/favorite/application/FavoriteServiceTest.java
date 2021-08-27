@@ -4,6 +4,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import today.what_should_i_eat_today.domain.favorite.entity.Favorite;
 import today.what_should_i_eat_today.domain.member.entity.Member;
@@ -54,8 +56,9 @@ class FavoriteServiceTest {
 
         em.clear();
 
+        PageRequest page = PageRequest.of(0, 10);
 
-        List<Post> myFavorites = favoriteService.getMyFavoritePosts(member.getId());
+        List<Post> myFavorites = favoriteService.getMyFavoritePosts(member.getId(), page);
 
         assertThat(myFavorites).extracting("title").containsExactly("글1", "글2");
 

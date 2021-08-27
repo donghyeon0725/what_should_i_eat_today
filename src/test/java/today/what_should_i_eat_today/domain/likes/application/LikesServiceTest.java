@@ -4,9 +4,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
-import today.what_should_i_eat_today.domain.favorite.application.FavoriteService;
-import today.what_should_i_eat_today.domain.favorite.entity.Favorite;
 import today.what_should_i_eat_today.domain.likes.entity.Likes;
 import today.what_should_i_eat_today.domain.member.entity.Member;
 import today.what_should_i_eat_today.domain.post.entity.Post;
@@ -57,7 +57,9 @@ class LikesServiceTest {
         em.clear();
 
 
-        List<Post> myLikes = likesService.getMyLikesPosts(member.getId());
+        PageRequest page = PageRequest.of(0, 10);
+
+        List<Post> myLikes = likesService.getMyLikesPosts(member.getId(), page);
 
         // isLoaded 테스트 보기...
         assertTrue(emf.getPersistenceUnitUtil().isLoaded(myLikes.get(0)));

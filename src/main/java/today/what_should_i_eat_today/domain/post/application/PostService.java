@@ -109,4 +109,8 @@ public class PostService {
     public Post getPost(Long postId) {
         return postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND));
     }
+
+    public Page<Post> getMyPosts(Long id, Pageable pageable) {
+        return postRepository.findAllByMemberId(id, pageable);
+    }
 }
