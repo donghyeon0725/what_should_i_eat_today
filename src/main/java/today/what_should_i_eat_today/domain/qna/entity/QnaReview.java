@@ -30,4 +30,9 @@ public class QnaReview extends BaseEntity {
     public void addedToQna(Qna qna) {
         this.qna = qna;
     }
+
+    public void changeContentAndStatus(String content, QnaValidator qnaValidator) {
+        qnaValidator.qnaReviewUpdateValidate(content);
+        this.content = content;
+    }
 }
