@@ -7,6 +7,7 @@ public enum ErrorCode {
 
     // Common
     INVALID_INPUT_VALUE(400, "C001", " Invalid Input Value"),
+    ALREADY_PROCESSED(400, "C001-1", "Can not update  cuz it already processed"),
     METHOD_NOT_ALLOWED(405, "C002", " Invalid Input Value"),
     ENTITY_NOT_FOUND(400, "C003", " Entity Not Found"),
     INTERNAL_SERVER_ERROR(500, "C004", "Server Error"),

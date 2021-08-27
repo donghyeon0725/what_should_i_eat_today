@@ -2,9 +2,10 @@ package today.what_should_i_eat_today.domain.qna.entity;
 
 
 import lombok.*;
+import today.what_should_i_eat_today.event.event.QnaReviewEvent;
+import today.what_should_i_eat_today.event.service.Events;
 import today.what_should_i_eat_today.global.common.entity.BaseEntity;
 import today.what_should_i_eat_today.domain.member.entity.Member;
-import today.what_should_i_eat_today.domain.model.Status;
 
 import javax.persistence.*;
 
@@ -41,4 +42,31 @@ public class Qna extends BaseEntity {
         qnaReview.addedToQna(this);
     }
 
+    public void notProcess() {
+        this.status = QnaStatus.NOT_PROCESSED;
+    }
+
+    public void process() {
+        this.status = QnaStatus.PROCESSED;
+    }
+
+    public void updateQna(String title, String content, QnaValidator qnaValidator) {
+        qnaValidator.updateValidate(title, content, this.status, this.member);
+        this.title = title;
+        this.content = content;
+    }
+
+    public void addQnaReview(QnaReview qnaReview, QnaValidator qnaValidator) {
+        qnaValidator.qnaReviewAddValidate(this, qnaReview);
+        qnaReview.addedToQna(this);
+        this.qnaReview = qnaReview;
+        process();
+
+        Events.raise(new QnaReviewEvent(this));
+    }
+
+    public void changeStatus(QnaStatus qnaStatus, QnaValidator qnaValidator) {
+        qnaValidator.qnaStatusValidate(qnaStatus);
+        this.status = qnaStatus;
+    }
 }

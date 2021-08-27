@@ -1,6 +1,7 @@
 package today.what_should_i_eat_today.domain.activity.entity;
 
 import lombok.*;
+import today.what_should_i_eat_today.domain.qna.entity.Qna;
 import today.what_should_i_eat_today.domain.report.entity.ReportType;
 import today.what_should_i_eat_today.global.common.entity.BaseEntity;
 import today.what_should_i_eat_today.domain.review.entity.Review;
@@ -33,6 +34,9 @@ public class Activity extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Report report;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Qna qna;
 
     @Enumerated(EnumType.STRING)
     private ActivityType type;
