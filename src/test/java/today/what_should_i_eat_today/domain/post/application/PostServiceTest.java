@@ -15,6 +15,7 @@ import today.what_should_i_eat_today.domain.food.entity.Food;
 import today.what_should_i_eat_today.domain.likes.entity.Likes;
 import today.what_should_i_eat_today.domain.member.entity.Member;
 import today.what_should_i_eat_today.domain.model.Attachment;
+import today.what_should_i_eat_today.domain.post.dto.PostResponseDto;
 import today.what_should_i_eat_today.domain.post.entity.Post;
 import today.what_should_i_eat_today.global.common.application.file.FileSystemStorageService;
 import today.what_should_i_eat_today.global.error.exception.InvalidStatusException;
@@ -406,6 +407,40 @@ class PostServiceTest {
         Page<Post> posts = postService.getPosts(pageReq);
 
         assertThat(posts.getTotalElements()).isEqualTo(25);
+    }
+
+    @Test
+    @DisplayName("음식에 해당하는 글들 조회")
+    void test12() {
+
+        Food food1 = Food.builder().name("김치볶음밥").build();
+        Food food2 = Food.builder().name("돈까스").build();
+
+        Post post1 = Post.builder().title("김가네 김치볶음밥").food(food1).build();
+        Post post2 = Post.builder().title("김밥천국 김치볶음밥").food(food1).build();
+        Post post3 = Post.builder().title("김밥나라 김치볶음밥").food(food1).build();
+        Post post4 = Post.builder().title("김가네 치즈 돈까스").food(food2).build();
+
+        em.persist(food1);
+        em.persist(food2);
+
+        em.persist(post1);
+        em.persist(post2);
+        em.persist(post3);
+        em.persist(post4);
+
+        em.clear();
+
+        PageRequest page = PageRequest.of(0, 10);
+        PostResponseDto postResponseDto = postService.getPostsByFoodId(food1.getId(), page);
+
+        assertThat(postResponseDto).isNotNull();
+        assertThat(postResponseDto.getPosts()).hasSize(3);
+        assertThat(postResponseDto.getFood().getName()).isEqualTo("김치볶음밥");
+        assertThat(postResponseDto.getPosts().getContent())
+                .extracting("title")
+                .containsExactly("김가네 김치볶음밥", "김밥천국 김치볶음밥", "김밥나라 김치볶음밥")
+        ;
     }
 
     public static MockMultipartFile getMockMultipartFile(String fileName, String contentType, String path) throws IOException {
