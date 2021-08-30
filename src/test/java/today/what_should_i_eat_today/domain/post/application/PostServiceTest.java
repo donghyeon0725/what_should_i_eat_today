@@ -23,7 +23,9 @@ import today.what_should_i_eat_today.global.error.exception.ResourceNotFoundExce
 import javax.persistence.EntityManager;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -411,6 +413,37 @@ class PostServiceTest {
     public static MockMultipartFile getMockMultipartFile(String fileName, String contentType, String path) throws IOException {
         FileInputStream fileInputStream = new FileInputStream(path);
         return new MockMultipartFile(fileName, fileName + "." + contentType, contentType, fileInputStream);
+    }
+
+    @Test
+    @DisplayName("내가 작성한 글 조회하기")
+    void test12() {
+
+        Member martinMember = Member.builder().name("martin").build();
+
+        em.persist(martinMember);
+
+        for (int i = 0; i < 50; i++) {
+            Post post = Post.builder().member(martinMember).title("글 1").build();
+            em.persist(post);
+        }
+
+        em.clear();
+
+        int size = 10;
+        PageRequest page = PageRequest.of(0, size);
+
+        String[] martinArr = new String[size];
+        Arrays.fill(martinArr, "martin");
+
+        Page<Post> myPosts = postService.getMyPosts(martinMember.getId(), page);
+
+        assertThat(myPosts)
+                .hasSize(10)
+                .extracting("member")
+                .extracting("name")
+                .containsExactly(martinArr)
+        ;
     }
 
 }
