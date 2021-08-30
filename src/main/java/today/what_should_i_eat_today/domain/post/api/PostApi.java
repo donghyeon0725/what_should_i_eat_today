@@ -11,7 +11,6 @@ import today.what_should_i_eat_today.domain.activity.dto.PostCreateRequest;
 import today.what_should_i_eat_today.domain.activity.dto.PostUpdateCommand;
 import today.what_should_i_eat_today.domain.activity.dto.PostUpdateRequest;
 import today.what_should_i_eat_today.domain.post.application.PostService;
-import today.what_should_i_eat_today.domain.post.dto.PostResponseDto;
 import today.what_should_i_eat_today.domain.post.entity.Post;
 import today.what_should_i_eat_today.global.security.CurrentUser;
 import today.what_should_i_eat_today.global.security.UserPrincipal;
@@ -44,9 +43,9 @@ public class PostApi {
     @GetMapping("/posts/foods/{id}")
     public ResponseEntity<?> getPostsByFoodId(@PageableDefault Pageable pageable, @PathVariable("id") Long foodId) {
 
-        PostResponseDto postResponseDto = postService.getPostsByFoodId(foodId, pageable);
+        Page<Post> posts = postService.getPostsByFoodId(foodId, pageable);
 
-        return ResponseEntity.ok(postResponseDto);
+        return ResponseEntity.ok(posts);
     }
 
     @PostMapping("/posts/{id}/like")
