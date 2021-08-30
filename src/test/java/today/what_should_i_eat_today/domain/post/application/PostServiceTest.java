@@ -15,7 +15,6 @@ import today.what_should_i_eat_today.domain.food.entity.Food;
 import today.what_should_i_eat_today.domain.likes.entity.Likes;
 import today.what_should_i_eat_today.domain.member.entity.Member;
 import today.what_should_i_eat_today.domain.model.Attachment;
-import today.what_should_i_eat_today.domain.post.dto.PostResponseDto;
 import today.what_should_i_eat_today.domain.post.entity.Post;
 import today.what_should_i_eat_today.global.common.application.file.FileSystemStorageService;
 import today.what_should_i_eat_today.global.error.exception.InvalidStatusException;
@@ -432,12 +431,12 @@ class PostServiceTest {
         em.clear();
 
         PageRequest page = PageRequest.of(0, 10);
-        PostResponseDto postResponseDto = postService.getPostsByFoodId(food1.getId(), page);
+        Page<Post> posts = postService.getPostsByFoodId(food1.getId(), page);
 
-        assertThat(postResponseDto).isNotNull();
-        assertThat(postResponseDto.getPosts()).hasSize(3);
-        assertThat(postResponseDto.getFood().getName()).isEqualTo("김치볶음밥");
-        assertThat(postResponseDto.getPosts().getContent())
+        assertThat(posts).isNotNull();
+        assertThat(posts.getContent()).hasSize(3);
+        assertThat(posts.getContent().get(0).getFood().getName()).isEqualTo("김치볶음밥");
+        assertThat(posts.getContent())
                 .extracting("title")
                 .containsExactly("김가네 김치볶음밥", "김밥천국 김치볶음밥", "김밥나라 김치볶음밥")
         ;
