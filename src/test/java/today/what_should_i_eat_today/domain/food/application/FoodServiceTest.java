@@ -13,8 +13,9 @@ import today.what_should_i_eat_today.domain.food.entity.Food;
 import today.what_should_i_eat_today.domain.food.entity.FoodStatus;
 
 import javax.persistence.EntityManager;
+import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @Transactional
@@ -51,5 +52,19 @@ class FoodServiceTest {
         System.out.println(foodListByCategory.getContent().size());
         for (Food food : foodListByCategory.getContent())
             System.out.println("food = " + food.getName());
+    }
+
+    @Test
+    @DisplayName("월드컵 조회")
+    void test2() {
+        for (int i = 0; i < 50; i++) {
+            Food food = Food.builder().name("food" + i).build();
+            em.persist(food);
+        }
+        em.clear();
+
+        List<Food> randomFoods = foodService.getRandomFood(16);
+
+        assertThat(randomFoods).hasSize(16);
     }
 }
