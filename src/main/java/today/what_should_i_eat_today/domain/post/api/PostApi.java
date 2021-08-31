@@ -48,6 +48,14 @@ public class PostApi {
         return ResponseEntity.ok(postService.updateLike(postId, userId));
     }
 
+    @PostMapping("/posts/{id}/favorite")
+    public ResponseEntity<?> updateFavorite(@CurrentUser UserPrincipal principal, @PathVariable("id") Long postId) {
+
+        Long userId = principal.getId();
+
+        return ResponseEntity.ok(postService.updateFavorite(postId, userId));
+    }
+
     @PostMapping("/posts")
     public ResponseEntity<?> createPost(@CurrentUser UserPrincipal principal, @ModelAttribute @Valid PostCreateRequest requestDto) {
 

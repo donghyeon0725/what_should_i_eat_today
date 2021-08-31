@@ -2,6 +2,7 @@ package today.what_should_i_eat_today.domain.post.entity;
 
 import lombok.*;
 import org.hibernate.annotations.Where;
+import today.what_should_i_eat_today.domain.favorite.entity.Favorite;
 import today.what_should_i_eat_today.domain.food.entity.Food;
 import today.what_should_i_eat_today.domain.likes.entity.Likes;
 import today.what_should_i_eat_today.domain.member.entity.Member;
@@ -42,6 +43,10 @@ public class Post extends BaseEntity {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Likes> likesSet = new HashSet<>();
 
+    @Builder.Default
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Favorite> favoriteSet = new HashSet<>();
+
     private boolean archived;
 
     public void removeLike(Likes likes) {
@@ -50,6 +55,14 @@ public class Post extends BaseEntity {
 
     public void addLike(Likes likes) {
         likesSet.add(likes);
+    }
+
+    public void addFavorite(Favorite favorite) {
+        favoriteSet.add(favorite);
+    }
+
+    public void removeFavorite(Favorite favorite) {
+        favoriteSet.remove(favorite);
     }
 
     public boolean isPostCreator(Long memberId) {
