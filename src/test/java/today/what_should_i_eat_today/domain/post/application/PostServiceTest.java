@@ -11,6 +11,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 import today.what_should_i_eat_today.domain.activity.dto.PostCreateCommand;
 import today.what_should_i_eat_today.domain.activity.dto.PostUpdateCommand;
+import today.what_should_i_eat_today.domain.favorite.entity.Favorite;
 import today.what_should_i_eat_today.domain.food.entity.Food;
 import today.what_should_i_eat_today.domain.likes.entity.Likes;
 import today.what_should_i_eat_today.domain.member.entity.Member;
@@ -25,7 +26,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -446,4 +446,56 @@ class PostServiceTest {
         ;
     }
 
+    @Test
+    @DisplayName("다른 사람 글에 찜하기|취소하기")
+    void test13() {
+
+        Member martinMember = Member.builder().name("martin").build();
+        Member tomMember = Member.builder().name("tom").build();
+
+        em.persist(martinMember);
+        em.persist(tomMember);
+
+        Post post1 = Post.builder().member(tomMember).title("post1").build();
+        Post post2 = Post.builder().member(tomMember).title("post2").build();
+        Post post3 = Post.builder().member(tomMember).title("post3").build();
+
+        em.persist(post1);
+        em.persist(post2);
+        em.persist(post3);
+        em.clear();
+
+
+        boolean addFavoriteSuccess1 = postService.updateFavorite(post1.getId(), martinMember.getId());
+        boolean addFavoriteSuccess2 = postService.updateFavorite(post2.getId(), martinMember.getId());
+        boolean addFavoriteSuccess3 = postService.updateFavorite(post3.getId(), martinMember.getId());
+        assertThat(addFavoriteSuccess1).isTrue();
+        assertThat(addFavoriteSuccess2).isTrue();
+        assertThat(addFavoriteSuccess3).isTrue();
+
+        List<Favorite> favorites = em.createQuery("select f from Favorite f where f.member.id = " + martinMember.getId(), Favorite.class).getResultList();
+        assertThat(favorites).hasSize(3);
+        favorites.forEach(favorite -> System.out.printf("%s \t", favorite.getPost().getTitle()));
+
+
+        boolean removeFavoriteSuccess = postService.updateFavorite(post1.getId(), martinMember.getId());
+        assertThat(removeFavoriteSuccess).isFalse();
+
+        favorites = em.createQuery("select f from Favorite f where f.member.id = " + martinMember.getId(), Favorite.class).getResultList();
+        assertThat(favorites).hasSize(2);
+    }
+
+    @Test
+    @DisplayName("내가 쓴 글에 대해서는 찜을 할 수 없다")
+    void test14() {
+        Member martinMember = Member.builder().name("martin").build();
+        Post post = Post.builder().member(martinMember).title("post1").build();
+
+        em.persist(martinMember);
+        em.persist(post);
+        em.clear();
+
+        assertThrows(InvalidStatusException.class, () -> postService.updateFavorite(post.getId(), martinMember.getId()));
+
+    }
 }
