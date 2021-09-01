@@ -110,7 +110,16 @@ public class PostService {
         return postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND));
     }
 
-    public Page<Post> getMyPosts(Long id, Pageable pageable) {
-        return postRepository.findAllByMemberId(id, pageable);
+    public Page<Post> getPostsByFoodId(Long foodId, Pageable pageable) {
+
+        Page<Post> posts = postRepository.findAllByFoodId(foodId, pageable);
+
+        /*
+         * post { id:1, name: 김밥천국 김치볶음밥, food: 김치볶음밥 }
+         * post { id:2, name: 김가네 김치볶음밥, food: 김치볶음밥 }
+         * post { id:3, name: 김밥나라 김치볶음밥, food: 김치볶음밥 }
+         */
+
+        return posts;
     }
 }

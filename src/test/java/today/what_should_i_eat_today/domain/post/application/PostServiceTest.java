@@ -410,6 +410,40 @@ class PostServiceTest {
         assertThat(posts.getTotalElements()).isEqualTo(25);
     }
 
+    @Test
+    @DisplayName("음식에 해당하는 글들 조회")
+    void test12() {
+
+        Food food1 = Food.builder().name("김치볶음밥").build();
+        Food food2 = Food.builder().name("돈까스").build();
+
+        Post post1 = Post.builder().title("김가네 김치볶음밥").food(food1).build();
+        Post post2 = Post.builder().title("김밥천국 김치볶음밥").food(food1).build();
+        Post post3 = Post.builder().title("김밥나라 김치볶음밥").food(food1).build();
+        Post post4 = Post.builder().title("김가네 치즈 돈까스").food(food2).build();
+
+        em.persist(food1);
+        em.persist(food2);
+
+        em.persist(post1);
+        em.persist(post2);
+        em.persist(post3);
+        em.persist(post4);
+
+        em.clear();
+
+        PageRequest page = PageRequest.of(0, 10);
+        Page<Post> posts = postService.getPostsByFoodId(food1.getId(), page);
+
+        assertThat(posts).isNotNull();
+        assertThat(posts.getContent()).hasSize(3);
+        assertThat(posts.getContent().get(0).getFood().getName()).isEqualTo("김치볶음밥");
+        assertThat(posts.getContent())
+                .extracting("title")
+                .containsExactly("김가네 김치볶음밥", "김밥천국 김치볶음밥", "김밥나라 김치볶음밥")
+        ;
+    }
+
     public static MockMultipartFile getMockMultipartFile(String fileName, String contentType, String path) throws IOException {
         FileInputStream fileInputStream = new FileInputStream(path);
         return new MockMultipartFile(fileName, fileName + "." + contentType, contentType, fileInputStream);

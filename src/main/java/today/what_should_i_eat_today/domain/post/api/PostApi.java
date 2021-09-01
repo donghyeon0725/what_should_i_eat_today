@@ -40,6 +40,14 @@ public class PostApi {
         return ResponseEntity.ok(posts);
     }
 
+    @GetMapping("/posts/foods/{id}")
+    public ResponseEntity<?> getPostsByFoodId(@PageableDefault Pageable pageable, @PathVariable("id") Long foodId) {
+
+        Page<Post> posts = postService.getPostsByFoodId(foodId, pageable);
+
+        return ResponseEntity.ok(posts);
+    }
+
     @PostMapping("/posts/{id}/like")
     public ResponseEntity<?> updateLike(@CurrentUser UserPrincipal principal, @PathVariable("id") Long postId) {
 
