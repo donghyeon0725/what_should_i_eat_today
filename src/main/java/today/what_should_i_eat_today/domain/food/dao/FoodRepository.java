@@ -7,10 +7,15 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import today.what_should_i_eat_today.domain.food.entity.Food;
 
+import java.util.List;
+
 public interface FoodRepository extends JpaRepository<Food, Long> {
 
     @Query(value = "select f from FoodCategory fc join fc.food f join fc.category c where c.id = :categoryId"
-        , countQuery = "select count(fc) from FoodCategory fc join fc.category c where c.id = :categoryId"
+            , countQuery = "select count(fc) from FoodCategory fc join fc.category c where c.id = :categoryId"
     )
     Page<Food> findFoodsByCategory(@Param("categoryId") Long categoryId, Pageable pageable);
+
+    @Query(value = "SELECT * FROM food ORDER BY RAND() LIMIT :limit ", nativeQuery = true)
+    List<Food> findFoodsRand(@Param("limit") Integer limit);
 }
