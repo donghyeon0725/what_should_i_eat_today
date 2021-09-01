@@ -121,12 +121,5 @@ public class PostService {
          */
 
         return posts;
-
-//        Food foodOfPosts = foodRepository.findById(foodId).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND));
-
-//        return PostResponseDto.builder()
-//                .food(foodOfPosts)
-//                .posts(posts)
-//                .build();
     }
 }
