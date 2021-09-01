@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import today.what_should_i_eat_today.domain.activity.dto.PostCreateCommand;
 import today.what_should_i_eat_today.domain.activity.dto.PostUpdateCommand;
+import today.what_should_i_eat_today.domain.favorite.dao.FavoriteRepository;
+import today.what_should_i_eat_today.domain.favorite.entity.Favorite;
 import today.what_should_i_eat_today.domain.food.dao.FoodRepository;
 import today.what_should_i_eat_today.domain.food.entity.Food;
 import today.what_should_i_eat_today.domain.likes.dao.LikesRepository;
@@ -33,6 +35,7 @@ public class PostService {
     private final LikesRepository likesRepository;
     private final PostRepository postRepository;
     private final FoodRepository foodRepository;
+    private final FavoriteRepository favoriteRepository;
 
 
     @Transactional
@@ -121,5 +124,29 @@ public class PostService {
          */
 
         return posts;
+    }
+
+    @Transactional
+    public boolean updateFavorite(Long postId, Long memberId) {
+
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND));
+
+        Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND));
+
+        // 글 작성자 본인 인 경우에는 찜을 할 수 없다
+        if (post.isPostCreator(member.getId()))
+            throw new InvalidStatusException(ErrorCode.INVALID_INPUT_VALUE);
+
+        Optional<Favorite> postFavorite = favoriteRepository.findByPostAndMember(post, member);
+
+        if (postFavorite.isPresent()) {
+            post.removeFavorite(postFavorite.get());
+            return false;
+        } else {
+            Favorite newPostFavorite = Favorite.builder().member(member).post(post).build();
+            post.addFavorite(newPostFavorite);
+            favoriteRepository.save(newPostFavorite);
+            return true;
+        }
     }
 }
