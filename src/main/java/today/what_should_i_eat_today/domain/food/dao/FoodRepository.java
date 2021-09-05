@@ -18,4 +18,10 @@ public interface FoodRepository extends JpaRepository<Food, Long> {
 
     @Query(value = "SELECT * FROM food ORDER BY RAND() LIMIT :limit ", nativeQuery = true)
     List<Food> findFoodsRand(@Param("limit") Integer limit);
+
+    Long countFoodByDeletedFalse();
+
+    //f.rownum,
+    @Query(value = "select ff.* from (SELECT row_number() over() as rnum, f.* FROM Food f where f.deleted = 'false') as ff where ff.rnum in :rows", nativeQuery = true)
+    List<Food> findByRows(@Param("rows") List<Integer> rows);
 }
