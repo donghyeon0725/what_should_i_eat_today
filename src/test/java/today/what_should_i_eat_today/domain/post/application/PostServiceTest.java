@@ -7,11 +7,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 import today.what_should_i_eat_today.domain.activity.dto.PostCreateCommand;
 import today.what_should_i_eat_today.domain.activity.dto.PostUpdateCommand;
 import today.what_should_i_eat_today.domain.favorite.entity.Favorite;
+import today.what_should_i_eat_today.domain.food.application.FoodService;
+import today.what_should_i_eat_today.domain.food.dao.FoodRepository;
 import today.what_should_i_eat_today.domain.food.entity.Food;
 import today.what_should_i_eat_today.domain.likes.entity.Likes;
 import today.what_should_i_eat_today.domain.member.entity.Member;
@@ -24,11 +27,11 @@ import today.what_should_i_eat_today.global.error.exception.ResourceNotFoundExce
 import javax.persistence.EntityManager;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 @ActiveProfiles("local")
@@ -449,36 +452,36 @@ class PostServiceTest {
         return new MockMultipartFile(fileName, fileName + "." + contentType, contentType, fileInputStream);
     }
 
-    @Test
-    @DisplayName("내가 작성한 글 조회하기")
-    void test12() {
-
-        Member martinMember = Member.builder().name("martin").build();
-
-        em.persist(martinMember);
-
-        for (int i = 0; i < 50; i++) {
-            Post post = Post.builder().member(martinMember).title("글 1").build();
-            em.persist(post);
-        }
-
-        em.clear();
-
-        int size = 10;
-        PageRequest page = PageRequest.of(0, size);
-
-        String[] martinArr = new String[size];
-        Arrays.fill(martinArr, "martin");
-
-        Page<Post> myPosts = postService.getMyPosts(martinMember.getId(), page);
-
-        assertThat(myPosts)
-                .hasSize(10)
-                .extracting("member")
-                .extracting("name")
-                .containsExactly(martinArr)
-        ;
-    }
+//    @Test
+//    @DisplayName("내가 작성한 글 조회하기")
+//    void test12() {
+//
+//        Member martinMember = Member.builder().name("martin").build();
+//
+//        em.persist(martinMember);
+//
+//        for (int i = 0; i < 50; i++) {
+//            Post post = Post.builder().member(martinMember).title("글 1").build();
+//            em.persist(post);
+//        }
+//
+//        em.clear();
+//
+//        int size = 10;
+//        PageRequest page = PageRequest.of(0, size);
+//
+//        String[] martinArr = new String[size];
+//        Arrays.fill(martinArr, "martin");
+//
+//        Page<Post> myPosts = postService.getMyPosts(martinMember.getId(), page);
+//
+//        assertThat(myPosts)
+//                .hasSize(10)
+//                .extracting("member")
+//                .extracting("name")
+//                .containsExactly(martinArr)
+//        ;
+//    }
 
     @Test
     @DisplayName("다른 사람 글에 찜하기|취소하기")
@@ -531,5 +534,79 @@ class PostServiceTest {
 
         assertThrows(InvalidStatusException.class, () -> postService.updateFavorite(post.getId(), martinMember.getId()));
 
+    }
+
+
+    @Test
+    @DisplayName("랜덤 음식에 대한 상위 1개 포스트 가져오기")
+    @Transactional
+    @Rollback(value = false)
+    void test15() {
+        for (int i=0; i<60; i++) {
+            Food food = null;
+            if (i % 2 == 0) {
+                food = Food.builder().name("test" + i).deleted(true).build();
+            } else {
+                food = Food.builder().name("test" + i).deleted(false).build();
+            }
+
+            em.persist(food);
+            em.persist(Post.builder().title("타이틀"+i).content("콘텐츠"+i).food(food).build());
+            em.persist(Post.builder().title("타이틀타이틀"+i).content("콘텐츠콘텐츠"+i).food(food).build());
+        }
+
+        em.flush();
+        em.clear();
+
+
+
+        // TODO 음식은 10개를 가져와야 한다. => 포스트가 존재한다면
+        List<Post> posts1 = postService.getRandomPostList();
+        List<Post> posts2 = postService.getRandomPostList();
+
+        posts1 = posts1.stream().sorted(Comparator.comparing(s->s.getId())).collect(Collectors.toList());
+        posts2 = posts2.stream().sorted(Comparator.comparing(s->s.getId())).collect(Collectors.toList());
+
+        // TODO 두 결과과 완전히 일치해서는 안된다.
+        boolean isAllSame = true;
+        for (int i=0; i<10; i++) {
+            if (posts1.get(i) != posts2.get(i)) {
+                isAllSame = false;
+                break;
+            }
+        }
+
+        // TODO 음식이 겹쳐서는 안된다.
+        // TODO 포스트가 겹쳐서는 안된다.
+        List<Long> foodList1 = posts1.stream().map(s->Long.valueOf(s.getFood().getId())).collect(Collectors.toList());
+        List<Long> foodList2 = posts2.stream().map(s->Long.valueOf(s.getFood().getId())).collect(Collectors.toList());
+        List<Long> postList1 = posts1.stream().map(s->Long.valueOf(s.getId())).collect(Collectors.toList());
+        List<Long> postList2 = posts2.stream().map(s->Long.valueOf(s.getId())).collect(Collectors.toList());
+        boolean isAllDifferentFood1 = isAllDifferent(foodList1);
+        boolean isAllDifferentFood2 = isAllDifferent(foodList2);
+        boolean isAllDifferentPost1 = isAllDifferent(postList1);
+        boolean isAllDifferentPost2 = isAllDifferent(postList2);
+
+
+        assertEquals(10, posts1.size(), "음식은 10개를 가져와야 한다.");
+        assertEquals(10, posts2.size(), "음식은 10개를 가져와야 한다.");
+        assertFalse(isAllSame, "두 결과과 완전히 일치해서는 안된다.");
+        assertTrue(isAllDifferentFood1, "음식이 겹쳐서는 안된다.");
+        assertTrue(isAllDifferentFood2, "음식이 겹쳐서는 안된다.");
+        assertTrue(isAllDifferentPost1, "포스트가 겹쳐서는 안된다.");
+        assertTrue(isAllDifferentPost2, "포스트가 겹쳐서는 안된다.");
+    }
+
+    public boolean isAllDifferent(List<Long> elements) {
+        Set<Long> set = new HashSet<>();
+        for (int i=0; i<elements.size(); i++) {
+            Long element = elements.get(i);
+
+            if (set.contains(element)) {
+                return false;
+            }
+            set.add(element);
+        }
+        return true;
     }
 }
