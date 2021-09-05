@@ -23,7 +23,8 @@ import today.what_should_i_eat_today.global.error.ErrorCode;
 import today.what_should_i_eat_today.global.error.exception.InvalidStatusException;
 import today.what_should_i_eat_today.global.error.exception.ResourceNotFoundException;
 
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -149,4 +150,24 @@ public class PostService {
             return true;
         }
     }
+
+
+    public List<Post> getRandomPostList() {
+
+        final long total = foodRepository.countFoodByDeletedFalse();
+        Random random = new Random();
+        Set<Integer> set = new HashSet<>();
+
+        while (set.size() < 10) {
+            int number = random.nextInt((int) total) + 1;
+
+            if (!set.contains(number))
+                set.add(number);
+        }
+
+        final List<Long> foodIds = foodRepository.findByRows(set.stream().collect(Collectors.toList())).stream().map(s->Long.valueOf(s.getId())).collect(Collectors.toList());
+
+        return postRepository.findPostByFoodTop1(foodIds);
+    }
+
 }
