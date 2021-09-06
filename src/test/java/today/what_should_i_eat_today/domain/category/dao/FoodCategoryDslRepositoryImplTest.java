@@ -38,11 +38,11 @@ class FoodCategoryDslRepositoryImplTest {
 
         FoodCategory fc1 = FoodCategory.builder().food(food1).build();
         FoodCategory fc3 = FoodCategory.builder().food(food3).build();
-        category1.addFoodMapping(fc1);
-        category1.addFoodMapping(fc3);
+        fc1.addCategoryMapping(category1);
+        fc3.addCategoryMapping(category1);
 
         FoodCategory fc2 = FoodCategory.builder().food(food2).build();
-        category2.addFoodMapping(fc2);
+        fc2.addCategoryMapping(category2);
 
         em.persist(food1);
         em.persist(food2);
