@@ -27,4 +27,14 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             "as ranking where ranking.rn <= 1)", nativeQuery = true)
     List<Post> findPostByFoodTop1(@Param("foods") List<Long> foodsId);
 
+    @Query(value =
+            "select * from post where id in (" +
+                    "select id from ( " +
+                    "select id, rank() over (partition by p.food_id order by p.id desc) as rn " +
+                    "from post p " +
+                    "where p.food_id = :foodId" +
+                    ")" +
+                    "as ranking where ranking.rn <= 1)", nativeQuery = true)
+    Post findPostByFood1(@Param("foodId") Long foodId);
+
 }

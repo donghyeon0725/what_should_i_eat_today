@@ -37,7 +37,7 @@ class FoodServiceTest {
         for (int i=0; i<30; i++) {
             Food food = Food.builder().name("음식" + i).status(FoodStatus.USE).build();
             FoodCategory foodCategory = FoodCategory.builder().food(food).build();
-            category.addFoodMapping(foodCategory);
+            foodCategory.addCategoryMapping(category);
             em.persist(food);
         }
 
