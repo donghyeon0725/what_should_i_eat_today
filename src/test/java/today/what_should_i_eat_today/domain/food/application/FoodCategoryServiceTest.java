@@ -49,13 +49,13 @@ class FoodCategoryServiceTest {
 
             if (i % 2 == 0) {
                 FoodCategory foodCategory = FoodCategory.builder().food(food).build();
-                category1.addFoodMapping(foodCategory);
+                foodCategory.addCategoryMapping(category1);
                 em.persist(foodCategory);
             }
 
             if (i % 3 == 0) {
                 FoodCategory foodCategory = FoodCategory.builder().food(food).build();
-                category2.addFoodMapping(foodCategory);
+                foodCategory.addCategoryMapping(category2);
                 em.persist(foodCategory);
             }
         }

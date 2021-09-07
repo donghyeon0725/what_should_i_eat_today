@@ -22,4 +22,7 @@ public class FoodTag {
     @ManyToOne(fetch = FetchType.LAZY)
     private Tag tag;
 
+    public void mappingToFood(Food food) {
+        this.food = food;
+    }
 }
