@@ -16,10 +16,14 @@ import today.what_should_i_eat_today.domain.favorite.entity.Favorite;
 import today.what_should_i_eat_today.domain.food.application.FoodService;
 import today.what_should_i_eat_today.domain.food.dao.FoodRepository;
 import today.what_should_i_eat_today.domain.food.entity.Food;
+import today.what_should_i_eat_today.domain.food.entity.FoodTag;
 import today.what_should_i_eat_today.domain.likes.entity.Likes;
 import today.what_should_i_eat_today.domain.member.entity.Member;
 import today.what_should_i_eat_today.domain.model.Attachment;
 import today.what_should_i_eat_today.domain.post.entity.Post;
+import today.what_should_i_eat_today.domain.tag.dto.TagRequest;
+import today.what_should_i_eat_today.domain.tag.entity.Tag;
+import today.what_should_i_eat_today.domain.tag.entity.TagStatus;
 import today.what_should_i_eat_today.global.common.application.file.FileSystemStorageService;
 import today.what_should_i_eat_today.global.error.exception.InvalidStatusException;
 import today.what_should_i_eat_today.global.error.exception.ResourceNotFoundException;
@@ -539,8 +543,8 @@ class PostServiceTest {
 
     @Test
     @DisplayName("랜덤 음식에 대한 상위 1개 포스트 가져오기")
-    @Transactional
-    @Rollback(value = false)
+//    @Transactional
+//    @Rollback(value = false)
     void test15() {
         for (int i=0; i<60; i++) {
             Food food = null;
@@ -608,5 +612,162 @@ class PostServiceTest {
             set.add(element);
         }
         return true;
+    }
+
+
+
+    @Test
+    @DisplayName("태그 여러개로 음식 1개 찾기")
+//    @Transactional
+//    @Rollback(value = false)
+    void test16() {
+        Tag cold = Tag.builder().name("차가운").status(TagStatus.USE).build();
+        Tag hot = Tag.builder().name("뜨거운").status(TagStatus.USE).build();
+        Tag smooth = Tag.builder().name("부드러운").status(TagStatus.USE).build();
+
+        Food food1 = Food.builder().name("홍차").deleted(false).build();
+        Food food2 = Food.builder().name("케익").deleted(false).build();
+        Food food3 = Food.builder().name("얼음").deleted(false).build();
+        Food food4 = Food.builder().name("크림").deleted(false).build();
+        FoodTag foodTag1_1 = FoodTag.builder().tag(hot).build();
+        FoodTag foodTag1_2 = FoodTag.builder().tag(smooth).build();
+        FoodTag foodTag2_1 = FoodTag.builder().tag(cold).build();
+        FoodTag foodTag2_2 = FoodTag.builder().tag(smooth).build();
+        FoodTag foodTag3 = FoodTag.builder().tag(cold).build();
+        FoodTag foodTag4 = FoodTag.builder().tag(smooth).build();
+
+        food1.addFoodTags(foodTag1_1);
+        food1.addFoodTags(foodTag1_2);
+        food2.addFoodTags(foodTag2_1);
+        food2.addFoodTags(foodTag2_2);
+        food3.addFoodTags(foodTag3);
+        food4.addFoodTags(foodTag4);
+
+        Post post1 = Post.builder().food(food1).title("홍차 포스트").build();
+        Post post2 = Post.builder().food(food2).title("케익 포스트").build();
+        Post post3 = Post.builder().food(food3).title("얼음 포스트").build();
+        Post post4 = Post.builder().food(food4).title("크림 포스트").build();
+
+
+
+        em.persist(cold);
+        em.persist(hot);
+        em.persist(smooth);
+        em.persist(food1);
+        em.persist(food2);
+        em.persist(food3);
+        em.persist(food4);
+        em.persist(foodTag1_1);
+        em.persist(foodTag1_2);
+        em.persist(foodTag2_1);
+        em.persist(foodTag2_2);
+        em.persist(foodTag3);
+        em.persist(foodTag4);
+        em.persist(post1);
+        em.persist(post2);
+        em.persist(post3);
+        em.persist(post4);
+        em.flush();
+        em.clear();
+
+        // 홍차를 찾아와야 함
+        List<TagRequest> requests1 = Arrays.asList(
+                new TagRequest(hot.getId(), null, null),
+                new TagRequest(smooth.getId(), null, null)
+        );
+
+        final Post result = postService.findByFoodWithTags(requests1);
+
+        assertEquals("홍차 포스트", result.getTitle());
+
+    }
+
+    @Test
+    @DisplayName("태그 여러개로 음식 모두 찾기")
+    void test17() {
+        Tag cold = Tag.builder().name("차가운").status(TagStatus.USE).build();
+        Tag hot = Tag.builder().name("뜨거운").status(TagStatus.USE).build();
+        Tag smooth = Tag.builder().name("부드러운").status(TagStatus.USE).build();
+
+        Food food1 = Food.builder().name("홍차").deleted(false).build();
+        Food food2 = Food.builder().name("케익").deleted(false).build();
+        Food food3 = Food.builder().name("얼음").deleted(false).build();
+        Food food4 = Food.builder().name("크림").deleted(false).build();
+        FoodTag foodTag1_1 = FoodTag.builder().tag(hot).build();
+        FoodTag foodTag1_2 = FoodTag.builder().tag(smooth).build();
+        FoodTag foodTag2_1 = FoodTag.builder().tag(cold).build();
+        FoodTag foodTag2_2 = FoodTag.builder().tag(smooth).build();
+        FoodTag foodTag3 = FoodTag.builder().tag(cold).build();
+        FoodTag foodTag4 = FoodTag.builder().tag(smooth).build();
+
+        food1.addFoodTags(foodTag1_1);
+        food1.addFoodTags(foodTag1_2);
+        food2.addFoodTags(foodTag2_1);
+        food2.addFoodTags(foodTag2_2);
+        food3.addFoodTags(foodTag3);
+        food4.addFoodTags(foodTag4);
+
+        Post post1 = Post.builder().food(food1).title("홍차 포스트").build();
+        Post post2 = Post.builder().food(food2).title("케익 포스트").build();
+        Post post3 = Post.builder().food(food3).title("얼음 포스트").build();
+        Post post4 = Post.builder().food(food4).title("크림 포스트").build();
+
+
+
+        em.persist(cold);
+        em.persist(hot);
+        em.persist(smooth);
+        em.persist(food1);
+        em.persist(food2);
+        em.persist(food3);
+        em.persist(food4);
+        em.persist(foodTag1_1);
+        em.persist(foodTag1_2);
+        em.persist(foodTag2_1);
+        em.persist(foodTag2_2);
+        em.persist(foodTag3);
+        em.persist(foodTag4);
+        em.persist(post1);
+        em.persist(post2);
+        em.persist(post3);
+        em.persist(post4);
+        em.flush();
+        em.clear();
+
+        // 홍차를 찾아와야 함
+        List<TagRequest> requests1 = Arrays.asList(
+                new TagRequest(hot.getId(), null, null),
+                new TagRequest(smooth.getId(), null, null)
+        );
+
+        // 케익을 찾아와야 함
+        List<TagRequest> requests2 = Arrays.asList(
+                new TagRequest(cold.getId(), null, null),
+                new TagRequest(smooth.getId(), null, null)
+        );
+
+        // 케익 & 얼음
+        List<TagRequest> requests3 = Arrays.asList(
+                new TagRequest(cold.getId(), null, null)
+        );
+
+        // 홍차 & 크림
+        List<TagRequest> requests4 = Arrays.asList(
+                new TagRequest(smooth.getId(), null, null)
+        );
+
+        final List<Post> result1 = postService.findByFoodsWithTags(requests1);
+        final List<Post> result2 = postService.findByFoodsWithTags(requests2);
+        final List<Post> result3 = postService.findByFoodsWithTags(requests3);
+        final List<Post> result4 = postService.findByFoodsWithTags(requests4);
+
+        assertEquals(1, result1.size(), "태그를 여러개 주었을 때 and 조건으로 음식이 검색되고 해당 포스트가 조회 되어야 한다.");
+        assertEquals(post1.getId(), result1.get(0).getId(), "태그를 여러개 주었을 때 and 조건으로 음식이 검색되고 해당 포스트가 조회 되어야 한다.");
+        assertEquals(1, result2.size(), "태그를 여러개 주었을 때 and 조건으로 음식이 검색되고 해당 포스트가 조회 되어야 한다.");
+        assertEquals(post2.getId(), result2.get(0).getId(), "태그를 여러개 주었을 때 and 조건으로 음식이 검색되고 해당 포스트가 조회 되어야 한다.");
+        assertEquals(2, result3.size());
+        assertThat(result3).extracting("title").containsExactly("케익 포스트", "얼음 포스트");
+        assertThat(result4).extracting("title").containsExactly("홍차 포스트", "케익 포스트", "크림 포스트");
+
     }
 }

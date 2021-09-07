@@ -8,6 +8,8 @@ import today.what_should_i_eat_today.domain.model.Status;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Builder
 @Entity
@@ -35,4 +37,13 @@ public class Food extends BaseEntity {
 
     private LocalDateTime deletedAt;
 
+
+    @Builder.Default
+    @OneToMany(mappedBy = "food", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<FoodTag> foodTags = new ArrayList<>();
+
+    public void addFoodTags(FoodTag foodTag) {
+        this.foodTags.add(foodTag);
+        foodTag.mappingToFood(this);
+    }
 }

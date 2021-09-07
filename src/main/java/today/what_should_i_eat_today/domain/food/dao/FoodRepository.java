@@ -6,10 +6,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import today.what_should_i_eat_today.domain.food.entity.Food;
+import today.what_should_i_eat_today.domain.tag.entity.Tag;
 
 import java.util.List;
 
-public interface FoodRepository extends JpaRepository<Food, Long> {
+public interface FoodRepository extends JpaRepository<Food, Long>, FoodDslRepository {
 
     @Query(value = "select f from FoodCategory fc join fc.food f join fc.category c where c.id = :categoryId"
             , countQuery = "select count(fc) from FoodCategory fc join fc.category c where c.id = :categoryId"
@@ -24,4 +25,5 @@ public interface FoodRepository extends JpaRepository<Food, Long> {
     //f.rownum,
     @Query(value = "select ff.* from (SELECT row_number() over() as rnum, f.* FROM Food f where f.deleted = 'false') as ff where ff.rnum in :rows", nativeQuery = true)
     List<Food> findByRows(@Param("rows") List<Integer> rows);
+
 }

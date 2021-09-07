@@ -17,7 +17,10 @@ import today.what_should_i_eat_today.domain.member.dao.MemberRepository;
 import today.what_should_i_eat_today.domain.member.entity.Member;
 import today.what_should_i_eat_today.domain.model.Attachment;
 import today.what_should_i_eat_today.domain.post.dao.PostRepository;
+import today.what_should_i_eat_today.domain.post.entity.FoodValidator;
 import today.what_should_i_eat_today.domain.post.entity.Post;
+import today.what_should_i_eat_today.domain.tag.dao.TagRepository;
+import today.what_should_i_eat_today.domain.tag.dto.TagRequest;
 import today.what_should_i_eat_today.global.common.application.file.StorageService;
 import today.what_should_i_eat_today.global.error.ErrorCode;
 import today.what_should_i_eat_today.global.error.exception.InvalidStatusException;
@@ -37,7 +40,7 @@ public class PostService {
     private final PostRepository postRepository;
     private final FoodRepository foodRepository;
     private final FavoriteRepository favoriteRepository;
-
+    private final FoodValidator foodValidator;
 
     @Transactional
     public boolean updateLike(Long postId, Long memberId) {
@@ -168,6 +171,30 @@ public class PostService {
         final List<Long> foodIds = foodRepository.findByRows(set.stream().collect(Collectors.toList())).stream().map(s->Long.valueOf(s.getId())).collect(Collectors.toList());
 
         return postRepository.findPostByFoodTop1(foodIds);
+    }
+
+    public List<Post> findByFoodsWithTags(List<TagRequest> tagRequests) {
+        final List<Long> foodIds =
+                getFoodByTags(tagRequests).stream().map(s -> Long.valueOf(s.getId())).collect(Collectors.toList());
+
+        return postRepository.findPostByFoodTop1(foodIds);
+    }
+
+    public Post findByFoodWithTags(List<TagRequest> tagRequests) {
+        final List<Long> foodIds =
+                getFoodByTags(tagRequests).stream().map(s -> Long.valueOf(s.getId())).collect(Collectors.toList());
+
+        Random random = new Random();
+        int randomChoice = random.nextInt(foodIds.size());
+
+        return postRepository.findPostByFood1(foodIds.get(randomChoice));
+    }
+
+    private List<Food> getFoodByTags(List<TagRequest> tagRequests) {
+        final List<Long> tagIds = tagRequests.stream().map(s -> s.getTagId()).collect(Collectors.toList());
+        foodValidator.validateTags(tagIds);
+
+        return foodRepository.findByTags(tagIds);
     }
 
 }
