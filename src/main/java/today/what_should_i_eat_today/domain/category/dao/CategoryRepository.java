@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import today.what_should_i_eat_today.domain.category.entity.Category;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface CategoryRepository extends JpaRepository<Category, Long>, CategoryDslRepository {
@@ -12,4 +13,6 @@ public interface CategoryRepository extends JpaRepository<Category, Long>, Categ
     @EntityGraph(attributePaths = {"admin"})
     @Override
     Optional<Category> findById(Long id);
+
+    List<Category> findByIdIn(List<Long> ids);
 }
