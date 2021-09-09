@@ -1,14 +1,20 @@
 package today.what_should_i_eat_today.domain.food.dao;
 
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import today.what_should_i_eat_today.domain.category.entity.QFoodCategory;
+import today.what_should_i_eat_today.domain.country.entity.Country;
+import today.what_should_i_eat_today.domain.food.dto.FoodDto;
 import today.what_should_i_eat_today.domain.food.entity.Food;
 import today.what_should_i_eat_today.domain.food.entity.QFoodTag;
 
 import java.util.List;
 
+import static today.what_should_i_eat_today.domain.category.entity.QFoodCategory.foodCategory;
 import static today.what_should_i_eat_today.domain.food.entity.QFood.food;
 import static today.what_should_i_eat_today.domain.food.entity.QFoodTag.foodTag;
 
@@ -37,6 +43,7 @@ public class FoodDslRepositoryImpl implements FoodDslRepository {
                 .selectFrom(food)
                 .where(
                         food.id.in(
+                                // 태그 조건을 모두 가진 음식 하나만 선택
                                 JPAExpressions
                                         .select(foodTag.food.id)
                                         .from(foodTag)
@@ -52,5 +59,48 @@ public class FoodDslRepositoryImpl implements FoodDslRepository {
 //        List<Food> foods = new ArrayList<>();
 //        fetch.forEach(s-> foods.add(s.getFood()));
 //        return fetch;
+    }
+
+    @Override
+    public Page<Food> findBySearch(FoodDto foodDto) {
+        // 카테고리 검색
+        // 국가 검색
+        // 음식명 검색
+        // 음식 승인 여부 검색
+
+        jpaQueryFactory
+                .selectFrom(food)
+
+                .where(
+                        containsName(foodDto.getName()),
+                        eqCountry(foodDto.getCountry()),
+                        eqDeleted(foodDto.getDeleted()),
+                        intoAllCategory(foodDto.getCategoryIds())
+
+                ).where();
+        return null;
+    }
+
+    private BooleanExpression intoAllCategory(List<Long> categoryIds) {
+        return food.id.in(
+                JPAExpressions
+                        .select(foodCategory.food.id)
+                        .from(foodCategory)
+                        .where(foodCategory.category.id.in(categoryIds))
+                        .groupBy(foodTag.food.id)
+                        .having(foodTag.food.count().goe(categoryIds.size()))
+        );
+    }
+
+    private BooleanExpression eqDeleted(Boolean deleted) {
+        return deleted != null ? food.deleted.eq(deleted) : null;
+    }
+
+    private BooleanExpression eqCountry(Country country) {
+        return country != null ? food.country.eq(country) : null;
+    }
+
+    private BooleanExpression containsName(String name) {
+        return name != null ? food.name.contains(name) : null;
     }
 }

@@ -2,6 +2,7 @@ package today.what_should_i_eat_today.domain.food.entity;
 
 import lombok.*;
 import today.what_should_i_eat_today.domain.admin.entity.Admin;
+import today.what_should_i_eat_today.domain.country.entity.Country;
 import today.what_should_i_eat_today.global.common.entity.BaseEntity;
 import today.what_should_i_eat_today.domain.member.entity.Member;
 import today.what_should_i_eat_today.domain.model.Status;
@@ -30,13 +31,12 @@ public class Food extends BaseEntity {
 
     private String name;
 
-    @Enumerated(EnumType.STRING)
-    private FoodStatus status;
-
     private Boolean deleted;
 
     private LocalDateTime deletedAt;
 
+    @ManyToOne
+    private Country country;
 
     @Builder.Default
     @OneToMany(mappedBy = "food", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -46,4 +46,28 @@ public class Food extends BaseEntity {
         this.foodTags.add(foodTag);
         foodTag.mappingToFood(this);
     }
+
+    public void initName(String name, FoodValidator foodValidator) {
+        foodValidator.validateName(name);
+        this.name = name;
+    }
+
+    public void changeName(String name, FoodValidator foodValidator) {
+        foodValidator.validateName(this, name);
+        this.name = name;
+    }
+
+    public void changeStatus(boolean deleted, FoodValidator foodValidator) {
+        foodValidator.validateFoodForCreate(this);
+        this.deleted = deleted;
+    }
+
+    public void changeAdmin(Admin admin) {
+        if (admin != null)
+            this.admin = admin;
+    }
+
+
+
+
 }
