@@ -11,4 +11,6 @@ public interface TagRepository extends JpaRepository<Tag, Long>, TagDslRepositor
     boolean existsByName(String name);
 
     long countByIdIn(List<Long> tagIds);
+
+    List<Tag> findByIdIn(List<Long> tagIds);
 }
