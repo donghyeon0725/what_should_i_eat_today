@@ -57,3 +57,11 @@ gradlew clear
 * Refactor :  코드 리팩토링에 대한 커밋
 * Test : 테스트 코드 수정에 대한 커밋
 
+
+<br />
+
+---
+
+📌 DB 성능 개선
+-
+* [인덱스 사용](https://innate-diplodocus-78d.notion.site/Index-855dfc4ccc0d4e12a2bee6c9eb40fb61)
