@@ -30,7 +30,7 @@ class TokenProviderTest {
         Member member = Member.builder()
                 .name("sout1217")
                 .nickName("sout1217")
-                .email("sout1217@naver.com")
+                .email("testtesttesttest1217@naver.com")
                 .providerId(UUID.randomUUID().toString())
                 .provider(AuthProvider.naver)
                 .profileImg("http://localhost:8080/images")
