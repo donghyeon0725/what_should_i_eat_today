@@ -48,7 +48,14 @@ public class ReportService {
         Member reporter = memberRepository.findByEmail(principal.getEmail()).orElseThrow(() -> new UserNotFoundException(ErrorCode.USER_NOT_FOUND));
         Member reported = memberRepository.findById(command.getReportedMemberId()).orElseThrow(() -> new UserNotFoundException(ErrorCode.USER_NOT_FOUND));
 
-        Report report = Report.builder().title(command.getTitle()).content(command.getContent()).member(reporter).reportedMember(reported).type(command.getType()).build();
+        Report report = Report.builder()
+                .title(command.getTitle())
+                .content(command.getContent())
+                .member(reporter)
+                .reportedMember(reported)
+                .type(command.getType())
+                .build();
+
         report.notApprove();
         reportRepository.save(report);
 
