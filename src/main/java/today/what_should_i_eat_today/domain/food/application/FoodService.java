@@ -149,8 +149,11 @@ public class FoodService {
             food.addFoodTags(foodTag);
     }
 
-    public Page<Food> getFoodList(FoodDto foodDto) {
-        return foodRepository.findBySearch(foodDto);
+    public Page<Food> getFoodList(FoodDto foodDto, Pageable pageable) {
+        final Page<Food> bySearch = foodRepository.findBySearch(foodDto, pageable);
+        bySearch.getContent().forEach(p -> p.getFoodTags().forEach(r -> r.getTag().getName()));
+        bySearch.getContent().forEach(p -> p.getFoodCategories().forEach(r -> r.getCategory().getName()));
+        return bySearch;
     }
 
 

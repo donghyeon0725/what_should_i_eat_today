@@ -1,16 +1,17 @@
 package today.what_should_i_eat_today.domain.food.dao;
 
-import com.querydsl.core.Tuple;
+import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import today.what_should_i_eat_today.domain.category.entity.QFoodCategory;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import today.what_should_i_eat_today.domain.country.entity.Country;
 import today.what_should_i_eat_today.domain.food.dto.FoodDto;
 import today.what_should_i_eat_today.domain.food.entity.Food;
-import today.what_should_i_eat_today.domain.food.entity.QFoodTag;
 
 import java.util.List;
 
@@ -62,33 +63,37 @@ public class FoodDslRepositoryImpl implements FoodDslRepository {
     }
 
     @Override
-    public Page<Food> findBySearch(FoodDto foodDto) {
+    public Page<Food> findBySearch(FoodDto foodDto, Pageable pageable) {
         // 카테고리 검색
         // 국가 검색
         // 음식명 검색
         // 음식 승인 여부 검색
 
-        jpaQueryFactory
+        final QueryResults<Food> results = jpaQueryFactory
                 .selectFrom(food)
-
                 .where(
                         containsName(foodDto.getName()),
                         eqCountry(foodDto.getCountry()),
                         eqDeleted(foodDto.getDeleted()),
                         intoAllCategory(foodDto.getCategoryIds())
 
-                ).where();
-        return null;
+                )
+                .limit(pageable.getPageSize())
+                .offset(pageable.getOffset())
+                .fetchResults();
+
+
+        return new PageImpl<>(results.getResults(), pageable, results.getTotal());
     }
 
     private BooleanExpression intoAllCategory(List<Long> categoryIds) {
-        return food.id.in(
+        return categoryIds == null || categoryIds.size() == 0 ? null : food.id.in(
                 JPAExpressions
                         .select(foodCategory.food.id)
                         .from(foodCategory)
                         .where(foodCategory.category.id.in(categoryIds))
-                        .groupBy(foodTag.food.id)
-                        .having(foodTag.food.count().goe(categoryIds.size()))
+                        .groupBy(foodCategory.food.id)
+                        .having(foodCategory.food.count().goe(categoryIds.size()))
         );
     }
 
