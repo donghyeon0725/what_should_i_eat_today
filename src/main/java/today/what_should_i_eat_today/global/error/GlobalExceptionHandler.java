@@ -1,5 +1,6 @@
 package today.what_should_i_eat_today.global.error;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -12,6 +13,7 @@ import today.what_should_i_eat_today.global.common.ErrorResponse;
  *
  * */
 @ControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
 
     // 이 메소드가 Exception Handler로 사용될 수 있음을 알리는 핸들러 클래스
@@ -21,6 +23,8 @@ public class GlobalExceptionHandler {
         final ErrorResponse exceptionResponse =
                 // getDescription 은 에러 내용에 관한 것 같다.
                 ErrorResponse.of(ErrorCode.UNEXPECTED_SERVER_ACTION, ex);
+
+        log.error(ex.getMessage());
 
         return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
