@@ -16,6 +16,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.LinkedHashMap;
 
 
 @Slf4j
@@ -36,12 +37,18 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
                 // todo : 2021-08-25 : 코드를 개선할 필요가 있어보임
                 Claims claims = tokenProvider.getClaims(jwt);
-                Long userId = Long.parseLong(claims.getSubject());
+//                Long userId = Long.parseLong(claims.getSubject());
+                String username = claims.getSubject();
 
                 // todo : 2021-08-25 : role 타입 변환 후
                 // String role = (String) claims.get("role");
-
-                UserDetails userDetails = customUserDetailsService.loadUserById(userId);
+                UserDetails userDetails = null;
+                if ("ROLE_ADMIN".equals(((LinkedHashMap)claims.get("role")).get("authority"))) {
+                    userDetails = customUserDetailsService.loadAdminByUsername(username);
+                } else {
+                    userDetails = customUserDetailsService.loadUserByUsername(username);
+                }
+//                UserDetails userDetails = customUserDetailsService.loadUserById(userId);
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 

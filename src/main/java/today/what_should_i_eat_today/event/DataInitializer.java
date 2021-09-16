@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.test.context.ActiveProfiles;
+import today.what_should_i_eat_today.domain.admin.entity.Admin;
 import today.what_should_i_eat_today.domain.category.dao.CategoryRepository;
 import today.what_should_i_eat_today.domain.category.entity.Category;
 import today.what_should_i_eat_today.domain.category.entity.FoodCategory;
@@ -41,7 +42,10 @@ public class DataInitializer implements ApplicationRunner {
     }
 
     public void dataInit() {
-        Member member = Member.builder().email("testtesttesttest1217@naver.com").name("tester").build();
+        Member member1 = Member.builder().email("testtesttesttest1217@naver.com").name("tester").build();
+        Member member2 = Member.builder().email("testtesttest1234@naver.com").name("tester").build();
+
+        Admin admin = Admin.builder().email("admin@naver.com").password("1234").build();
 
         Country korea = Country.builder().name("한국").build();
 
@@ -57,7 +61,9 @@ public class DataInitializer implements ApplicationRunner {
         meetCategory.addFoodMapping(FoodCategory.builder().food(food).build());
         koreaCategory.addFoodMapping(FoodCategory.builder().food(food).build());
 
-        em.persist(member);
+        em.persist(member1);
+        em.persist(member2);
+        em.persist(admin);
         em.persist(korea);
         em.persist(meetCategory);
         em.persist(koreaCategory);
