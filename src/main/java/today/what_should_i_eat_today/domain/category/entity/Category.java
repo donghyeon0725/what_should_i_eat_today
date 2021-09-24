@@ -19,8 +19,9 @@ public class Category extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Admin admin;
+//    @JoinColumn(nullable = false)
+@ManyToOne(fetch = FetchType.LAZY)
+private Admin admin;
 
     private String name;
 
