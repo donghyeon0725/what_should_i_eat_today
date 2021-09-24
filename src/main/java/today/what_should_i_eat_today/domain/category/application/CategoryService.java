@@ -7,11 +7,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import today.what_should_i_eat_today.domain.category.dao.CategoryRepository;
 import today.what_should_i_eat_today.domain.category.dto.CategoryAdminCommand;
-import today.what_should_i_eat_today.domain.category.dto.CategoryCommand;
 import today.what_should_i_eat_today.domain.category.dto.CategoryUserCommand;
 import today.what_should_i_eat_today.domain.category.entity.Category;
 import today.what_should_i_eat_today.domain.category.entity.CategoryValidator;
 import today.what_should_i_eat_today.global.error.ErrorCode;
+import today.what_should_i_eat_today.global.error.exception.ResourceDuplicatedException;
 import today.what_should_i_eat_today.global.error.exception.ResourceNotFoundException;
 
 @Service
@@ -29,6 +29,13 @@ public class CategoryService {
         boolean isVisible = command.getVisible() == null ? true : command.getVisible();
 
         Category category = Category.builder().name(command.getName()).description(command.getDescription()).visible(isVisible).build();
+
+        boolean isExisted = categoryRepository.existsByName(command.getName());
+
+        // 이미 존재하는 카테고리명인 경우 예외발생
+        if (isExisted)
+            throw new ResourceDuplicatedException("category", "name", command.getName());
+
         categoryRepository.save(category);
 
         return category.getId();
