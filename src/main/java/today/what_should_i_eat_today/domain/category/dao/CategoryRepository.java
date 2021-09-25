@@ -1,5 +1,7 @@
 package today.what_should_i_eat_today.domain.category.dao;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import today.what_should_i_eat_today.domain.category.entity.Category;
@@ -15,4 +17,11 @@ public interface CategoryRepository extends JpaRepository<Category, Long>, Categ
     Optional<Category> findById(Long id);
 
     List<Category> findByIdIn(List<Long> ids);
+
+    boolean existsByName(String name);
+
+    @EntityGraph(attributePaths = {"admin", "foodCategories"})
+    @Override
+    Page<Category> findAll(Pageable pageable);
+
 }
