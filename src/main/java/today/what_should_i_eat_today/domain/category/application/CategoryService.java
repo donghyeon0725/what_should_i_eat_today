@@ -69,4 +69,8 @@ public class CategoryService {
     public void deleteById(Long id) {
         categoryRepository.deleteById(id);
     }
+
+    public Page<Category> getCategoryList(Pageable pageable) {
+        return categoryRepository.findAll(pageable);
+    }
 }
