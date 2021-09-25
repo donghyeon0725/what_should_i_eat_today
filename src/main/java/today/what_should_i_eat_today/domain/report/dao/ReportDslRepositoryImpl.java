@@ -11,6 +11,7 @@ import today.what_should_i_eat_today.domain.report.entity.QReport;
 import today.what_should_i_eat_today.domain.report.entity.Report;
 import today.what_should_i_eat_today.domain.report.entity.ReportStatus;
 
+import static today.what_should_i_eat_today.domain.category.entity.QCategory.category;
 import static today.what_should_i_eat_today.domain.report.entity.QReport.report;
 
 @RequiredArgsConstructor
@@ -23,6 +24,7 @@ public class ReportDslRepositoryImpl implements ReportDslRepository {
 
         final QueryResults<Report> results = jpaQueryFactory
                 .selectFrom(report)
+                .join(report.member).fetchJoin()
                 .where(titleContains(title), statusEq(status))
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset())
