@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import today.what_should_i_eat_today.domain.member.dto.MemberResponseDto;
 import today.what_should_i_eat_today.domain.post.dto.PostResponseDtoV1;
+import today.what_should_i_eat_today.domain.report.entity.Report;
 import today.what_should_i_eat_today.domain.report.entity.ReportStatus;
 import today.what_should_i_eat_today.domain.report.entity.ReportType;
 import today.what_should_i_eat_today.domain.review.dto.ReviewDto;
@@ -33,10 +34,20 @@ public class ReportResponseDto {
     private ReportStatus status;
 
 
-    public ReportResponseDto(ReportType type, String title, String content, ReportStatus status) {
-        this.type = type;
-        this.title = title;
-        this.content = content;
-        this.status = status;
+    public ReportResponseDto(Report report) {
+        this.member = new MemberResponseDto(report.getMember());
+        this.type = report.getType();
+        this.title = report.getTitle();
+        this.content = report.getContent();
+        this.status = report.getStatus();
+
+        if (ReportType.POST.equals(report.getType())) {
+        }
+
+        if (ReportType.PROFILE.equals(report.getType())) {
+        }
+
+        if (ReportType.REVIEW.equals(report.getType())) {
+        }
     }
 }

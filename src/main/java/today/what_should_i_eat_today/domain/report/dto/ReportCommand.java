@@ -1,9 +1,6 @@
 package today.what_should_i_eat_today.domain.report.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import today.what_should_i_eat_today.domain.report.entity.ReportStatus;
 import today.what_should_i_eat_today.domain.report.entity.ReportType;
 import today.what_should_i_eat_today.global.error.ErrorCode;
