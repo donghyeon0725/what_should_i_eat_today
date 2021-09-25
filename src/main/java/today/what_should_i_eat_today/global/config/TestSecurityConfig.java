@@ -5,7 +5,7 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
-@Profile("test")
+@Profile({"test", "hbh"})
 @EnableWebSecurity
 public class TestSecurityConfig extends WebSecurityConfigurerAdapter {
 
