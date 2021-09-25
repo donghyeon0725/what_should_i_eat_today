@@ -24,9 +24,12 @@ public class ReportApi {
 
     @GetMapping("/reports")
     @Secured("ROLE_ADMIN")
-    public Page<ReportResponseDto> getReportList(@PageableDefault Pageable pageable, ReportCommand reportCommand) {
-        final Page<Report> reportList = reportService.getReportList(reportCommand, pageable);
-        return reportList.map(s -> new ReportResponseDto(s.getType(), s.getTitle(), s.getContent(), s.getStatus()));
+    public Page<ReportResponseDto> getReportList(@PageableDefault Pageable pageable, @RequestParam(required = false) ReportStatus reportStatus, @RequestParam(required = false) String title) {
+        ReportCommand command = new ReportCommand();
+        command.setTitle(title);
+        command.setStatus(reportStatus);
+        final Page<Report> reportList = reportService.getReportList(command, pageable);
+        return reportList.map(s -> new ReportResponseDto(s));
     }
 
 

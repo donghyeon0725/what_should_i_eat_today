@@ -18,6 +18,12 @@ import today.what_should_i_eat_today.domain.food.entity.Food;
 import today.what_should_i_eat_today.domain.food.entity.FoodTag;
 import today.what_should_i_eat_today.domain.member.dao.MemberRepository;
 import today.what_should_i_eat_today.domain.member.entity.Member;
+import today.what_should_i_eat_today.domain.post.entity.Post;
+import today.what_should_i_eat_today.domain.report.entity.Report;
+import today.what_should_i_eat_today.domain.report.entity.ReportStatus;
+import today.what_should_i_eat_today.domain.report.entity.ReportType;
+import today.what_should_i_eat_today.domain.review.entity.Review;
+import today.what_should_i_eat_today.domain.review.entity.ReviewType;
 import today.what_should_i_eat_today.domain.tag.entity.Tag;
 
 import javax.persistence.EntityManager;
@@ -73,6 +79,44 @@ public class DataInitializer implements ApplicationRunner {
         em.flush();
         em.clear();
 
+        insertReports(member1, member2);
+
+    }
+
+    public void insertReports(Member reporter, Member reported) {
+
+        // 포스트 신고
+        Post post = Post.builder().content("content").member(reported).build();
+        Report postReport = Report.builder()
+                .post(post).title("포스트 신고합니다").content("신고합니다").type(ReportType.POST)
+                .status(ReportStatus.NOT_APPROVED).member(reporter).reportedMember(reported).build();
+
+        // 프로필 신고
+        Report profileReport = Report.builder()
+                .title("프로필 신고합니다").content("신고합니다").type(ReportType.PROFILE)
+                .status(ReportStatus.NOT_APPROVED).member(reporter).reportedMember(reported).build();
+
+
+        // 리뷰 신고
+        Review review = Review.builder().content("신고합니다").member(reported).reviewType(ReviewType.REVIEW).post(post).build();
+        Report reviewReport = Report.builder()
+                .title("리뷰 신고합니다").content("신고합니다").type(ReportType.REVIEW).review(review)
+                .status(ReportStatus.NOT_APPROVED).member(reporter).reportedMember(reported).build();
+
+
+        for (int i=0; i<25; i++) {
+            em.persist(Report.builder()
+                    .title("신고합니다 " + i).content("신고합니다 " + i).type(ReportType.PROFILE)
+                    .status(ReportStatus.APPROVED).member(reporter).reportedMember(reported).build());
+        }
+
+        em.persist(post);
+        em.persist(review);
+        em.persist(postReport);
+        em.persist(profileReport);
+        em.persist(reviewReport);
+        em.flush();
+        em.clear();
     }
 
 }
