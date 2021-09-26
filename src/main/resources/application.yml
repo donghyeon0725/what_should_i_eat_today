@@ -14,9 +14,6 @@ spring:
       test:
         - h2
         - app
-      hbh:
-        - h2test
-        - app
     active: local
   jpa:
     properties:
