@@ -27,6 +27,7 @@ public class ReportDslRepositoryImpl implements ReportDslRepository {
                 .join(report.member).fetchJoin()
                 .where(titleContains(title), statusEq(status))
                 .limit(pageable.getPageSize())
+                .orderBy(report.createdAt.desc())
                 .offset(pageable.getOffset())
                 .fetchResults();
 
