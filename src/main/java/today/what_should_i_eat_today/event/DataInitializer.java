@@ -129,7 +129,7 @@ public class DataInitializer implements ApplicationRunner {
                 .status(ReportStatus.NOT_APPROVED).member(reporter).reportedMember(reported).build();
 
 
-        for (int i = 0; i < 250; i++) {
+        for (int i = 0; i < 25; i++) {
             em.persist(Report.builder()
                     .title("신고합니다 " + i).content("신고합니다 " + i).type(ReportType.PROFILE)
                     .status(ReportStatus.APPROVED).member(reporter).reportedMember(reported).build());
