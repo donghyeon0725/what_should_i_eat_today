@@ -35,6 +35,7 @@ public class ReportResponseDto {
 
 
     public ReportResponseDto(Report report) {
+        this.id = report.getId();
         this.member = new MemberResponseDto(report.getMember());
         this.type = report.getType();
         this.title = report.getTitle();
