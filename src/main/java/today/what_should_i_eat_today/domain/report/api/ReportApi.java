@@ -53,10 +53,10 @@ public class ReportApi {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("reports/{id}")
+    @GetMapping("/reports/{id}")
     @Secured("ROLE_ADMIN")
     public ResponseEntity findById(@PathVariable Long id) {
-        return ResponseEntity.ok(reportService.findById(id));
+        return ResponseEntity.ok(new ReportResponseDto(reportService.findById(id)));
     }
 
     @PatchMapping("/reports/{id}")
