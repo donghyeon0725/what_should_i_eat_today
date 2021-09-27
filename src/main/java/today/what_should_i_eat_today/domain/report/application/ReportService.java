@@ -19,6 +19,7 @@ import today.what_should_i_eat_today.domain.report.dto.ReportCommand;
 import today.what_should_i_eat_today.domain.report.dto.ReviewReportCommand;
 import today.what_should_i_eat_today.domain.report.entity.Report;
 import today.what_should_i_eat_today.domain.report.entity.ReportStatus;
+import today.what_should_i_eat_today.domain.report.entity.ReportType;
 import today.what_should_i_eat_today.domain.review.dao.ReviewRepository;
 import today.what_should_i_eat_today.domain.review.entity.Review;
 import today.what_should_i_eat_today.global.error.ErrorCode;
@@ -97,7 +98,21 @@ public class ReportService {
     }
 
     public Report findById(Long reportId) {
-        return reportRepository.findById(reportId).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND));
+        final Report report = reportRepository.findById(reportId).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND));
+
+        report.getMember().getEmail();
+        if (ReportType.POST.equals(report.getType())) {
+            report.getPost().getTitle();
+        }
+        if (ReportType.REVIEW.equals(report.getType())) {
+            report.getReview().getContent();
+        }
+
+        if (ReportType.PROFILE.equals(report.getType())) {
+            report.getReportedMember().getEmail();
+        }
+
+        return report;
     }
 
     @Transactional
