@@ -59,10 +59,11 @@ public class ReportApi {
         return ResponseEntity.ok(new ReportResponseDto(reportService.findById(id)));
     }
 
-    @PatchMapping("/reports/{id}")
+    @PutMapping("/reports/{id}")
     @Secured("ROLE_ADMIN")
-    public ResponseEntity processReport(@PathVariable Long id, ReportStatus status) {
-        reportService.processReport(new ReportCommand(id, status));
+    public ResponseEntity processReport(@PathVariable Long id, @RequestBody ReportRequestDto dto) {
+        reportService.processReport(new ReportCommand(id, dto.getStatus()));
+        //(value = "status", required = true)
 
         return ResponseEntity.ok().build();
     }
