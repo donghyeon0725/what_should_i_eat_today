@@ -43,12 +43,18 @@ public class ReportResponseDto {
         this.status = report.getStatus();
 
         if (ReportType.POST.equals(report.getType())) {
+            this.post = new PostResponseDtoV1();
+            this.post.setId(report.getPost().getId());
         }
 
         if (ReportType.PROFILE.equals(report.getType())) {
+            this.reportedMember = new MemberResponseDto();
+            this.reportedMember.setId(report.getReportedMember().getId());
         }
 
         if (ReportType.REVIEW.equals(report.getType())) {
+            this.review = new ReviewDto();
+            this.review.setId(report.getReview().getId());
         }
     }
 }
