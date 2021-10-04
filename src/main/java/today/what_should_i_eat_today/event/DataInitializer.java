@@ -110,8 +110,9 @@ public class DataInitializer implements ApplicationRunner {
 
     public void insertReports(Member reporter, Member reported) {
 
+        Food food = Food.builder().name("가상의 음식").build();
         // 포스트 신고
-        Post post = Post.builder().content("content").member(reported).build();
+        Post post = Post.builder().content("content").food(food).member(reported).build();
         Report postReport = Report.builder()
                 .post(post).title("포스트 신고합니다").content("신고합니다").type(ReportType.POST)
                 .status(ReportStatus.NOT_APPROVED).member(reporter).reportedMember(reported).build();
@@ -135,6 +136,7 @@ public class DataInitializer implements ApplicationRunner {
                     .status(ReportStatus.APPROVED).member(reporter).reportedMember(reported).build());
         }
 
+        em.persist(food);
         em.persist(post);
         em.persist(review);
         em.persist(postReport);
