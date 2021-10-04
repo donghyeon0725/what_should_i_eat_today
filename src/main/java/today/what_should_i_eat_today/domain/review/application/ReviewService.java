@@ -22,6 +22,7 @@ import today.what_should_i_eat_today.global.security.UserPrincipal;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,9 +39,13 @@ public class ReviewService {
     private final PostRepository postRepository;
 
 
-    public Member getMember() {
+    private Member getMember() {
         UserPrincipal principal = (UserPrincipal)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return memberRepository.findByEmail(principal.getEmail()).orElseThrow(() -> new UserNotFoundException(ErrorCode.USER_NOT_FOUND));
+    }
+
+    public Review findById(Long id) {
+        return reviewRepository.findById(id).orElse(null);
     }
 
     @Transactional

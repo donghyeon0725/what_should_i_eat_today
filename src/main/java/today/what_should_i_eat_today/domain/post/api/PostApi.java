@@ -11,6 +11,7 @@ import today.what_should_i_eat_today.domain.activity.dto.PostCreateRequest;
 import today.what_should_i_eat_today.domain.activity.dto.PostUpdateCommand;
 import today.what_should_i_eat_today.domain.activity.dto.PostUpdateRequest;
 import today.what_should_i_eat_today.domain.post.application.PostService;
+import today.what_should_i_eat_today.domain.post.dto.PostResponseDtoV1;
 import today.what_should_i_eat_today.domain.post.entity.Post;
 import today.what_should_i_eat_today.global.security.CurrentUser;
 import today.what_should_i_eat_today.global.security.UserPrincipal;
@@ -29,7 +30,7 @@ public class PostApi {
 
         Post post = postService.getPost(postId);
 
-        return ResponseEntity.ok(post);
+        return ResponseEntity.ok(new PostResponseDtoV1(post));
     }
 
     @GetMapping("/posts")
