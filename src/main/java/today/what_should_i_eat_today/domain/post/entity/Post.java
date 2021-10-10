@@ -18,7 +18,7 @@ import java.util.Set;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-@Where(clause = "archived = false")
+//@Where(clause = "archived = false")
 public class Post extends BaseEntity {
 
     @Id
