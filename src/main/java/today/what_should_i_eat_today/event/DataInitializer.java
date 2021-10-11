@@ -14,6 +14,9 @@ import today.what_should_i_eat_today.domain.food.entity.Food;
 import today.what_should_i_eat_today.domain.food.entity.FoodTag;
 import today.what_should_i_eat_today.domain.member.entity.Member;
 import today.what_should_i_eat_today.domain.post.entity.Post;
+import today.what_should_i_eat_today.domain.qna.entity.Qna;
+import today.what_should_i_eat_today.domain.qna.entity.QnaStatus;
+import today.what_should_i_eat_today.domain.qna.entity.QnaType;
 import today.what_should_i_eat_today.domain.report.entity.Report;
 import today.what_should_i_eat_today.domain.report.entity.ReportStatus;
 import today.what_should_i_eat_today.domain.report.entity.ReportType;
@@ -105,7 +108,20 @@ public class DataInitializer implements ApplicationRunner {
         em.clear();
 
         insertReports(member1, member2);
+        insertQnas();
+    }
 
+    public void insertQnas() {
+        Member member = Member.builder().name("이름").nickName("닉네임").email("member@test.com").build();
+        em.persist(member);
+
+        for (int i=0; i<25; i++) {
+            Qna qna = Qna.builder().member(member).type(QnaType.SYSTEM_QUESTION).status(QnaStatus.NOT_PROCESSED).title("제목"+i).content("내용"+i).build();
+            em.persist(qna);
+        }
+
+        em.flush();
+        em.clear();
     }
 
     public void insertReports(Member reporter, Member reported) {
