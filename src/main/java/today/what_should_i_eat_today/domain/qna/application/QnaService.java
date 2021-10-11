@@ -87,8 +87,7 @@ public class QnaService {
     }
 
     public Qna findById(Long qnaId) {
-        Member member =  getMember();
-        return qnaRepository.findByIdAndMember(qnaId, member);
+        return qnaRepository.findById(qnaId).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND));
     }
 
     @Transactional
