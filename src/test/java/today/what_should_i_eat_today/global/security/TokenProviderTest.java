@@ -24,6 +24,11 @@ class TokenProviderTest {
     @Autowired
     private TokenProvider tokenProvider;
 
+    /**
+     * 60일
+     */
+    private static final long TEST_EXPIRE_DAY = 60L * 24 * 60 * 60 * 3600;
+
     @Test
     void getToken() {
 
@@ -48,8 +53,8 @@ class TokenProviderTest {
         UserPrincipal userPrincipal = UserPrincipal.create(saveMember);
         UserPrincipal adminPrincipal = UserPrincipal.create(saveAdmin);
 
-        String token = tokenProvider.createToken(userPrincipal);
-        String adminToken = tokenProvider.createToken(adminPrincipal);
+        String token = tokenProvider.createTestToken(userPrincipal, TEST_EXPIRE_DAY);
+        String adminToken = tokenProvider.createTestToken(adminPrincipal, TEST_EXPIRE_DAY);
 
         System.out.println(token);
         System.out.println(adminToken);

@@ -1,6 +1,5 @@
 package today.what_should_i_eat_today.domain.category.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,8 +12,8 @@ import today.what_should_i_eat_today.global.error.exception.InvalidStatusExcepti
 public class CategoryAdminCommand extends CategoryCommand {
 
     @Builder
-    public CategoryAdminCommand(Long id, String name, String description, Boolean visible) {
-        super(id, name, description, visible);
+    public CategoryAdminCommand(Long id, String name, String description, Boolean visible, Long adminId) {
+        super(id, name, description, visible, adminId);
     }
 
     public void createValidate() {

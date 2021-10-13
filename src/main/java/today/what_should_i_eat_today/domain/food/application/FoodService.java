@@ -16,6 +16,7 @@ import today.what_should_i_eat_today.domain.food.dao.FoodRepository;
 import today.what_should_i_eat_today.domain.food.dto.FoodAdminCommand;
 import today.what_should_i_eat_today.domain.food.dto.FoodDto;
 import today.what_should_i_eat_today.domain.food.dto.FoodMemberCommand;
+import today.what_should_i_eat_today.domain.food.dto.FoodWithTagsAndCountryResponseDto;
 import today.what_should_i_eat_today.domain.food.entity.Food;
 import today.what_should_i_eat_today.domain.food.entity.FoodTag;
 import today.what_should_i_eat_today.domain.food.entity.FoodValidator;
@@ -157,4 +158,15 @@ public class FoodService {
     }
 
 
+    /**
+     * 태그, 카테고리 국가가 포함된 음식 목록 가져오기
+     */
+    public Page<FoodWithTagsAndCountryResponseDto> getFoodListWithTagsAndCountry(String country, String tag, String search, Pageable pageable, Long categoryId) {
+
+        Page<Food> foodPage = foodRepository.findAllWthCountryAndTagsAndCategories(country, tag, search, pageable);
+
+        Page<FoodWithTagsAndCountryResponseDto> map = foodPage.map(food -> new FoodWithTagsAndCountryResponseDto(food, categoryId));
+
+        return map;
+    }
 }

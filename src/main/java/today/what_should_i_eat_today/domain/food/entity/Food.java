@@ -4,9 +4,8 @@ import lombok.*;
 import today.what_should_i_eat_today.domain.admin.entity.Admin;
 import today.what_should_i_eat_today.domain.category.entity.FoodCategory;
 import today.what_should_i_eat_today.domain.country.entity.Country;
-import today.what_should_i_eat_today.global.common.entity.BaseEntity;
 import today.what_should_i_eat_today.domain.member.entity.Member;
-import today.what_should_i_eat_today.domain.model.Status;
+import today.what_should_i_eat_today.global.common.entity.BaseEntity;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -71,8 +70,5 @@ public class Food extends BaseEntity {
         if (admin != null)
             this.admin = admin;
     }
-
-
-
 
 }

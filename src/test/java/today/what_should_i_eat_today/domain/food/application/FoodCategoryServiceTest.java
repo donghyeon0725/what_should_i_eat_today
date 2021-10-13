@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 import today.what_should_i_eat_today.domain.category.entity.Category;
 import today.what_should_i_eat_today.domain.category.entity.FoodCategory;
+import today.what_should_i_eat_today.domain.food.dto.FoodResponseDto;
 import today.what_should_i_eat_today.domain.food.entity.Food;
 
 import javax.persistence.EntityManager;
@@ -63,7 +64,7 @@ class FoodCategoryServiceTest {
         em.clear();
 
         PageRequest page = PageRequest.of(0, 10);
-        Page<Food> foods = foodCategoryService.getFoods(category1.getId(), page);
+        Page<FoodResponseDto> foods = foodCategoryService.getFoodsByCategory(category1.getId(), page);
 
         assertThat(foods.getContent()).hasSize(10);
         assertThat(foods.getContent())
