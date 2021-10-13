@@ -7,8 +7,10 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import today.what_should_i_eat_today.domain.admin.entity.Admin;
 import today.what_should_i_eat_today.domain.category.entity.Category;
+import today.what_should_i_eat_today.domain.category.entity.FoodCategory;
 import today.what_should_i_eat_today.domain.country.entity.Country;
 import today.what_should_i_eat_today.domain.food.entity.Food;
 import today.what_should_i_eat_today.domain.food.entity.FoodTag;
@@ -25,7 +27,6 @@ import today.what_should_i_eat_today.domain.review.entity.ReviewType;
 import today.what_should_i_eat_today.domain.tag.entity.Tag;
 
 import javax.persistence.EntityManager;
-import javax.transaction.Transactional;
 import java.util.Arrays;
 import java.util.List;
 
@@ -51,27 +52,95 @@ public class DataInitializer implements ApplicationRunner {
      * 카테고리 INSERT
      */
     private void categoriesInit() {
-        List<Category> categories = Arrays.asList(
-                Category.builder().name("밥").description("음식").admin(null).visible(true).build(),
-                Category.builder().name("면").description("음식").admin(null).visible(true).build(),
-                Category.builder().name("고기").description("음식").admin(null).visible(true).build(),
-                Category.builder().name("해산물").description("음식").admin(null).visible(true).build(),
-                Category.builder().name("국물").description("음식").admin(null).visible(true).build(),
-                Category.builder().name("간식/디저트").description("음식").admin(null).visible(true).build(),
-                Category.builder().name("중식").description("음식").admin(null).visible(true).build(),
-                Category.builder().name("한식").description("음식").admin(null).visible(true).build(),
-                Category.builder().name("일식").description("음식").admin(null).visible(true).build(),
-                Category.builder().name("배달").description("음식").admin(null).visible(true).build(),
-                Category.builder().name("분식").description("음식").admin(null).visible(true).build()
+
+        Admin root = Admin.builder().email("root@gmail.com").password("1234").build();
+        em.persist(root);
+
+        // 일식
+        Country japan = Country.builder().name("일본").build();
+        em.persist(japan);
+
+        // 태그
+        Tag oilyTag = Tag.builder().name("든든한").build();
+        Tag fullTag = Tag.builder().name("쌀").build();
+        em.persist(oilyTag);
+        em.persist(fullTag);
+
+        // 밥
+        Category riceCategory = Category.builder().name("밥").description("음식").admin(root).visible(true).build();
+        em.persist(riceCategory);
+
+        // 국물
+        Category soupCategory = Category.builder().name("국물").description("음식").admin(root).visible(true).build();
+        em.persist(soupCategory);
+
+
+        // 국밥 임식들
+        List<Food> foods = Arrays.asList(
+                Food.builder().name("설렁탕").country(japan).build(),
+                Food.builder().name("순대국밥").country(japan).build(),
+                Food.builder().name("돈까스").country(japan).build(),
+                Food.builder().name("김치볶음밥").country(japan).build(),
+                Food.builder().name("참치마요덮밥").country(japan).build(),
+                Food.builder().name("카레라이스").country(japan).build(),
+                Food.builder().name("오므라이스").country(japan).build(),
+                Food.builder().name("참치김밥").country(japan).build(),
+                Food.builder().name("비빔밥").country(japan).build(),
+                Food.builder().name("제육덮밥").country(japan).build(),
+                Food.builder().name("잡채볶음밥").country(japan).build(),
+                Food.builder().name("주먹밥").country(japan).build(),
+                Food.builder().name("삼각김밥").country(japan).build()
         );
 
+        List<String> strings = Arrays.asList("돈까스", "비빔밥", "제육덮밥");
+
+        for (Food food : foods) {
+            em.persist(food);
+
+            try {
+                Thread.sleep(100);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            // 모든 음식들에 든든한, 쌀 이라는 태그를 넣어준다
+            food.addFoodTags(FoodTag.builder().tag(oilyTag).build());
+            food.addFoodTags(FoodTag.builder().tag(fullTag).build());
+
+            // 모든 음식들에 밥 카테고리를 넣어준다
+            FoodCategory foodCategory1 = FoodCategory.builder().food(food).build();
+            foodCategory1.addCategoryMapping(riceCategory);
+            em.persist(foodCategory1);
+
+
+            if (strings.contains(food.getName())) {
+                FoodCategory foodCategory2 = FoodCategory.builder().food(food).build();
+                foodCategory2.addCategoryMapping(soupCategory);
+                em.persist(foodCategory2);
+            }
+
+        }
+
+
+        List<Category> categories = Arrays.asList(
+                Category.builder().name("면").description("음식").admin(root).visible(true).build(),
+                Category.builder().name("고기").description("음식").admin(root).visible(true).build(),
+                Category.builder().name("해산물").description("음식").admin(root).visible(true).build(),
+                Category.builder().name("간식/디저트").description("음식").admin(root).visible(true).build(),
+                Category.builder().name("중식").description("음식").admin(root).visible(true).build(),
+                Category.builder().name("한식").description("음식").admin(root).visible(true).build(),
+                Category.builder().name("일식").description("음식").admin(root).visible(true).build(),
+                Category.builder().name("배달").description("음식").admin(root).visible(true).build(),
+                Category.builder().name("분식").description("음식").admin(root).visible(true).build()
+        );
         for (Category category : categories) {
             em.persist(category);
         }
 
+
         // 임시 데이터 250개
         for (int i = 0; i < 250; i++) {
-            em.persist(Category.builder().name("테스트" + i).description("내용" + i).visible(false).admin(null).build());
+            em.persist(Category.builder().name("테스트" + i).description("내용" + i).admin(root).visible(false).build());
         }
     }
 
@@ -89,6 +158,7 @@ public class DataInitializer implements ApplicationRunner {
         Food food = Food.builder().name("불고기").deleted(false).country(korea).build();
         food.addFoodTags(FoodTag.builder().tag(oilyTag).build());
         food.addFoodTags(FoodTag.builder().tag(fullTag).build());
+
 
 //        Category meetCategory = Category.builder().name("고기").build();
 //        Category koreaCategory = Category.builder().name("한국").build();

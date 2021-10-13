@@ -52,6 +52,25 @@ public class TokenProvider {
                 .compact();
     }
 
+    public String createTestToken(UserPrincipal userPrincipal, long expirationMsec) {
+
+        Date now = new Date();
+        Date expiryDate = new Date(now.getTime() + expirationMsec);
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("sub", userPrincipal.getId().toString()); // Claims 의 sub
+        map.put("role", userPrincipal.getAuthorities().toArray()[0]);
+
+
+        return Jwts.builder()
+                .setClaims(map)
+                .setSubject(userPrincipal.getEmail())
+                .setIssuedAt(new Date())
+                .setExpiration(expiryDate)
+                .signWith(SignatureAlgorithm.HS512, appProperties.getAuth().getTokenSecret())
+                .compact();
+    }
+
     public Long getUserIdFromToken(String token) {
         Claims claims = Jwts.parser()
                 .setSigningKey(appProperties.getAuth().getTokenSecret())
