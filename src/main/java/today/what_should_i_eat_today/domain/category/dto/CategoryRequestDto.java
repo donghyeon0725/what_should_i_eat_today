@@ -23,9 +23,20 @@ public class CategoryRequestDto {
     @NotBlank
     private Boolean visible;
 
-    public CategoryAdminCommand toCommand() {
+    public CategoryAdminCommand toCommand(Long adminId) {
         return CategoryAdminCommand.builder()
                 .name(name)
+                .adminId(adminId)
+                .description(description)
+                .visible(visible)
+                .build();
+    }
+
+    public CategoryAdminCommand toCommand(Long adminId, Long categoryId) {
+        return CategoryAdminCommand.builder()
+                .id(categoryId)
+                .name(name)
+                .adminId(adminId)
                 .description(description)
                 .visible(visible)
                 .build();

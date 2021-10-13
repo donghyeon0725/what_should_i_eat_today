@@ -1,15 +1,18 @@
 package today.what_should_i_eat_today.domain.food.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import today.what_should_i_eat_today.domain.category.dto.CategoryResponseDto;
 import today.what_should_i_eat_today.domain.food.entity.Food;
+import today.what_should_i_eat_today.domain.food.entity.FoodTag;
 import today.what_should_i_eat_today.domain.tag.dto.TagResponseDto;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
@@ -23,8 +26,12 @@ public class FoodResponseDto {
 
     private String img;
 
+    private String country;
+
+    @JsonProperty("foodCategories")
     private List<CategoryResponseDto> categoryResponseDtos = new ArrayList<>();
 
+    @JsonProperty("foodTags")
     private List<TagResponseDto> tagResponseDtos = new ArrayList<>();
 
     public FoodResponseDto(Food food) {
@@ -34,18 +41,27 @@ public class FoodResponseDto {
         food.getFoodCategories().forEach(s -> categoryResponseDtos.add(new CategoryResponseDto(s.getCategory().getId(), s.getCategory().getName())));
     }
 
+    public void addAllFoodTags(List<FoodTag> foodTags) {
+        tagResponseDtos = foodTags.stream().map(TagResponseDto::new).collect(Collectors.toList());
+    }
+
     public static List<FoodResponseDto> from(List<Food> randomFoods) {
         List<FoodResponseDto> foodResponseDtos = new ArrayList<>();
 
         for (Food food : randomFoods) {
-            FoodResponseDto dto = FoodResponseDto.builder()
-                    .id(food.getId())
-                    .name(food.getName())
-                    .img("") // todo 2021.08.31 기본 이미지 설정해야 함
-                    .build();
+            FoodResponseDto dto = from(food);
             foodResponseDtos.add(dto);
         }
 
         return foodResponseDtos;
+    }
+
+    public static FoodResponseDto from(Food food) {
+        return FoodResponseDto.builder()
+                .id(food.getId())
+                .name(food.getName())
+                .country(food.getCountry().getName())
+                .img("") // todo 2021.08.31 기본 이미지 설정해야 함
+                .build();
     }
 }

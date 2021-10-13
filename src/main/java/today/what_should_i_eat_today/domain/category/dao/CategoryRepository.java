@@ -4,6 +4,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import today.what_should_i_eat_today.domain.category.entity.Category;
 
 import java.util.List;
@@ -23,5 +26,12 @@ public interface CategoryRepository extends JpaRepository<Category, Long>, Categ
     @EntityGraph(attributePaths = {"admin", "foodCategories"})
     @Override
     Page<Category> findAll(Pageable pageable);
+
+    @EntityGraph(attributePaths = {"admin", "foodCategories"})
+    Page<Category> findAllByNameContains(String categoryName, Pageable pageable);
+
+    @Modifying
+    @Query("DELETE FROM Category c WHERE c.id in :ids")
+    void deleteAllByIdInQuery(@Param("ids") Iterable<Long> categoryIds);
 
 }

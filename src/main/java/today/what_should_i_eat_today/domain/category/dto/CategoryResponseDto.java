@@ -1,9 +1,6 @@
 package today.what_should_i_eat_today.domain.category.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import today.what_should_i_eat_today.domain.admin.entity.Admin;
 import today.what_should_i_eat_today.domain.category.entity.Category;
 
@@ -13,6 +10,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Getter
 @Setter
+@Builder
 public class CategoryResponseDto {
 
     private Long id;
@@ -43,4 +41,17 @@ public class CategoryResponseDto {
         this.id = id;
         this.name = name;
     }
+
+    public static CategoryResponseDto from(Category category) {
+        return CategoryResponseDto.builder()
+                .id(category.getId())
+                .name(category.getName())
+                .admin(category.getAdmin())
+                .description(category.getDescription())
+                .visible(category.getVisible())
+                .createdAt(category.getCreatedAt())
+                .updatedAt(category.getUpdatedAt())
+                .build();
+    }
+
 }
