@@ -19,8 +19,8 @@ public class Category extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    //    @JoinColumn(nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
     private Admin admin;
 
     private String name;
@@ -38,6 +38,15 @@ public class Category extends BaseEntity {
     public void addFoodMapping(FoodCategory foodCategory) {
         foodCategories.add(foodCategory);
         foodCategory.addCategoryMapping(this);
+    }
+
+    public void removeFoodMapping(Long categoryId, Long foodId) {
+        for (int i = 0; i < foodCategories.size(); i++) {
+            if (foodCategories.get(i).getCategory().getId().equals(categoryId) && foodCategories.get(i).getFood().getId().equals(foodId)) {
+                foodCategories.remove(i);
+                return;
+            }
+        }
     }
 
     public void changeName(String name, CategoryValidator validator) {

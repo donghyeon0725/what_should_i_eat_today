@@ -12,7 +12,6 @@ import today.what_should_i_eat_today.domain.category.dao.CategoryRepository;
 import today.what_should_i_eat_today.domain.category.dto.CategoryAdminCommand;
 import today.what_should_i_eat_today.domain.category.dto.CategoryUserCommand;
 import today.what_should_i_eat_today.domain.category.entity.Category;
-import today.what_should_i_eat_today.global.error.exception.CannotExecuteException;
 import today.what_should_i_eat_today.global.error.exception.InvalidStatusException;
 
 import javax.persistence.EntityManager;
