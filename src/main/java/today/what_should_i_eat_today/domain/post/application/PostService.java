@@ -62,6 +62,12 @@ public class PostService {
     }
 
     @Transactional
+    public Page<Post> getPostByMember(Long memberId, Pageable pageable) {
+        Page<Post> findPosts = postRepository.findByMember_Id(memberId, pageable);
+        return findPosts;
+    }
+
+    @Transactional
     public Post createPost(PostCreateCommand command) {
         Member member = memberRepository.findById(command.getMemberId()).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND));
 
@@ -114,6 +120,20 @@ public class PostService {
 
     public Post getPost(Long postId) {
         return postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND));
+    }
+
+    public Page<Post> getPostsFavorite(Long memberId, Pageable pageable) {
+        Page<Post> posts = favoriteRepository.findByMemberId(memberId, pageable).map(Favorite::getPost);
+        posts.getContent().forEach(post -> post.getFood().getName());
+        posts.getContent().forEach(post -> post.getMember().getName());
+        return posts;
+    }
+
+    public Page<Post> getPostsLiked(Long memberId, Pageable pageable) {
+        Page<Post> posts = likesRepository.findByMemberId(memberId, pageable).map(Likes::getPost);
+        posts.getContent().forEach(post -> post.getFood().getName());
+        posts.getContent().forEach(post -> post.getMember().getName());
+        return posts;
     }
 
     public Page<Post> getPostsByFoodId(Long foodId, Pageable pageable) {

@@ -17,6 +17,7 @@ import today.what_should_i_eat_today.domain.post.entity.Post;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -29,7 +30,9 @@ public class PostResponseDtoV1 {
 
     private MemberResponseDto member;
 
-    private AttachmentResponseDto attachment;
+    private String imageName;
+
+    private String imagePath;
 
     private String title;
 
@@ -37,12 +40,15 @@ public class PostResponseDtoV1 {
 
     private boolean archived;
 
+
     public PostResponseDtoV1(Post post) {
         this.id = post.getId();
         this.food = new FoodResponseDto();
         this.food.setId(post.getFood().getId());
         this.member = new MemberResponseDto(post.getMember());
         this.title = post.getTitle();
+        this.imageName = post.getAttachment().getName();
+        this.imagePath = post.getAttachment().getPath();
         this.content = post.getContent();
         this.archived = post.isArchived();
     }
