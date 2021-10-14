@@ -34,11 +34,38 @@ public class PostApi {
     }
 
     @GetMapping("/posts")
-    public ResponseEntity<?> getPosts(@PageableDefault Pageable pageable) {
+    public ResponseEntity<?> getPosts(@RequestParam(required = false, name = "memberId") Long memberId, @PageableDefault Pageable pageable) {
 
         Page<Post> posts = postService.getPosts(pageable);
 
-        return ResponseEntity.ok(posts);
+
+        return ResponseEntity.ok(posts.map(PostResponseDtoV1::new));
+    }
+
+    @GetMapping("/posts/my")
+    public ResponseEntity<?> getPosts(@CurrentUser UserPrincipal userPrincipal, @PageableDefault Pageable pageable) {
+        Page<Post> posts = postService.getPostByMember(userPrincipal.getId(), pageable);
+
+        return ResponseEntity.ok(posts.map(PostResponseDtoV1::new));
+    }
+
+
+    @GetMapping("/posts/liked")
+    public ResponseEntity<?> getPostsLiked(@CurrentUser UserPrincipal userPrincipal, @PageableDefault Pageable pageable) {
+
+        Page<Post> posts = postService.getPostsLiked(userPrincipal.getId(), pageable);
+
+        return ResponseEntity.ok(posts.map(PostResponseDtoV1::new));
+    }
+
+
+    @GetMapping("/posts/favorite")
+    public ResponseEntity<?> getPostsFavorite(@CurrentUser UserPrincipal userPrincipal, @PageableDefault Pageable pageable) {
+
+        Page<Post> posts = postService.getPostsLiked(userPrincipal.getId(), pageable);
+
+
+        return ResponseEntity.ok(posts.map(PostResponseDtoV1::new));
     }
 
     @GetMapping("/posts/foods/{id}")
