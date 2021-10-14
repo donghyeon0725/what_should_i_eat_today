@@ -1,6 +1,8 @@
 package today.what_should_i_eat_today.domain.likes.dao;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import today.what_should_i_eat_today.domain.likes.entity.Likes;
 import today.what_should_i_eat_today.domain.member.entity.Member;
@@ -14,4 +16,7 @@ public interface LikesRepository extends JpaRepository<Likes, Long> {
     Optional<Likes> findByPostAndMember(Post post, Member member);
 
     List<Likes> findAllByMemberId(Long memberId, Pageable pageable);
+
+    @EntityGraph(attributePaths = {"post"})
+    Page<Likes> findByMemberId(Long memberId, Pageable pageable);
 }

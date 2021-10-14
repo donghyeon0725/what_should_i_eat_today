@@ -12,9 +12,12 @@ import today.what_should_i_eat_today.domain.admin.entity.Admin;
 import today.what_should_i_eat_today.domain.category.entity.Category;
 import today.what_should_i_eat_today.domain.category.entity.FoodCategory;
 import today.what_should_i_eat_today.domain.country.entity.Country;
+import today.what_should_i_eat_today.domain.favorite.entity.Favorite;
 import today.what_should_i_eat_today.domain.food.entity.Food;
 import today.what_should_i_eat_today.domain.food.entity.FoodTag;
+import today.what_should_i_eat_today.domain.likes.entity.Likes;
 import today.what_should_i_eat_today.domain.member.entity.Member;
+import today.what_should_i_eat_today.domain.model.Attachment;
 import today.what_should_i_eat_today.domain.post.entity.Post;
 import today.what_should_i_eat_today.domain.qna.entity.Qna;
 import today.what_should_i_eat_today.domain.qna.entity.QnaStatus;
@@ -179,6 +182,43 @@ public class DataInitializer implements ApplicationRunner {
 
         insertReports(member1, member2);
         insertQnas();
+        insertPostLikedAndFavoriteByMe();
+    }
+
+    private void insertPostLikedAndFavoriteByMe() {
+        Member member = Member.builder().email("aboutTest@naver.com").build();
+        Member other = Member.builder().email("otherother@naver.com").build();
+        em.persist(member);
+        em.persist(other);
+
+        Food food = Food.builder().name("음식").build();
+        Attachment attachment = new Attachment("https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Unofficial_JavaScript_logo_2.svg/1920px-Unofficial_JavaScript_logo_2.svg.png", "이름 없는 게시물");
+        Post post1 = Post.builder().title("포스트1").attachment(attachment).member(other).food(food).content("컨텐츠").archived(false).build();
+        Post post2 = Post.builder().title("포스트2").attachment(attachment).member(other).food(food).content("컨텐츠").archived(false).build();
+        Post post3 = Post.builder().title("포스트3").attachment(attachment).member(other).food(food).content("컨텐츠").archived(false).build();
+        Post post4 = Post.builder().title("포스트4").attachment(attachment).member(other).food(food).content("컨텐츠").archived(false).build();
+        Post myPost = Post.builder().title("내포스트").attachment(attachment).member(member).food(food).content("컨텐츠").archived(false).build();
+
+        Likes likes1 = Likes.builder().post(post1).member(member).build();
+        Likes likes2 = Likes.builder().post(post4).member(member).build();
+
+        Favorite favorite1 = Favorite.builder().post(post2).member(member).build();
+        Favorite favorite2 = Favorite.builder().post(post3).member(member).build();
+
+
+        em.persist(food);
+        em.persist(myPost);
+        em.persist(post1);
+        em.persist(post2);
+        em.persist(post3);
+        em.persist(post4);
+        em.persist(likes1);
+        em.persist(likes2);
+        em.persist(favorite1);
+        em.persist(favorite2);
+        em.flush();
+        em.clear();
+
     }
 
     public void insertQnas() {

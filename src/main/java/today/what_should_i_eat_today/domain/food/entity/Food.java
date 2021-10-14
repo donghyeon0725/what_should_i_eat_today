@@ -35,7 +35,7 @@ public class Food extends BaseEntity {
 
     private LocalDateTime deletedAt;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Country country;
 
     @Builder.Default
