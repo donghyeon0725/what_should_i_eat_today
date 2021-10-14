@@ -44,4 +44,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
                     "as ranking where ranking.rn <= 1)", nativeQuery = true)
     Post findPostByFood1(@Param("foodId") Long foodId);
 
+
+    @EntityGraph(attributePaths = {"food", "member"})
+    Page<Post> findByMember_Id(Long memberId, Pageable pageable);
+
 }
