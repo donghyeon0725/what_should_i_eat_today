@@ -48,4 +48,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @EntityGraph(attributePaths = {"food", "member"})
     Page<Post> findByMember_Id(Long memberId, Pageable pageable);
 
+    @EntityGraph(attributePaths = {"food", "member"})
+    Page<Post> findByMember_IdAndArchivedIsFalse(Long memberId, Pageable pageable);
 }

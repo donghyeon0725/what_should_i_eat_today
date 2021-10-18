@@ -62,7 +62,7 @@ public class PostApi {
     @GetMapping("/posts/favorite")
     public ResponseEntity<?> getPostsFavorite(@CurrentUser UserPrincipal userPrincipal, @PageableDefault Pageable pageable) {
 
-        Page<Post> posts = postService.getPostsLiked(userPrincipal.getId(), pageable);
+        Page<Post> posts = postService.getPostsFavorite(userPrincipal.getId(), pageable);
 
 
         return ResponseEntity.ok(posts.map(PostResponseDtoV1::new));
@@ -76,20 +76,35 @@ public class PostApi {
         return ResponseEntity.ok(posts);
     }
 
-    @PostMapping("/posts/{id}/like")
-    public ResponseEntity<?> updateLike(@CurrentUser UserPrincipal principal, @PathVariable("id") Long postId) {
+    @PostMapping("/posts/{id}/favorite")
+    public ResponseEntity<?> favorite(@CurrentUser UserPrincipal principal, @PathVariable("id") Long postId) {
+        postService.favorite(postId, principal.getId());
 
-        Long userId = principal.getId();
-
-        return ResponseEntity.ok(postService.updateLike(postId, userId));
+        return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/posts/{id}/favorite")
-    public ResponseEntity<?> updateFavorite(@CurrentUser UserPrincipal principal, @PathVariable("id") Long postId) {
+    @DeleteMapping("/posts/{id}/favorite")
+    public ResponseEntity<?> unFavorite(@CurrentUser UserPrincipal principal, @PathVariable("id") Long postId) {
 
-        Long userId = principal.getId();
+        postService.unFavorite(postId, principal.getId());
 
-        return ResponseEntity.ok(postService.updateFavorite(postId, userId));
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/posts/{id}/like")
+    public ResponseEntity<?> like(@CurrentUser UserPrincipal principal, @PathVariable("id") Long postId) {
+
+        postService.like(postId, principal.getId());
+
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/posts/{id}/like")
+    public ResponseEntity<?> dislike(@CurrentUser UserPrincipal principal, @PathVariable("id") Long postId) {
+
+        postService.dislike(postId, principal.getId());
+
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/posts")

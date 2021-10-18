@@ -19,6 +19,7 @@ import today.what_should_i_eat_today.domain.model.Attachment;
 import today.what_should_i_eat_today.domain.post.dao.PostRepository;
 import today.what_should_i_eat_today.domain.food.entity.FoodValidator;
 import today.what_should_i_eat_today.domain.post.entity.Post;
+import today.what_should_i_eat_today.domain.post.entity.PostValidator;
 import today.what_should_i_eat_today.domain.tag.dto.TagRequest;
 import today.what_should_i_eat_today.global.common.application.file.StorageService;
 import today.what_should_i_eat_today.global.error.ErrorCode;
@@ -40,6 +41,45 @@ public class PostService {
     private final FoodRepository foodRepository;
     private final FavoriteRepository favoriteRepository;
     private final FoodValidator foodValidator;
+    private final PostValidator postValidator;
+
+    @Transactional
+    public void like(Long postId, Long memberId) {
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND));
+
+        Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND));
+
+        member.likePost(post, postValidator);
+    }
+
+    @Transactional
+    public void dislike(Long postId, Long memberId) {
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND));
+
+        Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND));
+
+        member.dislikedPost(post, postValidator);
+    }
+
+    @Transactional
+    public void favorite(Long postId, Long memberId) {
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND));
+
+        Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND));
+
+        member.favoritePost(post, postValidator);
+    }
+
+
+    @Transactional
+    public void unFavorite(Long postId, Long memberId) {
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND));
+
+        Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND));
+
+        member.unFavoritePost(post, postValidator);
+    }
+
 
     @Transactional
     public boolean updateLike(Long postId, Long memberId) {
@@ -63,7 +103,24 @@ public class PostService {
 
     @Transactional
     public Page<Post> getPostByMember(Long memberId, Pageable pageable) {
-        Page<Post> findPosts = postRepository.findByMember_Id(memberId, pageable);
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND));
+        Page<Post> findPosts = postRepository.findByMember_IdAndArchivedIsFalse(memberId, pageable);
+
+        findPosts.getContent().forEach(post -> {
+            if (favoriteRepository.existsByPostAndMember(post, member)) {
+                post.changeFavoriteStatus(true);
+            } else {
+                post.changeFavoriteStatus(false);
+            }
+
+            if (likesRepository.existsByPostAndMember(post, member)) {
+                post.changeLikeStatus(true);
+            } else {
+                post.changeLikeStatus(false);
+            }
+        });
+
+
         return findPosts;
     }
 
@@ -123,16 +180,38 @@ public class PostService {
     }
 
     public Page<Post> getPostsFavorite(Long memberId, Pageable pageable) {
-        Page<Post> posts = favoriteRepository.findByMemberId(memberId, pageable).map(Favorite::getPost);
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND));
+
+        Page<Post> posts = favoriteRepository.findByMemberIdAndPost_ArchivedIsFalse(member.getId(), pageable).map(Favorite::getPost);
         posts.getContent().forEach(post -> post.getFood().getName());
         posts.getContent().forEach(post -> post.getMember().getName());
+
+        posts.getContent().forEach(post -> {
+            post.changeFavoriteStatus(true);
+            if (likesRepository.existsByPostAndMember(post, member)) {
+                post.changeLikeStatus(true);
+            } else {
+                post.changeLikeStatus(false);
+            }
+        });
         return posts;
     }
 
     public Page<Post> getPostsLiked(Long memberId, Pageable pageable) {
-        Page<Post> posts = likesRepository.findByMemberId(memberId, pageable).map(Likes::getPost);
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND));
+
+        Page<Post> posts = likesRepository.findByMemberId(member.getId(), pageable).map(Likes::getPost);
         posts.getContent().forEach(post -> post.getFood().getName());
         posts.getContent().forEach(post -> post.getMember().getName());
+
+        posts.getContent().forEach(post -> {
+            post.changeLikeStatus(true);
+            if (favoriteRepository.existsByPostAndMember(post, member)) {
+                post.changeFavoriteStatus(true);
+            } else {
+                post.changeFavoriteStatus(false);
+            }
+        });
         return posts;
     }
 
