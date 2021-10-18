@@ -15,4 +15,9 @@ public class ResourceDuplicatedException extends RuntimeException {
         super(String.format("%s is duplicated - entity: %s -field: %s", value, entity, field));
         this.errorCode = ErrorCode.Nickname_DUPLICATION;
     }
+
+    public ResourceDuplicatedException(ErrorCode errorCode) {
+        super(errorCode.getMessage());
+        this.errorCode = errorCode;
+    }
 }

@@ -7,22 +7,32 @@ import org.springframework.stereotype.Component;
 import today.what_should_i_eat_today.domain.activity.dao.ActivityRepository;
 import today.what_should_i_eat_today.domain.activity.entity.Activity;
 import today.what_should_i_eat_today.domain.activity.entity.ActivityType;
+import today.what_should_i_eat_today.domain.favorite.dao.FavoriteRepository;
+import today.what_should_i_eat_today.domain.favorite.entity.Favorite;
+import today.what_should_i_eat_today.domain.likes.dao.LikesRepository;
+import today.what_should_i_eat_today.domain.likes.entity.Likes;
 import today.what_should_i_eat_today.domain.member.entity.Member;
 import today.what_should_i_eat_today.domain.post.entity.Post;
 import today.what_should_i_eat_today.domain.qna.entity.Qna;
-import today.what_should_i_eat_today.domain.qna.entity.QnaReview;
 import today.what_should_i_eat_today.domain.report.entity.Report;
 import today.what_should_i_eat_today.domain.report.entity.ReportType;
 import today.what_should_i_eat_today.domain.review.entity.Review;
 import today.what_should_i_eat_today.event.event.*;
+import today.what_should_i_eat_today.global.error.ErrorCode;
+import today.what_should_i_eat_today.global.error.exception.ResourceNotFoundException;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
 public class EventsHandler {
     private final ActivityRepository activityRepository;
+
+    private final LikesRepository likesRepository;
+
+    private final FavoriteRepository favoriteRepository;
 
     private final EntityManager em;
 
@@ -146,11 +156,55 @@ public class EventsHandler {
     @EventListener
     public void handle(QnaReviewEvent event) {
         Qna qna = event.getQna();
-        Member qnaOwner = qna.getMember();;
+        Member qnaOwner = qna.getMember();
 
         activityRepository.save(Activity.builder().member(qnaOwner).qna(qna).type(ActivityType.QNA_REVIEW).build());
     }
 
+    // 좋아요
+    @Async
+    @Transactional
+    @EventListener
+    public void handle(LikesEvent event) {
+        Likes likes = event.getLikes();
+
+        likesRepository.save(likes);
+    }
+
+    // 찜하기
+    @Async
+    @Transactional
+    @EventListener
+    public void handle(FavoriteEvent event) {
+        Favorite favorite = event.getFavorite();
+
+        favoriteRepository.save(favorite);
+    }
+
+    // 좋아요 취소
+    @Async
+    @Transactional
+    @EventListener
+    public void handle(DislikeEvent event) {
+        Optional<Likes> likes = likesRepository.findByPostAndMember(event.getDislike().getPost(), event.getDislike().getMember());
+
+        likes.ifPresent((value) -> {
+            likesRepository.delete(value);
+        });
+    }
+
+
+    // 찜하기 취소
+    @Async
+    @Transactional
+    @EventListener
+    public void handle(UnFavoriteEvent event) {
+        Optional<Favorite> favorite = favoriteRepository.findByPostAndMember(event.getFavorite().getPost(), event.getFavorite().getMember());
+
+        favorite.ifPresent((value) -> {
+            favoriteRepository.delete(value);
+        });
+    }
 
 
 }
