@@ -71,22 +71,22 @@ public class Member extends BaseEntity {
     }
 
     public void likePost(Post post, PostValidator postValidator) {
-        postValidator.validateForLikeOrFavorite(this, post);
+        postValidator.validateForLike(this, post);
         Events.raise(new LikesEvent(this, post));
     }
 
     public void dislikedPost(Post post, PostValidator postValidator) {
-        postValidator.validateForDislikeOrUnFavorite(this, post);
+        postValidator.validateForDislike(this, post);
         Events.raise(new DislikeEvent(this, post));
     }
 
     public void favoritePost(Post post, PostValidator postValidator) {
-        postValidator.validateForLikeOrFavorite(this, post);
+        postValidator.validateForFavorite(this, post);
         Events.raise(new FavoriteEvent(this, post));
     }
 
     public void unFavoritePost(Post post, PostValidator postValidator) {
-        postValidator.validateForDislikeOrUnFavorite(this, post);
+        postValidator.validateForUnFavorite(this, post);
         Events.raise(new UnFavoriteEvent(this, post));
     }
 }

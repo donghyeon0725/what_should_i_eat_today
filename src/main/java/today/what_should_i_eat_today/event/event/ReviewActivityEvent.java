@@ -8,6 +8,6 @@ public class ReviewActivityEvent extends DomainEvent {
     }
 
     public Review getReview() {
-        return (Review)super.getObject();
+        return (Review)super.getDomain();
     }
 }

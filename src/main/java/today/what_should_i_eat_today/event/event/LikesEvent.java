@@ -7,10 +7,14 @@ import today.what_should_i_eat_today.domain.qna.entity.Qna;
 
 public class LikesEvent extends DomainEvent {
     public LikesEvent(Member member, Post post) {
-        super(Likes.builder().member(member).post(post).build());
+        super(member, post);
     }
 
-    public Likes getLikes() {
-        return (Likes) super.getObject();
+    public Member getMember() {
+        return (Member) super.getDomain();
+    }
+
+    public Post getPost() {
+        return (Post) super.getParam();
     }
 }

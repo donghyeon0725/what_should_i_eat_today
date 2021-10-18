@@ -166,9 +166,10 @@ public class EventsHandler {
     @Transactional
     @EventListener
     public void handle(LikesEvent event) {
-        Likes likes = event.getLikes();
+        Member member = event.getMember();
+        Post post = event.getPost();
 
-        likesRepository.save(likes);
+        likesRepository.save(Likes.builder().member(member).post(post).build());
     }
 
     // 찜하기
@@ -176,9 +177,10 @@ public class EventsHandler {
     @Transactional
     @EventListener
     public void handle(FavoriteEvent event) {
-        Favorite favorite = event.getFavorite();
+        Member member = event.getMember();
+        Post post = event.getPost();
 
-        favoriteRepository.save(favorite);
+        favoriteRepository.save(Favorite.builder().post(post).member(member).build());
     }
 
     // 좋아요 취소
@@ -186,7 +188,7 @@ public class EventsHandler {
     @Transactional
     @EventListener
     public void handle(DislikeEvent event) {
-        Optional<Likes> likes = likesRepository.findByPostAndMember(event.getDislike().getPost(), event.getDislike().getMember());
+        Optional<Likes> likes = likesRepository.findByPostAndMember(event.getPost(), event.getMember());
 
         likes.ifPresent((value) -> {
             likesRepository.delete(value);
@@ -199,7 +201,7 @@ public class EventsHandler {
     @Transactional
     @EventListener
     public void handle(UnFavoriteEvent event) {
-        Optional<Favorite> favorite = favoriteRepository.findByPostAndMember(event.getFavorite().getPost(), event.getFavorite().getMember());
+        Optional<Favorite> favorite = favoriteRepository.findByPostAndMember(event.getPost(), event.getMember());
 
         favorite.ifPresent((value) -> {
             favoriteRepository.delete(value);
