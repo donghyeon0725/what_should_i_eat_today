@@ -8,6 +8,6 @@ public class ReviewReportEvent extends DomainEvent {
     }
 
     public Report getReport() {
-        return (Report)super.getObject();
+        return (Report)super.getDomain();
     }
 }

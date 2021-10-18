@@ -11,7 +11,7 @@ public class QnaReviewEvent extends DomainEvent {
     }
 
     public Qna getQna() {
-        return (Qna)super.getObject();
+        return (Qna)super.getDomain();
     }
 
 }

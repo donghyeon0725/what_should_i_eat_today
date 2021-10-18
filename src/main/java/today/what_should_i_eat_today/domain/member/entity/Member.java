@@ -3,9 +3,17 @@ package today.what_should_i_eat_today.domain.member.entity;
 import lombok.*;
 import org.springframework.util.StringUtils;
 import today.what_should_i_eat_today.domain.model.AuthProvider;
+import today.what_should_i_eat_today.domain.post.entity.Post;
+import today.what_should_i_eat_today.domain.post.entity.PostValidator;
+import today.what_should_i_eat_today.event.event.DislikeEvent;
+import today.what_should_i_eat_today.event.event.FavoriteEvent;
+import today.what_should_i_eat_today.event.event.LikesEvent;
+import today.what_should_i_eat_today.event.event.UnFavoriteEvent;
+import today.what_should_i_eat_today.event.service.Events;
 import today.what_should_i_eat_today.global.common.entity.BaseEntity;
 
 import javax.persistence.*;
+import java.awt.*;
 import java.util.Objects;
 
 @Builder
@@ -60,5 +68,25 @@ public class Member extends BaseEntity {
     @Override
     public int hashCode() {
         return Objects.hash(getId());
+    }
+
+    public void likePost(Post post, PostValidator postValidator) {
+        postValidator.validateForLike(this, post);
+        Events.raise(new LikesEvent(this, post));
+    }
+
+    public void dislikedPost(Post post, PostValidator postValidator) {
+        postValidator.validateForDislike(this, post);
+        Events.raise(new DislikeEvent(this, post));
+    }
+
+    public void favoritePost(Post post, PostValidator postValidator) {
+        postValidator.validateForFavorite(this, post);
+        Events.raise(new FavoriteEvent(this, post));
+    }
+
+    public void unFavoritePost(Post post, PostValidator postValidator) {
+        postValidator.validateForUnFavorite(this, post);
+        Events.raise(new UnFavoriteEvent(this, post));
     }
 }

@@ -13,6 +13,8 @@ import java.util.Optional;
 
 public interface LikesRepository extends JpaRepository<Likes, Long> {
 
+    boolean existsByPostAndMember(Post post, Member member);
+
     Optional<Likes> findByPostAndMember(Post post, Member member);
 
     List<Likes> findAllByMemberId(Long memberId, Pageable pageable);

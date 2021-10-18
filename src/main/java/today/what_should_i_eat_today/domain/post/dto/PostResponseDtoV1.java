@@ -40,6 +40,10 @@ public class PostResponseDtoV1 {
 
     private boolean archived;
 
+    private Boolean isLikedByMe;
+
+    private Boolean isFavoriteByMe;
+
 
     public PostResponseDtoV1(Post post) {
         this.id = post.getId();
@@ -51,5 +55,7 @@ public class PostResponseDtoV1 {
         this.imagePath = post.getAttachment().getPath();
         this.content = post.getContent();
         this.archived = post.isArchived();
+        this.isLikedByMe = post.getIsLikedByMe();
+        this.isFavoriteByMe = post.getIsFavoriteByMe();
     }
 }

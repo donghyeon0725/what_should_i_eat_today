@@ -1,5 +1,6 @@
 package today.what_should_i_eat_today.domain.post.entity;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import lombok.*;
 import org.hibernate.annotations.Where;
 import today.what_should_i_eat_today.domain.favorite.entity.Favorite;
@@ -48,6 +49,20 @@ public class Post extends BaseEntity {
     private Set<Favorite> favoriteSet = new HashSet<>();
 
     private boolean archived;
+
+    @Transient
+    private Boolean isLikedByMe;
+
+    @Transient
+    private Boolean isFavoriteByMe;
+
+    public void changeLikeStatus(boolean status) {
+        this.isLikedByMe = status;
+    }
+
+    public void changeFavoriteStatus(boolean status) {
+        this.isFavoriteByMe = status;
+    }
 
     public void removeLike(Likes likes) {
         likesSet.remove(likes);

@@ -8,6 +8,6 @@ public class PostReportEvent extends DomainEvent {
     }
 
     public Report getReport() {
-        return (Report)super.getObject();
+        return (Report)super.getDomain();
     }
 }
