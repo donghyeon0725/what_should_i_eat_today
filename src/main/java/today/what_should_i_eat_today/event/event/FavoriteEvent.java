@@ -7,10 +7,15 @@ import today.what_should_i_eat_today.domain.post.entity.Post;
 
 public class FavoriteEvent extends DomainEvent {
     public FavoriteEvent(Member member, Post post) {
-        super(Favorite.builder().member(member).post(post).build());
+        super(member, post);
     }
 
-    public Favorite getFavorite() {
-        return (Favorite) super.getObject();
+    public Member getMember() {
+        return (Member) super.getDomain();
     }
+
+    public Post getPost() {
+        return (Post) super.getParam();
+    }
+
 }

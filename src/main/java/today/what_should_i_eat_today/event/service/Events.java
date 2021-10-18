@@ -15,11 +15,10 @@ public class Events {
     public static void raise(DomainEvent event) {
         if (event == null) return;
 
-
         EntityManager entityManager = managerThreadLocal.get();
 
         if (publisherLocal.get() != null) {
-            if (entityManager != null && entityManager.contains(event.getObject()))
+            if (entityManager != null && entityManager.contains(event.getDomain()))
                 publisherLocal.get().publishEvent(event);
             else
                 eventHolder.get().add(event);

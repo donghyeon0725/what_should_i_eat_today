@@ -9,6 +9,6 @@ public class ProfileReportEvent extends DomainEvent {
     }
 
     public Report getReport() {
-        return (Report)super.getObject();
+        return (Report)super.getDomain();
     }
 }

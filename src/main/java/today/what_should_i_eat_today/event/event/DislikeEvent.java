@@ -6,10 +6,14 @@ import today.what_should_i_eat_today.domain.post.entity.Post;
 
 public class DislikeEvent extends DomainEvent {
     public DislikeEvent(Member member, Post post) {
-        super(Likes.builder().member(member).post(post).build());
+        super(member, post);
     }
 
-    public Likes getDislike() {
-        return (Likes) super.getObject();
+    public Member getMember() {
+        return (Member) super.getDomain();
+    }
+
+    public Post getPost() {
+        return (Post) super.getParam();
     }
 }

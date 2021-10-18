@@ -5,9 +5,25 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Getter
 public class DomainEvent {
-    private Object object;
+    private Object domain;
+    private Object param;
+
+    protected DomainEvent(Object domain) {
+        this.domain = domain;
+    }
+
+    protected DomainEvent(Object domain, Object param) {
+        this.domain = domain;
+        this.param = param;
+    }
+
+    public Object getDomain() {
+        return this.domain;
+    }
+
+    protected Object getParam() {
+        return this.param;
+    }
 }

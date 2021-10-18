@@ -104,7 +104,7 @@ public class PostService {
     @Transactional
     public Page<Post> getPostByMember(Long memberId, Pageable pageable) {
         Member member = memberRepository.findById(memberId).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND));
-        Page<Post> findPosts = postRepository.findByMember_Id(memberId, pageable);
+        Page<Post> findPosts = postRepository.findByMember_IdAndArchivedIsFalse(memberId, pageable);
 
         findPosts.getContent().forEach(post -> {
             if (favoriteRepository.existsByPostAndMember(post, member)) {
@@ -182,7 +182,7 @@ public class PostService {
     public Page<Post> getPostsFavorite(Long memberId, Pageable pageable) {
         Member member = memberRepository.findById(memberId).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND));
 
-        Page<Post> posts = favoriteRepository.findByMemberId(member.getId(), pageable).map(Favorite::getPost);
+        Page<Post> posts = favoriteRepository.findByMemberIdAndPost_ArchivedIsFalse(member.getId(), pageable).map(Favorite::getPost);
         posts.getContent().forEach(post -> post.getFood().getName());
         posts.getContent().forEach(post -> post.getMember().getName());
 
