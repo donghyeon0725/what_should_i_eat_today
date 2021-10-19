@@ -43,14 +43,14 @@ public class PostValidator {
         Optional<Likes> find = likesRepository.findByPostAndMember(post, member);
 
         if (!find.isPresent())
-            throw new ResourceDuplicatedException(ErrorCode.RESOURCE_CONFLICT);
+            throw new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND);
     }
 
     public void validateForUnFavorite(Member member, Post post) {
         Optional<Favorite> find = favoriteRepository.findByPostAndMember(post, member);
 
         if (!find.isPresent())
-            throw new ResourceDuplicatedException(ErrorCode.RESOURCE_CONFLICT);
+            throw new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND);
     }
 
 }
