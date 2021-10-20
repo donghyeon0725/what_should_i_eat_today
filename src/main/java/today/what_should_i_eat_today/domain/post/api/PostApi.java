@@ -49,15 +49,11 @@ public class PostApi {
         return ResponseEntity.ok(posts.map(PostResponseDtoV1::new));
     }
 
+    @GetMapping("/posts/my/count")
+    public ResponseEntity<?> myPostCount(@CurrentUser UserPrincipal principal) {
 
-    @GetMapping("/posts/liked")
-    public ResponseEntity<?> getPostsLiked(@CurrentUser UserPrincipal userPrincipal, @PageableDefault Pageable pageable) {
-
-        Page<Post> posts = postService.getPostsLiked(userPrincipal.getId(), pageable);
-
-        return ResponseEntity.ok(posts.map(PostResponseDtoV1::new));
+        return ResponseEntity.ok(postService.myPostCount(principal.getId()));
     }
-
 
     @GetMapping("/posts/favorite")
     public ResponseEntity<?> getPostsFavorite(@CurrentUser UserPrincipal userPrincipal, @PageableDefault Pageable pageable) {
@@ -66,6 +62,12 @@ public class PostApi {
 
 
         return ResponseEntity.ok(posts.map(PostResponseDtoV1::new));
+    }
+
+    @GetMapping("/posts/favorite/count")
+    public ResponseEntity<?> favoriteCount(@CurrentUser UserPrincipal principal) {
+
+        return ResponseEntity.ok(postService.favoriteCount(principal.getId()));
     }
 
     @GetMapping("/posts/foods/{id}")
@@ -90,6 +92,22 @@ public class PostApi {
 
         return ResponseEntity.ok().build();
     }
+
+
+    @GetMapping("/posts/liked")
+    public ResponseEntity<?> getPostsLiked(@CurrentUser UserPrincipal userPrincipal, @PageableDefault Pageable pageable) {
+
+        Page<Post> posts = postService.getPostsLiked(userPrincipal.getId(), pageable);
+
+        return ResponseEntity.ok(posts.map(PostResponseDtoV1::new));
+    }
+
+    @GetMapping("/posts/liked/count")
+    public ResponseEntity<?> likeCount(@CurrentUser UserPrincipal principal) {
+
+        return ResponseEntity.ok(postService.likeCount(principal.getId()));
+    }
+
 
     @PostMapping("/posts/{id}/like")
     public ResponseEntity<?> like(@CurrentUser UserPrincipal principal, @PathVariable("id") Long postId) {

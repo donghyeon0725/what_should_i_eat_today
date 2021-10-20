@@ -24,4 +24,6 @@ public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
 
     @EntityGraph(attributePaths = {"post"})
     Page<Favorite> findByMemberIdAndPost_ArchivedIsFalse(Long memberId, Pageable pageable);
+
+    int countByMember(Member member);
 }
