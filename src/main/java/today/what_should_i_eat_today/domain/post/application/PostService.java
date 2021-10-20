@@ -43,6 +43,19 @@ public class PostService {
     private final FoodValidator foodValidator;
     private final PostValidator postValidator;
 
+
+    public int myPostCount(Long memberId) {
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND));
+
+        return postRepository.countByMemberAndArchivedIsFalse(member);
+    }
+
+    public int likeCount(Long memberId) {
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND));
+
+        return likesRepository.countByMember(member);
+    }
+
     @Transactional
     public void like(Long postId, Long memberId) {
         Member member = memberRepository.findById(memberId).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND));
@@ -59,6 +72,12 @@ public class PostService {
         Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND));
 
         member.dislikedPost(post, postValidator);
+    }
+
+    public int favoriteCount(Long memberId) {
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND));
+
+        return favoriteRepository.countByMember(member);
     }
 
     @Transactional
