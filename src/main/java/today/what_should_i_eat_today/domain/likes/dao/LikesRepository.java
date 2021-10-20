@@ -21,4 +21,7 @@ public interface LikesRepository extends JpaRepository<Likes, Long> {
 
     @EntityGraph(attributePaths = {"post"})
     Page<Likes> findByMemberId(Long memberId, Pageable pageable);
+
+
+    int countByMember(Member member);
 }

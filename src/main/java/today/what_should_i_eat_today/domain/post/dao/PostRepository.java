@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import today.what_should_i_eat_today.domain.food.entity.Food;
+import today.what_should_i_eat_today.domain.member.entity.Member;
 import today.what_should_i_eat_today.domain.post.entity.Post;
 
 import javax.persistence.Entity;
@@ -50,4 +51,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     @EntityGraph(attributePaths = {"food", "member"})
     Page<Post> findByMember_IdAndArchivedIsFalse(Long memberId, Pageable pageable);
+
+    Integer countByMemberAndArchivedIsFalse(Member member);
 }
