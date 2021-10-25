@@ -1,6 +1,8 @@
 package today.what_should_i_eat_today.domain.food.entity;
 
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 import today.what_should_i_eat_today.domain.admin.entity.Admin;
 import today.what_should_i_eat_today.domain.category.entity.FoodCategory;
 import today.what_should_i_eat_today.domain.country.entity.Country;
@@ -12,6 +14,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@DynamicInsert
 @Builder
 @Entity
 @Getter
@@ -31,6 +34,8 @@ public class Food extends BaseEntity {
 
     private String name;
 
+    @ColumnDefault(value = "false")
+    @Column(nullable = false)
     private Boolean deleted;
 
     private LocalDateTime deletedAt;
@@ -46,9 +51,15 @@ public class Food extends BaseEntity {
     @OneToMany(mappedBy = "food")
     private List<FoodCategory> foodCategories = new ArrayList<>();
 
-    public void addFoodTags(FoodTag foodTag) {
+    public void addFoodTag(FoodTag foodTag) {
         this.foodTags.add(foodTag);
         foodTag.mappingToFood(this);
+    }
+
+    public void addFoodTags(FoodTag... foodTag) {
+        for (FoodTag tag : foodTag) {
+            addFoodTag(tag);
+        }
     }
 
     public void initName(String name, FoodValidator foodValidator) {

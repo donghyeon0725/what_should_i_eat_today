@@ -11,13 +11,13 @@ import today.what_should_i_eat_today.domain.favorite.dao.FavoriteRepository;
 import today.what_should_i_eat_today.domain.favorite.entity.Favorite;
 import today.what_should_i_eat_today.domain.food.dao.FoodRepository;
 import today.what_should_i_eat_today.domain.food.entity.Food;
+import today.what_should_i_eat_today.domain.food.entity.FoodValidator;
 import today.what_should_i_eat_today.domain.likes.dao.LikesRepository;
 import today.what_should_i_eat_today.domain.likes.entity.Likes;
 import today.what_should_i_eat_today.domain.member.dao.MemberRepository;
 import today.what_should_i_eat_today.domain.member.entity.Member;
 import today.what_should_i_eat_today.domain.model.Attachment;
 import today.what_should_i_eat_today.domain.post.dao.PostRepository;
-import today.what_should_i_eat_today.domain.food.entity.FoodValidator;
 import today.what_should_i_eat_today.domain.post.entity.Post;
 import today.what_should_i_eat_today.domain.post.entity.PostValidator;
 import today.what_should_i_eat_today.domain.tag.dto.TagRequest;
@@ -259,16 +259,34 @@ public class PostService {
         Random random = new Random();
         Set<Integer> set = new HashSet<>();
 
-        while (set.size() < 10) {
-            int number = random.nextInt((int) total) + 1;
+        // 가져온 post 가 11개보다 작은 경우
+        if (total < 11) {
+            for (int i = 0; i < total; i++) {
+                int number = random.nextInt((int) total) + 1;
 
-            if (!set.contains(number))
-                set.add(number);
+                if (!set.contains(number))
+                    set.add(number);
+            }
+        } else {
+            while (set.size() < 10) {
+                int number = random.nextInt((int) total) + 1;
+
+                if (!set.contains(number))
+                    set.add(number);
+            }
         }
 
-        final List<Long> foodIds = foodRepository.findByRows(set.stream().collect(Collectors.toList())).stream().map(s->Long.valueOf(s.getId())).collect(Collectors.toList());
+        final List<Long> foodIds = foodRepository.findByRows(set.stream().collect(Collectors.toList())).stream().map(s -> Long.valueOf(s.getId())).collect(Collectors.toList());
 
-        return postRepository.findPostByFoodTop1(foodIds);
+        List<Post> randomPosts = postRepository.findPostByFoodTop1(foodIds);
+
+        for (Post post : randomPosts) {
+            post.getAttachment().getName();
+            post.getMember().getName();
+            post.getFood().getName();
+        }
+
+        return randomPosts;
     }
 
     public List<Post> findByFoodsWithTags(List<TagRequest> tagRequests) {
