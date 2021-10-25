@@ -40,6 +40,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
 
+    private final String[] permitAllUrls = {
+            "/api/v1/posts/random"
+    };
+
 
     @Bean
     public TokenAuthenticationFilter tokenAuthenticationFilter() {
@@ -96,6 +100,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/favicon.ico",
                         "/api/v1/world-cup/**",
                         "/h2-console/**")
+                .permitAll()
+                .antMatchers(permitAllUrls)
                 .permitAll()
                 .antMatchers("/auth/**", "/oauth2/**")
                 .permitAll()

@@ -17,6 +17,7 @@ import today.what_should_i_eat_today.global.security.CurrentUser;
 import today.what_should_i_eat_today.global.security.UserPrincipal;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -74,6 +75,14 @@ public class PostApi {
         Page<Post> posts = postService.getPostsByFoodId(foodId, pageable);
 
         return ResponseEntity.ok(posts);
+    }
+
+    @GetMapping("/posts/random")
+    public ResponseEntity<?> getPostsRandom() {
+
+        List<Post> posts = postService.getRandomPostList();
+
+        return ResponseEntity.ok(posts.stream().map(PostResponseDtoV1::new));
     }
 
     @PostMapping("/posts/{id}/favorite")
