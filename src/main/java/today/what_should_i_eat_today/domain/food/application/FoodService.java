@@ -13,10 +13,7 @@ import today.what_should_i_eat_today.domain.category.dao.FoodCategoryRepository;
 import today.what_should_i_eat_today.domain.category.entity.Category;
 import today.what_should_i_eat_today.domain.category.entity.FoodCategory;
 import today.what_should_i_eat_today.domain.food.dao.FoodRepository;
-import today.what_should_i_eat_today.domain.food.dto.FoodAdminCommand;
-import today.what_should_i_eat_today.domain.food.dto.FoodDto;
-import today.what_should_i_eat_today.domain.food.dto.FoodMemberCommand;
-import today.what_should_i_eat_today.domain.food.dto.FoodWithTagsAndCountryResponseDto;
+import today.what_should_i_eat_today.domain.food.dto.*;
 import today.what_should_i_eat_today.domain.food.entity.Food;
 import today.what_should_i_eat_today.domain.food.entity.FoodTag;
 import today.what_should_i_eat_today.domain.food.entity.FoodValidator;
@@ -168,5 +165,16 @@ public class FoodService {
         Page<FoodWithTagsAndCountryResponseDto> map = foodPage.map(food -> new FoodWithTagsAndCountryResponseDto(food, categoryId));
 
         return map;
+    }
+
+    /**
+     * 태그, 카테고리 국가가 포함된 음식 목록 가져오기
+     */
+    public Page<Food> getFoodList(String search, Pageable pageable) {
+
+        Page<Food> findFood = foodRepository.findByNameContainingAndDeletedIsFalse(search, pageable);
+        findFood.getContent().forEach(food -> food.getCountry().getName());
+
+        return findFood;
     }
 }
