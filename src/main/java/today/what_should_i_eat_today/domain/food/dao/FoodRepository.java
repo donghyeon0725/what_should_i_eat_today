@@ -45,6 +45,7 @@ public interface FoodRepository extends JpaRepository<Food, Long>, FoodDslReposi
             " where c.name like CONCAT(:country, '%') and  t.name like CONCAT(:tag,'%') and f.name like CONCAT(:search, '%')")
     Page<Food> findAllWthCountryAndTagsAndCategories(@Param("country") String country, @Param("tag") String tag, @Param("search") String search, Pageable pageable);
 
+    Page<Food> findByNameContainingAndDeletedIsFalse(String name, Pageable pageable);
     // 임시 쿼리
 //    @Query("select distinct ft.food from FoodTag ft join fetch Food f on ft.food.id = f.id") // join fetch Country c on ft.food.country.id = c.id  where ft.food.country.name like :country% and ft.tag.name like :tag% and ft.food.name like %:search%"
 //    List<Food> findAllWithCountrySearch2();

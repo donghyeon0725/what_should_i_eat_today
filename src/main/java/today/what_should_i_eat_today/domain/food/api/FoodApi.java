@@ -13,6 +13,7 @@ import today.what_should_i_eat_today.domain.food.application.FoodCategoryService
 import today.what_should_i_eat_today.domain.food.application.FoodService;
 import today.what_should_i_eat_today.domain.food.dto.FoodDto;
 import today.what_should_i_eat_today.domain.food.dto.FoodResponseDto;
+import today.what_should_i_eat_today.domain.food.dto.FoodResponseDtoV1;
 import today.what_should_i_eat_today.domain.food.dto.FoodWithTagsAndCountryResponseDto;
 import today.what_should_i_eat_today.domain.food.entity.Food;
 
@@ -41,6 +42,20 @@ public class FoodApi {
         Page<FoodWithTagsAndCountryResponseDto> foods = foodService.getFoodListWithTagsAndCountry(country, tag, search, page, categoryId);
 
         return ResponseEntity.ok(foods);
+    }
+
+    /**
+     * 태그 국가가 포함된 음식 목록 가져오기
+     */
+    @GetMapping("/foods")
+    public ResponseEntity<?> getFoodList(
+            @PageableDefault @SortDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable page,
+            @RequestParam(value = "search", required = false, defaultValue = "") String search
+    ) {
+
+        Page<Food> foods = foodService.getFoodList(search, page);
+
+        return ResponseEntity.ok(foods.map(FoodResponseDtoV1::new));
     }
 
     @GetMapping("/foods/categories/{id}")
