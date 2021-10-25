@@ -24,8 +24,13 @@ public class TokenProvider {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + appProperties.getAuth().getTokenExpirationMsec());
 
+        // 권한을 ROLE_MEMBER 로 설정
+        Map<String, Object> map = new HashMap<>();
+        map.put("role", userPrincipal.getAuthorities().toArray()[0]);
+
+
         return Jwts.builder()
-//                .setSubject(Long.toString(userPrincipal.getId()))
+                .setClaims(map)
                 .setSubject(userPrincipal.getEmail())
                 .setIssuedAt(new Date())
                 .setExpiration(expiryDate)

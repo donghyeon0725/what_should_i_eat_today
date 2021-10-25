@@ -59,9 +59,8 @@ public class FoodCategoryService {
 
         List<FoodResponseDto> foodResponseDtos = foods.stream().map(food -> {
             List<FoodTag> foodTags = collect.get(food.getId());
-            FoodResponseDto dto = FoodResponseDto.from(food);
+            FoodResponseDto dto = FoodResponseDto.from(food, categoryResponseDtos);
             dto.addAllFoodTags(foodTags);
-            dto.setCategoryResponseDtos(categoryResponseDtos);
             return dto;
         }).collect(Collectors.toList());
 

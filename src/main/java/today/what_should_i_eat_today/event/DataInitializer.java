@@ -35,7 +35,7 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-@Profile({"local", "test"})
+@Profile({"local2", "test"})
 @Transactional
 public class DataInitializer implements ApplicationRunner {
 
@@ -80,19 +80,19 @@ public class DataInitializer implements ApplicationRunner {
 
         // 국밥 임식들
         List<Food> foods = Arrays.asList(
-                Food.builder().name("설렁탕").country(japan).build(),
-                Food.builder().name("순대국밥").country(japan).build(),
-                Food.builder().name("돈까스").country(japan).build(),
-                Food.builder().name("김치볶음밥").country(japan).build(),
-                Food.builder().name("참치마요덮밥").country(japan).build(),
-                Food.builder().name("카레라이스").country(japan).build(),
-                Food.builder().name("오므라이스").country(japan).build(),
-                Food.builder().name("참치김밥").country(japan).build(),
-                Food.builder().name("비빔밥").country(japan).build(),
-                Food.builder().name("제육덮밥").country(japan).build(),
-                Food.builder().name("잡채볶음밥").country(japan).build(),
-                Food.builder().name("주먹밥").country(japan).build(),
-                Food.builder().name("삼각김밥").country(japan).build()
+                Food.builder().name("설렁탕").country(japan).deleted(false).build(),
+                Food.builder().name("순대국밥").country(japan).deleted(false).build(),
+                Food.builder().name("돈까스").country(japan).deleted(false).build(),
+                Food.builder().name("김치볶음밥").country(japan).deleted(false).build(),
+                Food.builder().name("참치마요덮밥").country(japan).deleted(false).build(),
+                Food.builder().name("카레라이스").country(japan).deleted(false).build(),
+                Food.builder().name("오므라이스").country(japan).deleted(false).build(),
+                Food.builder().name("참치김밥").country(japan).deleted(false).build(),
+                Food.builder().name("비빔밥").country(japan).deleted(false).build(),
+                Food.builder().name("제육덮밥").country(japan).deleted(false).build(),
+                Food.builder().name("잡채볶음밥").country(japan).deleted(false).build(),
+                Food.builder().name("주먹밥").country(japan).deleted(false).build(),
+                Food.builder().name("삼각김밥").country(japan).deleted(false).build()
         );
 
         List<String> strings = Arrays.asList("돈까스", "비빔밥", "제육덮밥");
@@ -238,7 +238,9 @@ public class DataInitializer implements ApplicationRunner {
 
         Food food = Food.builder().name("가상의 음식").build();
         // 포스트 신고
-        Post post = Post.builder().content("content").food(food).member(reported).build();
+        Attachment attachment = new Attachment("https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Unofficial_JavaScript_logo_2.svg/1920px-Unofficial_JavaScript_logo_2.svg.png", "이름 없는 게시물");
+        Post post = Post.builder().title("content").attachment(attachment).content("content").food(food).member(reported).build();
+
         Report postReport = Report.builder()
                 .post(post).title("포스트 신고합니다").content("신고합니다").type(ReportType.POST)
                 .status(ReportStatus.NOT_APPROVED).member(reporter).reportedMember(reported).build();
