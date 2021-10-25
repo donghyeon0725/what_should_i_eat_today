@@ -12,7 +12,6 @@ import today.what_should_i_eat_today.domain.tag.dto.TagResponseDto;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
@@ -31,6 +30,7 @@ public class FoodResponseDto {
     @JsonProperty("foodCategories")
     private List<CategoryResponseDto> categoryResponseDtos = new ArrayList<>();
 
+    @Builder.Default
     @JsonProperty("foodTags")
     private List<TagResponseDto> tagResponseDtos = new ArrayList<>();
 
@@ -41,8 +41,12 @@ public class FoodResponseDto {
         food.getFoodCategories().forEach(s -> categoryResponseDtos.add(new CategoryResponseDto(s.getCategory().getId(), s.getCategory().getName())));
     }
 
+
     public void addAllFoodTags(List<FoodTag> foodTags) {
-        tagResponseDtos = foodTags.stream().map(TagResponseDto::new).collect(Collectors.toList());
+        for (FoodTag foodTag : foodTags) {
+            TagResponseDto tagResponseDto = new TagResponseDto(foodTag);
+            this.tagResponseDtos.add(tagResponseDto);
+        }
     }
 
     public static List<FoodResponseDto> from(List<Food> randomFoods) {
@@ -64,4 +68,15 @@ public class FoodResponseDto {
                 .img("") // todo 2021.08.31 기본 이미지 설정해야 함
                 .build();
     }
+
+    public static FoodResponseDto from(Food food, List<CategoryResponseDto> categoryResponseDtos) {
+        return FoodResponseDto.builder()
+                .id(food.getId())
+                .name(food.getName())
+                .country(food.getCountry().getName())
+                .img("") // todo 2021.08.31 기본 이미지 설정해야 함
+                .categoryResponseDtos(categoryResponseDtos)
+                .build();
+    }
+
 }

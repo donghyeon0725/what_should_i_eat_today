@@ -40,6 +40,12 @@ public class Category extends BaseEntity {
         foodCategory.addCategoryMapping(this);
     }
 
+    public void addFoodMappings(FoodCategory... foodCategory) {
+        for (FoodCategory category : foodCategory) {
+            addFoodMapping(category);
+        }
+    }
+
     public void removeFoodMapping(Long categoryId, Long foodId) {
         for (int i = 0; i < foodCategories.size(); i++) {
             if (foodCategories.get(i).getCategory().getId().equals(categoryId) && foodCategories.get(i).getFood().getId().equals(foodId)) {

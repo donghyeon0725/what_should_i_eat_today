@@ -33,16 +33,16 @@ class TokenProviderTest {
     void getToken() {
 
         Member member = Member.builder()
-                .name("sout1217")
-                .nickName("sout1217")
-                .email("testtesttesttest1217@naver.com")
+                .name("Nibh felis")
+                .nickName("Nibh felis")
+                .email("test1@test.com")
                 .providerId(UUID.randomUUID().toString())
                 .provider(AuthProvider.naver)
                 .profileImg("http://localhost:8080/images")
                 .build();
 
         Admin admin = Admin.builder()
-                .email("admin@naver.com")
+                .email("admin@gmail.com")
                 .password("1234")
                 .build();
 
