@@ -6,19 +6,16 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import today.what_should_i_eat_today.domain.food.entity.Food;
 import today.what_should_i_eat_today.domain.member.entity.Member;
 import today.what_should_i_eat_today.domain.post.entity.Post;
 
-import javax.persistence.Entity;
-import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
 
     @Override
-    @EntityGraph(attributePaths = {"food", "member"})
+    @EntityGraph(attributePaths = {"food", "food.country", "member"})
     Optional<Post> findById(Long id);
 
     @EntityGraph(attributePaths = "food")

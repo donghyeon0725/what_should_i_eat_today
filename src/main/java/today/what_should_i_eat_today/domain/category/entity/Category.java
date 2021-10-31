@@ -2,6 +2,7 @@ package today.what_should_i_eat_today.domain.category.entity;
 
 import lombok.*;
 import today.what_should_i_eat_today.domain.admin.entity.Admin;
+import today.what_should_i_eat_today.domain.food.entity.Food;
 import today.what_should_i_eat_today.global.common.entity.BaseEntity;
 
 import javax.persistence.*;
@@ -43,6 +44,12 @@ public class Category extends BaseEntity {
     public void addFoodMappings(FoodCategory... foodCategory) {
         for (FoodCategory category : foodCategory) {
             addFoodMapping(category);
+        }
+    }
+
+    public void addFoodMappings(Food... foods) {
+        for (Food food : foods) {
+            addFoodMapping(FoodCategory.builder().food(food).build());
         }
     }
 

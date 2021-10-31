@@ -7,6 +7,7 @@ import today.what_should_i_eat_today.domain.admin.entity.Admin;
 import today.what_should_i_eat_today.domain.category.entity.FoodCategory;
 import today.what_should_i_eat_today.domain.country.entity.Country;
 import today.what_should_i_eat_today.domain.member.entity.Member;
+import today.what_should_i_eat_today.domain.tag.entity.Tag;
 import today.what_should_i_eat_today.global.common.entity.BaseEntity;
 
 import javax.persistence.*;
@@ -59,6 +60,12 @@ public class Food extends BaseEntity {
     public void addFoodTags(FoodTag... foodTag) {
         for (FoodTag tag : foodTag) {
             addFoodTag(tag);
+        }
+    }
+
+    public void addFoodTags(Tag... tags) {
+        for (Tag tag : tags) {
+            addFoodTag(FoodTag.builder().tag(tag).build());
         }
     }
 

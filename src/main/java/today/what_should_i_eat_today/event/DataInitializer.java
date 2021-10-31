@@ -74,7 +74,7 @@ public class DataInitializer implements ApplicationRunner {
         em.persist(riceCategory);
 
         // 국물
-        Category soupCategory = Category.builder().name("국물").description("음식").admin(root).visible(true).build();
+        Category soupCategory = Category.builder().name("국밥").description("음식").admin(root).visible(true).build();
         em.persist(soupCategory);
 
 

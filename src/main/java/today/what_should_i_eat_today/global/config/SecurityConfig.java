@@ -22,6 +22,7 @@ import today.what_should_i_eat_today.global.security.oauth2.HttpCookieOAuth2Auth
 import today.what_should_i_eat_today.global.security.oauth2.OAuth2AuthenticationFailureHandler;
 import today.what_should_i_eat_today.global.security.oauth2.OAuth2AuthenticationSuccessHandler;
 
+
 @Profile({"prod", "local"})
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -41,7 +42,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
 
     private final String[] permitAllUrls = {
-            "/api/v1/posts/random"
+            "/api/v1/posts/random",
+            "/api/v1/posts/recently",
+            "/api/v1/posts/\\d*$",
+            "/api/v1/posts/foods/\\d*$"
     };
 
 
@@ -101,7 +105,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/api/v1/world-cup/**",
                         "/h2-console/**")
                 .permitAll()
-                .antMatchers(permitAllUrls)
+                .regexMatchers(permitAllUrls)
                 .permitAll()
                 .antMatchers("/auth/**", "/oauth2/**")
                 .permitAll()
