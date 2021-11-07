@@ -4,14 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import today.what_should_i_eat_today.domain.member.dto.MemberResponseDto;
-import today.what_should_i_eat_today.domain.member.entity.Member;
 import today.what_should_i_eat_today.domain.post.dto.PostResponseDtoV1;
-import today.what_should_i_eat_today.domain.post.entity.Post;
 import today.what_should_i_eat_today.domain.review.entity.Review;
 import today.what_should_i_eat_today.domain.review.entity.ReviewStatus;
 import today.what_should_i_eat_today.domain.review.entity.ReviewType;
 
-import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,11 +27,19 @@ public class ReviewResponseDto {
 
     private List<ReviewResponseDto> child = new ArrayList<>();
 
+    private Long childCount;
+
+    private Long total;
+
     private ReviewType reviewType;
 
     private String content;
 
     private ReviewStatus status;
+
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
 
     public ReviewResponseDto(Review review) {
         this.id = review.getId();
@@ -44,5 +50,32 @@ public class ReviewResponseDto {
         this.reviewType = review.getReviewType();
         this.content = review.getContent();
         this.status = review.getStatus();
+    }
+
+    public static ReviewResponseDto from(Review review) {
+        ReviewResponseDto dto = new ReviewResponseDto();
+        dto.id = review.getId();
+        dto.content = review.getContent();
+        dto.member = new MemberResponseDto(review.getMember());
+        dto.reviewType = review.getReviewType();
+        dto.status = review.getStatus();
+        dto.createdAt = review.getCreatedAt();
+        dto.updatedAt = review.getUpdatedAt();
+        dto.childCount = review.getChildCount();
+        return dto;
+    }
+
+
+    public static ReviewResponseDto childFrom(Review review) {
+        ReviewResponseDto dto = new ReviewResponseDto();
+        dto.id = review.getId();
+        dto.content = review.getContent();
+        dto.member = new MemberResponseDto(review.getMember());
+        dto.reviewType = review.getReviewType();
+        dto.status = review.getStatus();
+        dto.createdAt = review.getCreatedAt();
+        dto.updatedAt = review.getUpdatedAt();
+        dto.parent = ReviewResponseDto.from(review.getParent());
+        return dto;
     }
 }

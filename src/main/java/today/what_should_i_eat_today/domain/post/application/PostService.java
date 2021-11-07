@@ -2,6 +2,7 @@ package today.what_should_i_eat_today.domain.post.application;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +26,7 @@ import today.what_should_i_eat_today.global.common.application.file.StorageServi
 import today.what_should_i_eat_today.global.error.ErrorCode;
 import today.what_should_i_eat_today.global.error.exception.InvalidStatusException;
 import today.what_should_i_eat_today.global.error.exception.ResourceNotFoundException;
+import today.what_should_i_eat_today.global.security.UserPrincipal;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -194,8 +196,25 @@ public class PostService {
         return postRepository.findAll(pageable);
     }
 
-    public Post getPost(Long postId) {
-        return postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND));
+    public Post getPost(UserPrincipal principal, Long postId) {
+        Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND));
+
+        post.getFood().getFoodTags().forEach(foodTag -> foodTag.getTag().getName());
+        post.getFood().getFoodCategories().forEach(foodCategory -> foodCategory.getCategory().getName());
+
+        post.getFood().getCountry().getName();
+
+        if (principal != null) {
+            Member member = memberRepository.findById(principal.getId()).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND));
+            post.changeLikeStatus(false);
+            post.changeFavoriteStatus(false);
+            if (likesRepository.existsByPostAndMember(post, member))
+                post.changeLikeStatus(true);
+            if (favoriteRepository.existsByPostAndMember(post, member))
+                post.changeFavoriteStatus(true);
+        }
+
+        return post;
     }
 
     public Page<Post> getPostsFavorite(Long memberId, Pageable pageable) {
@@ -332,4 +351,62 @@ public class PostService {
         return foodRepository.findByTags(tagIds);
     }
 
+    public Page<Post> getPostsRecently(UserPrincipal principal, Pageable pageable) {
+
+        Page<Post> postPage = postRepository.findAll(pageable);
+
+        postPage.getContent().forEach(post -> post.getMember().getName());
+
+        if (principal != null) {
+
+            Member member = memberRepository.findById(principal.getId()).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND));
+
+            postPage.getContent().forEach(post -> {
+
+                post.changeLikeStatus(false);
+                post.changeFavoriteStatus(false);
+
+                if (likesRepository.existsByPostAndMember(post, member)) {
+                    post.changeLikeStatus(true);
+                }
+
+                // rating
+
+                if (favoriteRepository.existsByPostAndMember(post, member)) {
+                    post.changeFavoriteStatus(true);
+                }
+            });
+        }
+
+        return new PageImpl<>(postPage.getContent(), pageable, postPage.getTotalElements());
+    }
+
+    public Page<Post> getRecentPostsOfCurrentFood(UserPrincipal principal, Long foodId, Pageable pageable) {
+        Page<Post> postPage = postRepository.findAllByFoodId(foodId, pageable);
+
+        postPage.getContent().forEach(post -> post.getMember().getName());
+
+        if (principal != null) {
+
+            Member member = memberRepository.findById(principal.getId()).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND));
+
+            postPage.getContent().forEach(post -> {
+
+                post.changeLikeStatus(false);
+                post.changeFavoriteStatus(false);
+
+                if (likesRepository.existsByPostAndMember(post, member)) {
+                    post.changeLikeStatus(true);
+                }
+
+                // rating
+
+                if (favoriteRepository.existsByPostAndMember(post, member)) {
+                    post.changeFavoriteStatus(true);
+                }
+            });
+        }
+
+        return new PageImpl<>(postPage.getContent(), pageable, postPage.getTotalElements());
+    }
 }

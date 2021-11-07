@@ -42,6 +42,7 @@ public class CategoryResponseDto {
         this.name = name;
     }
 
+
     public static CategoryResponseDto from(Category category) {
         return CategoryResponseDto.builder()
                 .id(category.getId())

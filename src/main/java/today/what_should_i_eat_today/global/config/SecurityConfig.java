@@ -22,6 +22,9 @@ import today.what_should_i_eat_today.global.security.oauth2.HttpCookieOAuth2Auth
 import today.what_should_i_eat_today.global.security.oauth2.OAuth2AuthenticationFailureHandler;
 import today.what_should_i_eat_today.global.security.oauth2.OAuth2AuthenticationSuccessHandler;
 
+import java.util.regex.Pattern;
+
+
 @Profile({"prod", "local"})
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -41,12 +44,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
 
     private final String[] permitAllUrls = {
-            "/api/v1/posts/random"
+            "/api/v1/posts/random",
+            "/api/v1/posts/recently\\?page=\\d",
+            "/api/v1/posts/\\d+$",
+            "/api/v1/posts/foods/\\d+\\?page=\\d",
+            "/api/v1/reviews/posts/.+",
+            "/api/v1/reviews/\\d+/posts/\\d+$"
     };
+
 
 
     @Bean
     public TokenAuthenticationFilter tokenAuthenticationFilter() {
+        Pattern.compile("/api/v1/posts/foods/\\d+\\?page=\\d");
         return new TokenAuthenticationFilter();
     }
 
@@ -95,13 +105,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/",
+                        "/test-token",
                         "/error",
                         "/api/v1/admin/login",
                         "/favicon.ico",
                         "/api/v1/world-cup/**",
                         "/h2-console/**")
                 .permitAll()
-                .antMatchers(permitAllUrls)
+                .regexMatchers(permitAllUrls)
                 .permitAll()
                 .antMatchers("/auth/**", "/oauth2/**")
                 .permitAll()

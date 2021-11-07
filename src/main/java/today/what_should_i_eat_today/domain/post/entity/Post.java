@@ -1,8 +1,8 @@
 package today.what_should_i_eat_today.domain.post.entity;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import lombok.*;
-import org.hibernate.annotations.Where;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 import today.what_should_i_eat_today.domain.favorite.entity.Favorite;
 import today.what_should_i_eat_today.domain.food.entity.Food;
 import today.what_should_i_eat_today.domain.likes.entity.Likes;
@@ -14,6 +14,7 @@ import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
+@DynamicInsert
 @Builder
 @Entity
 @Getter
@@ -55,6 +56,28 @@ public class Post extends BaseEntity {
 
     @Transient
     private Boolean isFavoriteByMe;
+
+    @ColumnDefault(value = "0")
+    private Long numberOfLikes;
+
+    @ColumnDefault(value = "0")
+    private Long numberOfFavorites;
+
+    public void incrementLikes() {
+        numberOfLikes++;
+    }
+
+    public void decrementLikes() {
+        numberOfLikes--;
+    }
+
+    public void incrementFavorites() {
+        numberOfFavorites++;
+    }
+
+    public void decrementFavorites() {
+        numberOfFavorites--;
+    }
 
     public void changeLikeStatus(boolean status) {
         this.isLikedByMe = status;

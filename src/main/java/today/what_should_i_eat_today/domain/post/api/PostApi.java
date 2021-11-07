@@ -3,7 +3,9 @@ package today.what_should_i_eat_today.domain.post.api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.SortDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import today.what_should_i_eat_today.domain.activity.dto.PostCreateCommand;
@@ -11,6 +13,7 @@ import today.what_should_i_eat_today.domain.activity.dto.PostCreateRequest;
 import today.what_should_i_eat_today.domain.activity.dto.PostUpdateCommand;
 import today.what_should_i_eat_today.domain.activity.dto.PostUpdateRequest;
 import today.what_should_i_eat_today.domain.post.application.PostService;
+import today.what_should_i_eat_today.domain.post.dto.PostResponseDto;
 import today.what_should_i_eat_today.domain.post.dto.PostResponseDtoV1;
 import today.what_should_i_eat_today.domain.post.entity.Post;
 import today.what_should_i_eat_today.global.security.CurrentUser;
@@ -27,11 +30,11 @@ public class PostApi {
     private final PostService postService;
 
     @GetMapping("/posts/{id}")
-    public ResponseEntity<?> getPost(@PathVariable("id") Long postId) {
+    public ResponseEntity<?> getPost(@CurrentUser UserPrincipal principal, @PathVariable("id") Long postId) {
 
-        Post post = postService.getPost(postId);
+        Post post = postService.getPost(principal, postId);
 
-        return ResponseEntity.ok(new PostResponseDtoV1(post));
+        return ResponseEntity.ok(PostResponseDto.from(post));
     }
 
     @GetMapping("/posts")
@@ -71,13 +74,14 @@ public class PostApi {
         return ResponseEntity.ok(postService.favoriteCount(principal.getId()));
     }
 
+ /*
     @GetMapping("/posts/foods/{id}")
     public ResponseEntity<?> getPostsByFoodId(@PageableDefault Pageable pageable, @PathVariable("id") Long foodId) {
 
         Page<Post> posts = postService.getPostsByFoodId(foodId, pageable);
 
         return ResponseEntity.ok(posts);
-    }
+    }*/
 
     @GetMapping("/posts/random")
     public ResponseEntity<?> getPostsRandom() {
@@ -85,6 +89,28 @@ public class PostApi {
         List<Post> posts = postService.getRandomPostList();
 
         return ResponseEntity.ok(posts.stream().map(PostResponseDtoV1::new));
+    }
+
+    @GetMapping("/posts/recently")
+    public ResponseEntity<?> getPostsRecently(@CurrentUser UserPrincipal principal, @PageableDefault @SortDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+
+        System.out.println(pageable);
+
+        Page<Post> postPage = postService.getPostsRecently(principal, pageable);
+
+        return ResponseEntity.ok(postPage.map(PostResponseDtoV1::fromPostRecentlyDto));
+    }
+
+    @GetMapping("/posts/foods/{id}")
+    public ResponseEntity<?> getRecentPostsOfCurrentFood(
+            @CurrentUser UserPrincipal principal,
+            @PathVariable("id") Long foodId,
+            @PageableDefault @SortDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+
+        Page<Post> postPage = postService.getRecentPostsOfCurrentFood(principal, foodId, pageable);
+
+        return ResponseEntity.ok(postPage.map(PostResponseDtoV1::fromPostRecentlyDto));
     }
 
     @PostMapping("/posts/{id}/favorite")

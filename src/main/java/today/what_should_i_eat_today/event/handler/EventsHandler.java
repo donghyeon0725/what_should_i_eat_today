@@ -18,8 +18,6 @@ import today.what_should_i_eat_today.domain.report.entity.Report;
 import today.what_should_i_eat_today.domain.report.entity.ReportType;
 import today.what_should_i_eat_today.domain.review.entity.Review;
 import today.what_should_i_eat_today.event.event.*;
-import today.what_should_i_eat_today.global.error.ErrorCode;
-import today.what_should_i_eat_today.global.error.exception.ResourceNotFoundException;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
@@ -170,6 +168,7 @@ public class EventsHandler {
         Post post = event.getPost();
 
         likesRepository.save(Likes.builder().member(member).post(post).build());
+        post.incrementLikes();
     }
 
     // 찜하기
@@ -181,6 +180,8 @@ public class EventsHandler {
         Post post = event.getPost();
 
         favoriteRepository.save(Favorite.builder().post(post).member(member).build());
+        post.incrementFavorites();
+
     }
 
     // 좋아요 취소
@@ -188,10 +189,13 @@ public class EventsHandler {
     @Transactional
     @EventListener
     public void handle(DislikeEvent event) {
-        Optional<Likes> likes = likesRepository.findByPostAndMember(event.getPost(), event.getMember());
+        Post post = event.getPost();
+
+        Optional<Likes> likes = likesRepository.findByPostAndMember(post, event.getMember());
 
         likes.ifPresent((value) -> {
             likesRepository.delete(value);
+            post.decrementLikes();
         });
     }
 
@@ -201,10 +205,14 @@ public class EventsHandler {
     @Transactional
     @EventListener
     public void handle(UnFavoriteEvent event) {
-        Optional<Favorite> favorite = favoriteRepository.findByPostAndMember(event.getPost(), event.getMember());
+        Post post = event.getPost();
+
+        Optional<Favorite> favorite = favoriteRepository.findByPostAndMember(post, event.getMember());
+
 
         favorite.ifPresent((value) -> {
             favoriteRepository.delete(value);
+            post.decrementFavorites();
         });
     }
 

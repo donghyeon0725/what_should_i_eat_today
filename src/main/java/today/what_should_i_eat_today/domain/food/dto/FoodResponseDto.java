@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import today.what_should_i_eat_today.domain.category.dto.CategoryResponseDto;
+import today.what_should_i_eat_today.domain.category.entity.FoodCategory;
 import today.what_should_i_eat_today.domain.food.entity.Food;
 import today.what_should_i_eat_today.domain.food.entity.FoodTag;
 import today.what_should_i_eat_today.domain.tag.dto.TagResponseDto;
@@ -27,6 +28,7 @@ public class FoodResponseDto {
 
     private String country;
 
+    @Builder.Default
     @JsonProperty("foodCategories")
     private List<CategoryResponseDto> categoryResponseDtos = new ArrayList<>();
 
@@ -46,6 +48,13 @@ public class FoodResponseDto {
         for (FoodTag foodTag : foodTags) {
             TagResponseDto tagResponseDto = new TagResponseDto(foodTag);
             this.tagResponseDtos.add(tagResponseDto);
+        }
+    }
+
+    public void addAllFoodCategories(List<FoodCategory> foodCategories) {
+        for (FoodCategory foodCategory : foodCategories) {
+            CategoryResponseDto tagResponseDto = new CategoryResponseDto(foodCategory.getCategory().getId(), foodCategory.getCategory().getName());
+            this.categoryResponseDtos.add(tagResponseDto);
         }
     }
 
