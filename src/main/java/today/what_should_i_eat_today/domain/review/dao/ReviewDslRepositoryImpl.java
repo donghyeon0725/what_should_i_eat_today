@@ -3,29 +3,18 @@ package today.what_should_i_eat_today.domain.review.dao;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
-import com.querydsl.core.util.ArrayUtils;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.EntityGraph;
 import today.what_should_i_eat_today.domain.member.entity.Member;
-import today.what_should_i_eat_today.domain.member.entity.QMember;
-import today.what_should_i_eat_today.domain.post.entity.Post;
 import today.what_should_i_eat_today.domain.recommend.entity.QRecommend;
 import today.what_should_i_eat_today.domain.recommend.entity.RecommendType;
 import today.what_should_i_eat_today.domain.review.dto.ReviewDto;
-import today.what_should_i_eat_today.domain.review.entity.QReview;
 import today.what_should_i_eat_today.domain.review.entity.Review;
 import today.what_should_i_eat_today.domain.review.entity.ReviewStatus;
-import today.what_should_i_eat_today.domain.review.entity.ReviewType;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 import static today.what_should_i_eat_today.domain.review.entity.QReview.review;
 
@@ -42,6 +31,7 @@ public class ReviewDslRepositoryImpl implements ReviewDslRepository {
                 .selectFrom(review)
                 .where(review.post.id.eq(postId), review.status.ne(ReviewStatus.BLIND), review.parent.isNull())
 //                .join(review.child, child).fetchJoin()
+                .orderBy(review.createdAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetchResults();

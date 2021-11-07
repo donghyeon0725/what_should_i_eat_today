@@ -30,8 +30,9 @@ public class ReviewCommand {
         if (this.content.length() > 3000)
             throw new InvalidStatusException(ErrorCode.INVALID_INPUT_VALUE);
 
-        if (memberId == null)
-            throw new InvalidStatusException(ErrorCode.INVALID_INPUT_VALUE);
+        /** error: 2021.11.02 - post 에 review 작성 시 오류가 발생하여 주석처리 하였습니다 */
+//        if (memberId == null)
+//            throw new InvalidStatusException(ErrorCode.INVALID_INPUT_VALUE);
 
         if (postId == null)
             throw new InvalidStatusException(ErrorCode.INVALID_INPUT_VALUE);

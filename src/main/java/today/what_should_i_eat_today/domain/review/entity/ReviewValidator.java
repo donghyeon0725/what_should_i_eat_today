@@ -10,7 +10,7 @@ import today.what_should_i_eat_today.global.error.exception.CannotExecuteExcepti
 @RequiredArgsConstructor
 public class ReviewValidator {
 
-    public void contentValidate(String content) {
+    public void writerValidate(String content) {
         if (!StringUtils.hasText(content))
             throw new CannotExecuteException(ErrorCode.INVALID_INPUT_VALUE);
     }
@@ -27,6 +27,11 @@ public class ReviewValidator {
 
     public void createReplyValidate(Review parent) {
         if (parent == null)
+            throw new CannotExecuteException(ErrorCode.INVALID_INPUT_VALUE);
+    }
+
+    public void writerValidate(Long reviewWriteMemberId, Long authMemberId) {
+        if (!reviewWriteMemberId.equals(authMemberId))
             throw new CannotExecuteException(ErrorCode.INVALID_INPUT_VALUE);
     }
 }

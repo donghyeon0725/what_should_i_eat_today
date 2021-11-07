@@ -10,20 +10,19 @@ import today.what_should_i_eat_today.domain.member.dao.MemberRepository;
 import today.what_should_i_eat_today.domain.member.entity.Member;
 import today.what_should_i_eat_today.domain.post.dao.PostRepository;
 import today.what_should_i_eat_today.domain.post.entity.Post;
-import today.what_should_i_eat_today.domain.review.dto.ReviewCommand;
 import today.what_should_i_eat_today.domain.review.dao.ReviewRepository;
+import today.what_should_i_eat_today.domain.review.dto.ReviewCommand;
 import today.what_should_i_eat_today.domain.review.dto.ReviewDto;
 import today.what_should_i_eat_today.domain.review.entity.Review;
+import today.what_should_i_eat_today.domain.review.entity.ReviewStatus;
 import today.what_should_i_eat_today.domain.review.entity.ReviewValidator;
 import today.what_should_i_eat_today.global.error.ErrorCode;
+import today.what_should_i_eat_today.global.error.exception.InvalidStatusException;
 import today.what_should_i_eat_today.global.error.exception.ResourceNotFoundException;
 import today.what_should_i_eat_today.global.error.exception.UserNotFoundException;
 import today.what_should_i_eat_today.global.security.UserPrincipal;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -86,23 +85,35 @@ public class ReviewService {
     @Transactional
     public void updateReview(ReviewCommand command) {
         command.updateValidate();
-
+        memberRepository.findById(command.getMemberId()).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND));
         Review findReview = reviewRepository.findById(command.getId()).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND));
-        findReview.changeContent(command.getContent(), reviewValidator);
+
+        findReview.changeContent(command, reviewValidator);
     }
 
     @Transactional
-    public void deleteReview(Long reviewId) {
-        reviewRepository.deleteById(reviewId);
+    public void deleteReview(Long reviewId, Long memberId) {
+
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND));
+        Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND));
+
+        if (!review.getMember().equals(member))
+            throw new InvalidStatusException(ErrorCode.INVALID_INPUT_VALUE);
+
+        review.delete();
+
+//        reviewRepository.deleteById(reviewId);
+    }
+
+    public Long getTotalCountReviewsOfPost(Long postId) {
+        return reviewRepository.countAllByPostIdAndStatus(postId, ReviewStatus.SHOW);
     }
 
     // 포스트에 해당하는 리뷰 리스트
     public Page<Review> getReviewList(ReviewCommand command, Pageable pageable) {
         Page<Review> review = reviewRepository.findAllReviewByPostIdAndParentNull(command.getPostId(), pageable);
 
-        review.forEach(s-> {
-            s.getChild().forEach(c -> c.getId());
-        });
+        review.forEach(r -> r.getMember().getName());
 
         // 성능 최적화를 위해 Map으로
 //        Map<Long, List<Review>> collect = reviewRepository.findByParentReviewIn(review.getContent()).stream().collect(Collectors.groupingBy(c -> c.getParent().getId()));
@@ -120,7 +131,13 @@ public class ReviewService {
     }
 
 
+    public List<Review> getReviewsForReview(Long postId, Long reviewId) {
 
+        postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND));
+        reviewRepository.findById(reviewId).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND));
 
-
+        List<Review> reviews = reviewRepository.findAllByPostIdAndParentIdAndStatusOrderByCreatedAtDesc(postId, reviewId, ReviewStatus.SHOW);
+        System.out.println("ok");
+        return reviews;
+    }
 }

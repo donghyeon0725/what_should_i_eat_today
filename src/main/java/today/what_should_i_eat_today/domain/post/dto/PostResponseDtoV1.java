@@ -31,6 +31,10 @@ public class PostResponseDtoV1 {
 
     private Boolean isFavoriteByMe;
 
+    private Long numberOfLikes;
+
+    private Long numberOfFavorites;
+
 
     public PostResponseDtoV1(Post post) {
         this.id = post.getId();
@@ -43,7 +47,9 @@ public class PostResponseDtoV1 {
         this.content = post.getContent();
         this.archived = post.isArchived();
         this.isLikedByMe = post.getIsLikedByMe();
+        this.numberOfLikes = post.getNumberOfLikes();
         this.isFavoriteByMe = post.getIsFavoriteByMe();
+        this.numberOfFavorites = post.getNumberOfFavorites();
     }
 
     public static PostResponseDtoV1 fromPostRecentlyDto(Post post) {
@@ -56,7 +62,9 @@ public class PostResponseDtoV1 {
         dto.content = post.getContent();
         dto.archived = post.isArchived();
         dto.isLikedByMe = post.getIsLikedByMe();
+        dto.numberOfLikes = post.getNumberOfLikes();
         dto.isFavoriteByMe = post.getIsFavoriteByMe();
+        dto.numberOfFavorites = post.getNumberOfFavorites();
         return dto;
     }
 }

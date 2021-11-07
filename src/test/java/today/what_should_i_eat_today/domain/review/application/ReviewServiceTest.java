@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import today.what_should_i_eat_today.domain.activity.dao.ActivityRepository;
 import today.what_should_i_eat_today.domain.activity.entity.Activity;
@@ -24,7 +23,6 @@ import today.what_should_i_eat_today.domain.review.entity.ReviewType;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -308,7 +306,7 @@ class ReviewServiceTest {
         em.flush();
         em.clear();
 
-        reviewService.deleteReview(review.getId());
+        reviewService.deleteReview(review.getId(), member.getId());
 
         Review review1 = em.find(Review.class, reply1.getId());
         Review review2 = em.find(Review.class, reply2.getId());

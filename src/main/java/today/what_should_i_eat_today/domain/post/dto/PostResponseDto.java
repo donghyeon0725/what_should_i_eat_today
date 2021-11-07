@@ -40,7 +40,12 @@ public class PostResponseDto {
 
     private Boolean isFavoriteByMe;
 
+    private Long numberOfLikes;
+
+    private Long numberOfFavorites;
+
     private LocalDateTime createdAt;
+
 
     public static PostResponseDto from(Post post) {
         PostResponseDto dto = new PostResponseDto();
@@ -49,10 +54,14 @@ public class PostResponseDto {
         dto.content = post.getContent();
         dto.archived = post.isArchived();
         dto.isLikedByMe = post.getIsLikedByMe();
+        dto.numberOfLikes = post.getNumberOfLikes();
         dto.isFavoriteByMe = post.getIsFavoriteByMe();
+        dto.numberOfFavorites = post.getNumberOfFavorites();
+
         dto.imageName = post.getAttachment().getName();
         dto.imagePath = post.getAttachment().getPath();
         dto.createdAt = post.getCreatedAt();
+
 
         dto.member = new MemberResponseDto(post.getMember());
         dto.food = FoodResponseDto.from(post.getFood());
