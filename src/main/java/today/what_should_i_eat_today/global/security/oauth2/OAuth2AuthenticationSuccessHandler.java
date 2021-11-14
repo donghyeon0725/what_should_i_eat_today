@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 import today.what_should_i_eat_today.global.common.util.CookieUtils;
 import today.what_should_i_eat_today.global.config.AppProperties;
-import today.what_should_i_eat_today.global.error.exception.BadRequestException;
+import today.what_should_i_eat_today.global.error.exception.invalid.BadRequestException;
 import today.what_should_i_eat_today.global.security.TokenProvider;
 
 import javax.servlet.ServletException;

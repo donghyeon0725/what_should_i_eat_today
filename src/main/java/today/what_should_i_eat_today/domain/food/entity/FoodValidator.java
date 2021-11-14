@@ -2,16 +2,13 @@ package today.what_should_i_eat_today.domain.food.entity;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import today.what_should_i_eat_today.domain.category.dao.CategoryRepository;
 import today.what_should_i_eat_today.domain.category.dao.FoodCategoryRepository;
 import today.what_should_i_eat_today.domain.food.dao.FoodRepository;
 import today.what_should_i_eat_today.domain.tag.dao.TagRepository;
-import today.what_should_i_eat_today.domain.tag.dto.TagRequest;
 import today.what_should_i_eat_today.global.error.ErrorCode;
-import today.what_should_i_eat_today.global.error.exception.CannotExecuteException;
+import today.what_should_i_eat_today.global.error.exception.invalid.CannotExecuteException;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor

@@ -3,13 +3,12 @@ package today.what_should_i_eat_today.domain.tag.entity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-import org.springframework.web.client.HttpClientErrorException;
 import today.what_should_i_eat_today.domain.admin.entity.Admin;
 import today.what_should_i_eat_today.domain.tag.dao.TagRepository;
 import today.what_should_i_eat_today.domain.tag.exception.InvalidTagException;
 import today.what_should_i_eat_today.global.error.ErrorCode;
-import today.what_should_i_eat_today.global.error.exception.ResourceConflictException;
-import today.what_should_i_eat_today.global.error.exception.UnauthorizedUserException;
+import today.what_should_i_eat_today.global.error.exception.invalid.ResourceConflictException;
+import today.what_should_i_eat_today.global.error.exception.invalid.UnauthorizedUserException;
 
 @Component
 @RequiredArgsConstructor

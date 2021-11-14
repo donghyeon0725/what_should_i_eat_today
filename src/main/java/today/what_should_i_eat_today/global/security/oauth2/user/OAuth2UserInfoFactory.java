@@ -2,7 +2,7 @@ package today.what_should_i_eat_today.global.security.oauth2.user;
 
 
 import today.what_should_i_eat_today.domain.model.AuthProvider;
-import today.what_should_i_eat_today.global.error.exception.OAuth2AuthenticationProcessingException;
+import today.what_should_i_eat_today.global.error.exception.invalid.OAuth2AuthenticationProcessingException;
 
 import java.util.Map;
 

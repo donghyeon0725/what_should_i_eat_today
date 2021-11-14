@@ -11,8 +11,6 @@ import today.what_should_i_eat_today.domain.admin.dao.AdminRepository;
 import today.what_should_i_eat_today.domain.admin.entity.Admin;
 import today.what_should_i_eat_today.domain.member.dao.MemberRepository;
 import today.what_should_i_eat_today.domain.member.entity.Member;
-import today.what_should_i_eat_today.global.error.ErrorCode;
-import today.what_should_i_eat_today.global.error.exception.ResourceNotFoundException;
 
 import java.util.Optional;
 

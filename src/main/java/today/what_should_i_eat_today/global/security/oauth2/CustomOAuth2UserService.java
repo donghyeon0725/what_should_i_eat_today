@@ -12,7 +12,7 @@ import org.springframework.util.StringUtils;
 import today.what_should_i_eat_today.domain.member.dao.MemberRepository;
 import today.what_should_i_eat_today.domain.member.entity.Member;
 import today.what_should_i_eat_today.domain.model.AuthProvider;
-import today.what_should_i_eat_today.global.error.exception.OAuth2AuthenticationProcessingException;
+import today.what_should_i_eat_today.global.error.exception.invalid.OAuth2AuthenticationProcessingException;
 import today.what_should_i_eat_today.global.security.UserPrincipal;
 import today.what_should_i_eat_today.global.security.oauth2.user.OAuth2UserInfo;
 import today.what_should_i_eat_today.global.security.oauth2.user.OAuth2UserInfoFactory;
@@ -42,6 +42,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private OAuth2User processOAuth2User(OAuth2UserRequest oAuth2UserRequest, OAuth2User oAuth2User) {
 
         final String registrationId = oAuth2UserRequest.getClientRegistration().getRegistrationId();
+
+        final String accessToken = oAuth2UserRequest.getAccessToken().getTokenValue();
+        System.err.println("accessToken-> " + accessToken);
 
         OAuth2UserInfo oAuth2UserInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(registrationId, oAuth2User.getAttributes());
 

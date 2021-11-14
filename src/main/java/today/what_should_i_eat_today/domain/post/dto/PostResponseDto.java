@@ -45,6 +45,7 @@ public class PostResponseDto {
     private Long numberOfFavorites;
 
     private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
 
     public static PostResponseDto from(Post post) {
@@ -61,6 +62,7 @@ public class PostResponseDto {
         dto.imageName = post.getAttachment().getName();
         dto.imagePath = post.getAttachment().getPath();
         dto.createdAt = post.getCreatedAt();
+        dto.updatedAt = post.getUpdatedAt();
 
 
         dto.member = new MemberResponseDto(post.getMember());

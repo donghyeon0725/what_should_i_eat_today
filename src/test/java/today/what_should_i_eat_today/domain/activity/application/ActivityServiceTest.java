@@ -10,11 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 import today.what_should_i_eat_today.domain.activity.dto.ActivityCommand;
 import today.what_should_i_eat_today.domain.activity.entity.Activity;
 import today.what_should_i_eat_today.domain.member.entity.Member;
-import today.what_should_i_eat_today.domain.member.entity.MemberStatus;
 import today.what_should_i_eat_today.domain.member.mock.CustomMockUser;
-import today.what_should_i_eat_today.domain.report.entity.ReportType;
-import today.what_should_i_eat_today.domain.review.entity.ReviewType;
-import today.what_should_i_eat_today.global.error.exception.UnauthorizedUserException;
+import today.what_should_i_eat_today.global.error.exception.invalid.UnauthorizedUserException;
 
 import javax.persistence.EntityManager;
 

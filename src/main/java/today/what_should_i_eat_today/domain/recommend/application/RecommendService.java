@@ -13,7 +13,7 @@ import today.what_should_i_eat_today.domain.review.dao.ReviewRepository;
 import today.what_should_i_eat_today.domain.review.entity.Review;
 import today.what_should_i_eat_today.global.error.ErrorCode;
 import today.what_should_i_eat_today.global.error.exception.ResourceNotFoundException;
-import today.what_should_i_eat_today.global.error.exception.UserNotFoundException;
+import today.what_should_i_eat_today.global.error.exception.notfound.UserNotFoundException;
 import today.what_should_i_eat_today.global.security.UserPrincipal;
 
 import java.util.Optional;

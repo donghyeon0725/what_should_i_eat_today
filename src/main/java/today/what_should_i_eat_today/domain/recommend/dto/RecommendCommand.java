@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import today.what_should_i_eat_today.domain.recommend.entity.RecommendType;
-import today.what_should_i_eat_today.domain.review.entity.ReviewType;
 import today.what_should_i_eat_today.global.error.ErrorCode;
 import today.what_should_i_eat_today.global.error.exception.InvalidStatusException;
 

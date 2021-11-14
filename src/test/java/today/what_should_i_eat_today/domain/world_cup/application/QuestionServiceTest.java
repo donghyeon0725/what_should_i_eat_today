@@ -14,11 +14,10 @@ import today.what_should_i_eat_today.domain.world_cup.dto.QuestionRequest;
 import today.what_should_i_eat_today.domain.world_cup.entity.Package;
 import today.what_should_i_eat_today.domain.world_cup.entity.Question;
 import today.what_should_i_eat_today.domain.world_cup.entity.QuestionPackage;
-import today.what_should_i_eat_today.global.error.exception.CannotExecuteException;
 import today.what_should_i_eat_today.global.error.exception.ResourceNotFoundException;
+import today.what_should_i_eat_today.global.error.exception.invalid.CannotExecuteException;
 
 import javax.persistence.EntityManager;
-
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;

@@ -94,8 +94,6 @@ public class PostApi {
     @GetMapping("/posts/recently")
     public ResponseEntity<?> getPostsRecently(@CurrentUser UserPrincipal principal, @PageableDefault @SortDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
 
-        System.out.println(pageable);
-
         Page<Post> postPage = postService.getPostsRecently(principal, pageable);
 
         return ResponseEntity.ok(postPage.map(PostResponseDtoV1::fromPostRecentlyDto));

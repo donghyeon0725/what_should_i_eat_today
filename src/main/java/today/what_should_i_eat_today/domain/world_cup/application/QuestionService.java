@@ -1,6 +1,5 @@
 package today.what_should_i_eat_today.domain.world_cup.application;
 
-import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,10 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 import today.what_should_i_eat_today.domain.tag.dao.TagRepository;
 import today.what_should_i_eat_today.domain.tag.entity.Tag;
 import today.what_should_i_eat_today.domain.tag.entity.TagValidator;
-import today.what_should_i_eat_today.domain.world_cup.dao.QuestionPackageRepository;
 import today.what_should_i_eat_today.domain.world_cup.dao.QuestionRepository;
 import today.what_should_i_eat_today.domain.world_cup.dto.QuestionRequest;
-import today.what_should_i_eat_today.domain.world_cup.entity.Package;
 import today.what_should_i_eat_today.domain.world_cup.entity.Question;
 import today.what_should_i_eat_today.domain.world_cup.entity.QuestionValidator;
 import today.what_should_i_eat_today.global.error.ErrorCode;

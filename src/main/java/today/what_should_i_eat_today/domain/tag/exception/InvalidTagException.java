@@ -8,7 +8,7 @@ public class InvalidTagException extends RuntimeException {
     private ErrorCode errorCode;
 
     public InvalidTagException(ErrorCode errorCode) {
-        super(errorCode.getMessage());
+        super(errorCode.getMessageEn());
         this.errorCode = errorCode;
     }
 

@@ -13,7 +13,7 @@ import today.what_should_i_eat_today.domain.report.entity.Report;
 import today.what_should_i_eat_today.domain.report.entity.ReportStatus;
 import today.what_should_i_eat_today.domain.report.entity.ReportType;
 
-import java.util.List;
+import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
@@ -35,7 +35,7 @@ public class ReportApi {
 
     @PostMapping("/reports")
     @Secured("ROLE_USER")
-    public ResponseEntity createReport(@RequestBody ReportRequestDto reportRequestDto) {
+    public ResponseEntity createReport(@Valid @RequestBody ReportRequestDto reportRequestDto) {
         final ReportCommand command = reportRequestDto.getCommand();
 
         if (ReportType.PROFILE.equals(command.getType())) {

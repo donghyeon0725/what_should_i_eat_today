@@ -37,7 +37,6 @@ public class CategoryApi {
         // todo : 2021.09.28 ResponseEntity.create() 로 변경필요
         return ResponseEntity.ok("ok");
     }
-
     @GetMapping("categories/{id}")
     @Secured("ROLE_ADMIN")
     public ResponseEntity<?> getCategory(@PathVariable("id") Long categoryId) {

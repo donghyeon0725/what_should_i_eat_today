@@ -49,6 +49,7 @@ public class Review extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private ReviewType reviewType;
 
+    @Column(length = 3000, nullable = false)
     private String content;
 
     @Enumerated(EnumType.STRING)

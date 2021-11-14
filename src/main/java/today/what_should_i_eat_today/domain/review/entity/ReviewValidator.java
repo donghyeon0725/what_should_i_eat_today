@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import today.what_should_i_eat_today.global.error.ErrorCode;
-import today.what_should_i_eat_today.global.error.exception.CannotExecuteException;
+import today.what_should_i_eat_today.global.error.exception.invalid.CannotExecuteException;
 
 @Component
 @RequiredArgsConstructor

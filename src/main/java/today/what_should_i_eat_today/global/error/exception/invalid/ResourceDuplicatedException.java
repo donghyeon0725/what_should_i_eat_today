@@ -1,4 +1,4 @@
-package today.what_should_i_eat_today.global.error.exception;
+package today.what_should_i_eat_today.global.error.exception.invalid;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
@@ -17,7 +17,7 @@ public class ResourceDuplicatedException extends RuntimeException {
     }
 
     public ResourceDuplicatedException(ErrorCode errorCode) {
-        super(errorCode.getMessage());
+        super(errorCode.getMessageEn());
         this.errorCode = errorCode;
     }
 }
