@@ -76,4 +76,8 @@ public class TagService {
     public List<Tag> getTags() {
         return tagRepository.findAll();
     }
+
+    public Page<Tag> getTags(String name, Pageable pageable) {
+        return tagRepository.findByNameContains(name, pageable);
+    }
 }
