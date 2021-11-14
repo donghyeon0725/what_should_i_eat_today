@@ -177,4 +177,12 @@ public class FoodService {
 
         return findFood;
     }
+
+    public Food findById(Long id) {
+        Food findFood = foodRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND));
+
+        findFood.getFoodTags().forEach(r -> r.getTag().getName());
+        findFood.getFoodCategories().forEach(r -> r.getCategory().getName());
+        return findFood;
+    }
 }

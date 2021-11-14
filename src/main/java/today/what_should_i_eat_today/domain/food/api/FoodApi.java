@@ -44,9 +44,7 @@ public class FoodApi {
         return ResponseEntity.ok(foods);
     }
 
-    /**
-     * 태그 국가가 포함된 음식 목록 가져오기
-     */
+
     @GetMapping("/foods")
     public ResponseEntity<?> getFoodList(
             @PageableDefault @SortDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable page,
@@ -73,5 +71,11 @@ public class FoodApi {
         Page<Food> foods = foodService.getFoodList(foodDto, pageable);
 
         return ResponseEntity.ok(foods.map(s -> new FoodResponseDto(s)));
+    }
+
+    @GetMapping("/foods/{id}")
+    public ResponseEntity getFood(@PathVariable("id") Long id) {
+        FoodResponseDto dto = new FoodResponseDto(foodService.findById(id));
+        return ResponseEntity.ok(dto);
     }
 }

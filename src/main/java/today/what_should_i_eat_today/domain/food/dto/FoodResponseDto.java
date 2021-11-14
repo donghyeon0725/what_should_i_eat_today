@@ -28,6 +28,7 @@ public class FoodResponseDto {
 
     private String country;
 
+    // new 로 객체를 생성하는 경우 init value 가 null 이 되어버리는 버그가 있음 (롬복에서 고쳐줘야 하는데 고쳐주지 않음)
     @Builder.Default
     @JsonProperty("foodCategories")
     private List<CategoryResponseDto> categoryResponseDtos = new ArrayList<>();
@@ -37,10 +38,16 @@ public class FoodResponseDto {
     private List<TagResponseDto> tagResponseDtos = new ArrayList<>();
 
     public FoodResponseDto(Food food) {
+        categoryResponseDtos = new ArrayList<>();
+        tagResponseDtos = new ArrayList<>();
         this.id = food.getId();
         this.name = food.getName();
-        food.getFoodTags().forEach(s -> tagResponseDtos.add(new TagResponseDto(s.getTag().getId(), s.getTag().getName())));
-        food.getFoodCategories().forEach(s -> categoryResponseDtos.add(new CategoryResponseDto(s.getCategory().getId(), s.getCategory().getName())));
+
+        for (int i=0; i<food.getFoodTags().size(); i++)
+            tagResponseDtos.add(new TagResponseDto(food.getFoodTags().get(i).getTag().getId(), food.getFoodTags().get(i).getTag().getName()));
+
+        for (int i=0; i<food.getFoodCategories().size(); i++)
+            categoryResponseDtos.add(new CategoryResponseDto(food.getFoodCategories().get(i).getCategory().getId(), food.getFoodCategories().get(i).getCategory().getName()));
     }
 
 

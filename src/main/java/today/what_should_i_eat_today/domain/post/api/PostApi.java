@@ -8,6 +8,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.SortDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import today.what_should_i_eat_today.domain.activity.dto.PostCreateCommand;
 import today.what_should_i_eat_today.domain.activity.dto.PostCreateRequest;
 import today.what_should_i_eat_today.domain.activity.dto.PostUpdateCommand;
@@ -19,6 +20,7 @@ import today.what_should_i_eat_today.domain.post.entity.Post;
 import today.what_should_i_eat_today.global.security.CurrentUser;
 import today.what_should_i_eat_today.global.security.UserPrincipal;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -161,13 +163,12 @@ public class PostApi {
     }
 
     @PostMapping("/posts")
-    public ResponseEntity<?> createPost(@CurrentUser UserPrincipal principal, @ModelAttribute @Valid PostCreateRequest requestDto) {
-
-        PostCreateCommand postCreateCommand = requestDto.toCommand(principal.getId());
+    public ResponseEntity<?> createPost(@CurrentUser UserPrincipal principal, MultipartFile file, @ModelAttribute @Valid PostCreateRequest requestDto) {
+        PostCreateCommand postCreateCommand = requestDto.toCommand(principal.getId(), file);
 
         Post post = postService.createPost(postCreateCommand);
 
-        return ResponseEntity.ok(post);
+        return ResponseEntity.ok(new PostResponseDtoV1(post));
     }
 
     @PutMapping("/posts/{id}")
