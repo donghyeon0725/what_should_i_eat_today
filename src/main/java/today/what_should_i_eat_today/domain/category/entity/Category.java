@@ -2,9 +2,12 @@ package today.what_should_i_eat_today.domain.category.entity;
 
 import lombok.*;
 import today.what_should_i_eat_today.domain.admin.entity.Admin;
+import today.what_should_i_eat_today.domain.food.entity.Food;
 import today.what_should_i_eat_today.global.common.entity.BaseEntity;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Builder
 @Entity
@@ -18,6 +21,7 @@ public class Category extends BaseEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
     private Admin admin;
 
     private String name;
@@ -27,5 +31,49 @@ public class Category extends BaseEntity {
 
 
     private Boolean visible;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<FoodCategory> foodCategories = new ArrayList<>();
+
+    public void addFoodMapping(FoodCategory foodCategory) {
+        foodCategories.add(foodCategory);
+        foodCategory.addCategoryMapping(this);
+    }
+
+    public void addFoodMappings(FoodCategory... foodCategory) {
+        for (FoodCategory category : foodCategory) {
+            addFoodMapping(category);
+        }
+    }
+
+    public void addFoodMappings(Food... foods) {
+        for (Food food : foods) {
+            addFoodMapping(FoodCategory.builder().food(food).build());
+        }
+    }
+
+    public void removeFoodMapping(Long categoryId, Long foodId) {
+        for (int i = 0; i < foodCategories.size(); i++) {
+            if (foodCategories.get(i).getCategory().getId().equals(categoryId) && foodCategories.get(i).getFood().getId().equals(foodId)) {
+                foodCategories.remove(i);
+                return;
+            }
+        }
+    }
+
+    public void changeName(String name, CategoryValidator validator) {
+        validator.validateName(name);
+        this.name = name;
+    }
+
+    public void changeDescription(String description) {
+        this.description = description;
+    }
+
+    public void changeVisible(Boolean visible) {
+        if (visible != null)
+            this.visible = visible;
+    }
 
 }

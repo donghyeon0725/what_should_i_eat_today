@@ -4,6 +4,7 @@ package today.what_should_i_eat_today.domain.recommend.entity;
 import lombok.*;
 import today.what_should_i_eat_today.domain.member.entity.Member;
 import today.what_should_i_eat_today.domain.post.entity.Post;
+import today.what_should_i_eat_today.domain.review.entity.Review;
 
 import javax.persistence.*;
 
@@ -22,7 +23,7 @@ public class Recommend {
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private Post post;
+    private Review review;
 
     @Enumerated(EnumType.STRING)
     private RecommendType type;

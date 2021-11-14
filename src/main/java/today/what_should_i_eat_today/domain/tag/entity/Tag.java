@@ -27,7 +27,7 @@ public class Tag extends BaseEntity {
     private String name;
 
     @Enumerated(EnumType.STRING)
-    private Status status;
+    private TagStatus status;
 
 
 }

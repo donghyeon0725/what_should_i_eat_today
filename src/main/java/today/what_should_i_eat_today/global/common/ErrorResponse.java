@@ -10,7 +10,6 @@ import today.what_should_i_eat_today.global.error.ErrorCode;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,7 +19,7 @@ import java.util.stream.Collectors;
  * */
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@JsonIgnoreProperties(value={"id", "detail"})
+@JsonIgnoreProperties(value = {"id", "detail"})
 public class ErrorResponse {
     // 이 필드는 외부에 노출 되지 않도록 한다.
     @Id
@@ -29,7 +28,10 @@ public class ErrorResponse {
     private Integer id;
 
     @Column(nullable = false)
-    private String message;
+    private String messageEn;
+
+    @Column(nullable = false)
+    private String messageKr;
 
     @Column(nullable = false)
     private int status;
@@ -50,7 +52,8 @@ public class ErrorResponse {
 
 
     private ErrorResponse(final ErrorCode code, final List<FieldError> errors) {
-        this.message = code.getMessage();
+        this.messageEn = code.getMessageEn();
+        this.messageKr = code.getMessageKr();
         this.status = code.getStatus();
         this.errors = errors;
         this.detail = "error List";
@@ -59,11 +62,23 @@ public class ErrorResponse {
     }
 
     private ErrorResponse(final ErrorCode code, Exception e) {
-        this.message = code.getMessage();
+        this.messageEn = code.getMessageEn();
+        this.messageKr = code.getMessageKr();
         this.status = code.getStatus();
-        this.detail = e.getMessage() != null ? e.getMessage() : Arrays.stream(e.getStackTrace()).map(stackTraceElement ->
-                stackTraceElement.getLineNumber() + " : " + stackTraceElement.getMethodName() + " : " + stackTraceElement.getClassName() + "\n"
-        ).collect(Collectors.joining()) + e.getCause().getMessage();
+        this.detail = e.getMessage() != null ? e.getMessage() : e.getStackTrace().toString();
+//        Arrays.stream(e.getStackTrace()).map(stackTraceElement ->
+//                stackTraceElement.getLineNumber() + " : " + stackTraceElement.getMethodName() + " : " + stackTraceElement.getClassName() + "\n"
+//        ).collect(Collectors.joining()) + e.getCause().getMessage()
+        this.code = code.getCode();
+        this.errors = new ArrayList<>();
+        this.date = new Date();
+    }
+
+    private ErrorResponse(final ErrorCode code, String messageEn) {
+        this.messageEn = code.getMessageEn();
+        this.messageKr = code.getMessageKr();
+        this.status = code.getStatus();
+        this.detail = messageEn;
         this.code = code.getCode();
         this.errors = new ArrayList<>();
         this.date = new Date();
@@ -77,6 +92,11 @@ public class ErrorResponse {
     public static ErrorResponse of(final ErrorCode code, Exception e) {
         return new ErrorResponse(code, e);
     }
+
+    public static ErrorResponse of(final ErrorCode code, String message) {
+        return new ErrorResponse(code, message);
+    }
+
 
 
     public static ErrorResponse of(final ErrorCode code, final List<FieldError> errors) {

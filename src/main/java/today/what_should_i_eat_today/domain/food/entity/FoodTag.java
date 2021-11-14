@@ -2,6 +2,7 @@ package today.what_should_i_eat_today.domain.food.entity;
 
 import lombok.*;
 import today.what_should_i_eat_today.domain.tag.entity.Tag;
+import today.what_should_i_eat_today.global.common.entity.BaseEntity;
 
 import javax.persistence.*;
 
@@ -10,7 +11,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-public class FoodTag {
+public class FoodTag extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,4 +23,7 @@ public class FoodTag {
     @ManyToOne(fetch = FetchType.LAZY)
     private Tag tag;
 
+    public void mappingToFood(Food food) {
+        this.food = food;
+    }
 }
