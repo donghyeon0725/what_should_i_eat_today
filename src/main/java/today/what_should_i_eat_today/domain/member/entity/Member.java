@@ -13,7 +13,6 @@ import today.what_should_i_eat_today.event.service.Events;
 import today.what_should_i_eat_today.global.common.entity.BaseEntity;
 
 import javax.persistence.*;
-import java.awt.*;
 import java.util.Objects;
 
 @Builder
@@ -42,6 +41,8 @@ public class Member extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private MemberStatus status;
+
+    private String accessToken;
 
     public void changeToDefaultProfile() {
         this.profileImg = Profile.DEFAULT.getPath();

@@ -1,8 +1,6 @@
 package today.what_should_i_eat_today.domain.report.application;
 
 import lombok.RequiredArgsConstructor;
-import lombok.val;
-import org.omg.CORBA.CODESET_INCOMPATIBLE;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,7 +22,7 @@ import today.what_should_i_eat_today.domain.review.dao.ReviewRepository;
 import today.what_should_i_eat_today.domain.review.entity.Review;
 import today.what_should_i_eat_today.global.error.ErrorCode;
 import today.what_should_i_eat_today.global.error.exception.ResourceNotFoundException;
-import today.what_should_i_eat_today.global.error.exception.UserNotFoundException;
+import today.what_should_i_eat_today.global.error.exception.notfound.UserNotFoundException;
 import today.what_should_i_eat_today.global.security.UserPrincipal;
 
 @Service

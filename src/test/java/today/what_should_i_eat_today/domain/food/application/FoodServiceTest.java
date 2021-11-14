@@ -1,10 +1,8 @@
 package today.what_should_i_eat_today.domain.food.application;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -14,9 +12,7 @@ import today.what_should_i_eat_today.domain.category.dao.FoodCategoryRepository;
 import today.what_should_i_eat_today.domain.category.entity.Category;
 import today.what_should_i_eat_today.domain.category.entity.FoodCategory;
 import today.what_should_i_eat_today.domain.country.entity.Country;
-import today.what_should_i_eat_today.domain.food.dao.FoodRepository;
 import today.what_should_i_eat_today.domain.food.dto.FoodAdminCommand;
-import today.what_should_i_eat_today.domain.food.dto.FoodCommand;
 import today.what_should_i_eat_today.domain.food.dto.FoodMemberCommand;
 import today.what_should_i_eat_today.domain.food.entity.Food;
 import today.what_should_i_eat_today.domain.food.entity.FoodTag;
@@ -25,14 +21,15 @@ import today.what_should_i_eat_today.domain.member.entity.MemberStatus;
 import today.what_should_i_eat_today.domain.member.mock.CustomMockUser;
 import today.what_should_i_eat_today.domain.tag.entity.Tag;
 import today.what_should_i_eat_today.domain.tag.entity.TagStatus;
-import today.what_should_i_eat_today.global.error.exception.CannotExecuteException;
+import today.what_should_i_eat_today.global.error.exception.invalid.CannotExecuteException;
 
 import javax.persistence.EntityManager;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @Transactional

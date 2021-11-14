@@ -4,31 +4,29 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import today.what_should_i_eat_today.domain.admin.dao.AdminRepository;
 import today.what_should_i_eat_today.domain.admin.entity.Admin;
-import today.what_should_i_eat_today.domain.favorite.entity.Favorite;
 import today.what_should_i_eat_today.domain.member.dao.MemberRepository;
 import today.what_should_i_eat_today.domain.member.entity.Member;
-import today.what_should_i_eat_today.domain.post.entity.Post;
 import today.what_should_i_eat_today.domain.qna.dao.QnaRepository;
 import today.what_should_i_eat_today.domain.qna.dao.QnaReviewRepository;
 import today.what_should_i_eat_today.domain.qna.dto.QnaCommand;
 import today.what_should_i_eat_today.domain.qna.dto.QnaDto;
 import today.what_should_i_eat_today.domain.qna.dto.QnaReviewCommand;
-import today.what_should_i_eat_today.domain.qna.entity.*;
+import today.what_should_i_eat_today.domain.qna.entity.Qna;
+import today.what_should_i_eat_today.domain.qna.entity.QnaReview;
+import today.what_should_i_eat_today.domain.qna.entity.QnaStatus;
+import today.what_should_i_eat_today.domain.qna.entity.QnaValidator;
 import today.what_should_i_eat_today.global.error.ErrorCode;
 import today.what_should_i_eat_today.global.error.exception.ResourceNotFoundException;
-import today.what_should_i_eat_today.global.error.exception.UserNotFoundException;
+import today.what_should_i_eat_today.global.error.exception.notfound.UserNotFoundException;
 import today.what_should_i_eat_today.global.security.UserPrincipal;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor

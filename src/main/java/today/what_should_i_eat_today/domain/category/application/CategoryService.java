@@ -15,8 +15,8 @@ import today.what_should_i_eat_today.domain.category.entity.CategoryValidator;
 import today.what_should_i_eat_today.domain.category.entity.FoodCategory;
 import today.what_should_i_eat_today.domain.food.entity.Food;
 import today.what_should_i_eat_today.global.error.ErrorCode;
-import today.what_should_i_eat_today.global.error.exception.ResourceDuplicatedException;
 import today.what_should_i_eat_today.global.error.exception.ResourceNotFoundException;
+import today.what_should_i_eat_today.global.error.exception.invalid.ResourceDuplicatedException;
 
 import java.util.List;
 

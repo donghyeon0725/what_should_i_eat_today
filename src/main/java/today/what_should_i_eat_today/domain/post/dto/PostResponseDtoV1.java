@@ -7,6 +7,8 @@ import today.what_should_i_eat_today.domain.food.dto.FoodResponseDto;
 import today.what_should_i_eat_today.domain.member.dto.MemberResponseDto;
 import today.what_should_i_eat_today.domain.post.entity.Post;
 
+import java.time.LocalDateTime;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -35,6 +37,9 @@ public class PostResponseDtoV1 {
 
     private Long numberOfFavorites;
 
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+
 
     public PostResponseDtoV1(Post post) {
         this.id = post.getId();
@@ -50,6 +55,8 @@ public class PostResponseDtoV1 {
         this.numberOfLikes = post.getNumberOfLikes();
         this.isFavoriteByMe = post.getIsFavoriteByMe();
         this.numberOfFavorites = post.getNumberOfFavorites();
+        this.createdAt = post.getCreatedAt();
+        this.updatedAt = post.getUpdatedAt();
     }
 
     public static PostResponseDtoV1 fromPostRecentlyDto(Post post) {
@@ -65,6 +72,8 @@ public class PostResponseDtoV1 {
         dto.numberOfLikes = post.getNumberOfLikes();
         dto.isFavoriteByMe = post.getIsFavoriteByMe();
         dto.numberOfFavorites = post.getNumberOfFavorites();
+        dto.createdAt = post.getCreatedAt();
+        dto.updatedAt = post.getUpdatedAt();
         return dto;
     }
 }

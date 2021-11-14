@@ -4,14 +4,20 @@ import lombok.Data;
 import today.what_should_i_eat_today.domain.report.entity.ReportStatus;
 import today.what_should_i_eat_today.domain.report.entity.ReportType;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
+
 @Data
 public class ReportRequestDto {
     private Long id;
 
     private ReportType type;
 
+    @NotEmpty
+    @Size(min = 1)
     private String title;
 
+    @NotEmpty
     private String content;
 
     private ReportStatus status;

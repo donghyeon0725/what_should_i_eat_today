@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import today.what_should_i_eat_today.domain.tag.entity.QTag;
 import today.what_should_i_eat_today.domain.tag.entity.Tag;
 
 import static today.what_should_i_eat_today.domain.tag.entity.QTag.tag;

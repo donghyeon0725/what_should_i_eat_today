@@ -5,12 +5,17 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
+
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class WriteReviewRequestDto {
 
+    @NotEmpty
+    @Size(min = 1, max = 3000)
     private String content;
 
     public ReviewCommand toCommand(Long postId) {

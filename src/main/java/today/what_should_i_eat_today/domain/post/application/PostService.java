@@ -198,6 +198,8 @@ public class PostService {
 
     public Post getPost(UserPrincipal principal, Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND));
+        if (post.isArchived())
+            throw new InvalidStatusException(ErrorCode.INVALID_INPUT_VALUE);
 
         post.getFood().getFoodTags().forEach(foodTag -> foodTag.getTag().getName());
         post.getFood().getFoodCategories().forEach(foodCategory -> foodCategory.getCategory().getName());
@@ -353,7 +355,7 @@ public class PostService {
 
     public Page<Post> getPostsRecently(UserPrincipal principal, Pageable pageable) {
 
-        Page<Post> postPage = postRepository.findAll(pageable);
+        Page<Post> postPage = postRepository.findAllByArchived(false, pageable);
 
         postPage.getContent().forEach(post -> post.getMember().getName());
 

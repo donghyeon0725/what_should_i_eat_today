@@ -1,6 +1,5 @@
 package today.what_should_i_eat_today.domain.world_cup.application;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,9 +8,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 import today.what_should_i_eat_today.domain.world_cup.dto.PackageRequest;
-import today.what_should_i_eat_today.domain.world_cup.entity.*;
 import today.what_should_i_eat_today.domain.world_cup.entity.Package;
-import today.what_should_i_eat_today.global.error.exception.CannotExecuteException;
+import today.what_should_i_eat_today.domain.world_cup.entity.*;
+import today.what_should_i_eat_today.global.error.exception.invalid.CannotExecuteException;
 
 import javax.persistence.EntityManager;
 import java.time.LocalDateTime;

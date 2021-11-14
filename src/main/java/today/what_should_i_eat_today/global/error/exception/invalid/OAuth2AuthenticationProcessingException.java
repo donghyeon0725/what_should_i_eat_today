@@ -1,4 +1,4 @@
-package today.what_should_i_eat_today.global.error.exception;
+package today.what_should_i_eat_today.global.error.exception.invalid;
 
 import org.springframework.security.core.AuthenticationException;
 

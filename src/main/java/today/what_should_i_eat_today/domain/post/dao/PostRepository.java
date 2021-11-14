@@ -50,4 +50,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     Page<Post> findByMember_IdAndArchivedIsFalse(Long memberId, Pageable pageable);
 
     Integer countByMemberAndArchivedIsFalse(Member member);
+
+    Page<Post> findAllByArchived(Boolean archived, Pageable pageable);
 }

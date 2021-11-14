@@ -1,6 +1,5 @@
 package today.what_should_i_eat_today.domain.world_cup.application;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +19,8 @@ import today.what_should_i_eat_today.global.error.exception.ResourceNotFoundExce
 import javax.persistence.EntityManager;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @Transactional

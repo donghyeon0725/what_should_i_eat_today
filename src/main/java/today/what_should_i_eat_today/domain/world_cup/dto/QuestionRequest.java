@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import today.what_should_i_eat_today.global.error.ErrorCode;
 import today.what_should_i_eat_today.global.error.exception.ResourceNotFoundException;
 
-import javax.persistence.Column;
 import javax.validation.constraints.Size;
 
 @Builder

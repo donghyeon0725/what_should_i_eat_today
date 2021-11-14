@@ -7,7 +7,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import today.what_should_i_eat_today.domain.member.dao.MemberRepository;
-import today.what_should_i_eat_today.global.error.exception.ResourceDuplicatedException;
+import today.what_should_i_eat_today.global.error.exception.invalid.ResourceDuplicatedException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
