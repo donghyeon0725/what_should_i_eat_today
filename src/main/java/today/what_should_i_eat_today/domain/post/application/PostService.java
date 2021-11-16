@@ -411,4 +411,18 @@ public class PostService {
 
         return new PageImpl<>(postPage.getContent(), pageable, postPage.getTotalElements());
     }
+
+    public Post getPost(Long postId) {
+
+        Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND));
+        if (post.isArchived())
+            throw new InvalidStatusException(ErrorCode.INVALID_INPUT_VALUE);
+
+        post.getFood().getFoodTags().forEach(foodTag -> foodTag.getTag().getName());
+        post.getFood().getFoodCategories().forEach(foodCategory -> foodCategory.getCategory().getName());
+
+        post.getFood().getCountry().getName();
+
+        return post;
+    }
 }

@@ -2,11 +2,13 @@ package today.what_should_i_eat_today.domain.report.dto;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import today.what_should_i_eat_today.domain.report.entity.ReportType;
 import today.what_should_i_eat_today.global.error.ErrorCode;
 import today.what_should_i_eat_today.global.error.exception.InvalidStatusException;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @Getter
 public class ReviewReportCommand extends ReportCommand {
