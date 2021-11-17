@@ -26,7 +26,7 @@ import java.util.UUID;
 @Slf4j
 @Component
 @Transactional
-@Profile(value = "local")
+@Profile(value = {"local", "prod"})
 @RequiredArgsConstructor
 public class DataInitializer2 implements ApplicationRunner {
 

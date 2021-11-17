@@ -2,7 +2,6 @@ package today.what_should_i_eat_today.global.common.application.file;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,31 +19,24 @@ import java.util.Objects;
 
 @Slf4j
 @Service
-@Profile(value = "local")
-public class FileSystemStorageService implements StorageService {
+@Profile("prod")
+public class JarStreamStorageService implements StorageService {
 
+    private final Path rootLocation;
 
-    private final Path rootLocation; // static/file
-    private Path uploadPath; // c:/~~~~/static/file
-    private static final String SAVED_LOCAL_URL_PATH = "http://localhost:8081/static/file/";
-
-    public FileSystemStorageService(AppProperties appProperties) {
+    public JarStreamStorageService(AppProperties appProperties) {
         this.rootLocation = Paths.get(appProperties.getFileRootLocation());
     }
 
     @Override
-    public void init() throws IOException {
-
-        ClassPathResource cr = new ClassPathResource(rootLocation.toString());
-
-        if (!cr.exists()) {
-            log.error("{} 디렉토리가 존재하지 않습니다", cr.getPath());
+    public void init() {
+        try {
+            boolean exists = Files.exists(rootLocation);
+            if (!exists) Files.createDirectory(rootLocation);
+        } catch (IOException e) {
+            log.error("{} 디렉토리를 생성할 수 없습니다 (상위 디렉토리가 없는 경우 발생합니다)", rootLocation);
+            throw new IllegalArgumentException(e);
         }
-
-        log.info("파일 업로드 디렉토리 경로 -> {}", cr.getURI().toString());
-
-        this.uploadPath = Paths.get(cr.getURI());
-
     }
 
     @Override
@@ -54,12 +46,12 @@ public class FileSystemStorageService implements StorageService {
                 throw new InvalidStatusException(ErrorCode.INVALID_INPUT_VALUE_ARGUMENT);
             }
 
-            Path resolvePath = this.uploadPath.resolve(Objects.requireNonNull(file.getOriginalFilename()));
+            Path resolvePath = this.rootLocation.resolve(Objects.requireNonNull(file.getOriginalFilename()));
 
             Files.copy(file.getInputStream(), resolvePath, StandardCopyOption.REPLACE_EXISTING); // 덮어씌우기
 
             return Attachment.builder()
-                    .path(SAVED_LOCAL_URL_PATH + file.getOriginalFilename())
+                    .path(resolvePath.toUri().getPath())
                     .name(file.getOriginalFilename())
                     .build();
 
@@ -73,7 +65,7 @@ public class FileSystemStorageService implements StorageService {
     public void delete(String fileName) {
         try {
 
-            FileSystemUtils.deleteRecursively(uploadPath.resolve(fileName));
+            FileSystemUtils.deleteRecursively(rootLocation.resolve(fileName));
 
         } catch (IOException e) {
             e.printStackTrace();
