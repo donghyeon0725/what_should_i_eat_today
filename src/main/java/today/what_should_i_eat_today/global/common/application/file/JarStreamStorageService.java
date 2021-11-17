@@ -22,7 +22,10 @@ import java.util.Objects;
 @Profile("prod")
 public class JarStreamStorageService implements StorageService {
 
-    private final Path rootLocation;
+    private final Path rootLocation; // static/file
+    private Path uploadPath; // c:/~~~~/static/file
+    private static final String SAVED_REMOTE_URL_PATH = "http://3.144.216.107:8081/static/";
+    private static final String SAVED_REMOTE_TEMP_PATH = "/tmp";
 
     public JarStreamStorageService(AppProperties appProperties) {
         this.rootLocation = Paths.get(appProperties.getFileRootLocation());
@@ -30,13 +33,6 @@ public class JarStreamStorageService implements StorageService {
 
     @Override
     public void init() {
-        try {
-            boolean exists = Files.exists(rootLocation);
-            if (!exists) Files.createDirectory(rootLocation);
-        } catch (IOException e) {
-            log.error("{} 디렉토리를 생성할 수 없습니다 (상위 디렉토리가 없는 경우 발생합니다)", rootLocation);
-            throw new IllegalArgumentException(e);
-        }
     }
 
     @Override
@@ -46,12 +42,14 @@ public class JarStreamStorageService implements StorageService {
                 throw new InvalidStatusException(ErrorCode.INVALID_INPUT_VALUE_ARGUMENT);
             }
 
-            Path resolvePath = this.rootLocation.resolve(Objects.requireNonNull(file.getOriginalFilename()));
+            Path path = Paths.get(SAVED_REMOTE_TEMP_PATH);
+
+            Path resolvePath = path.resolve(Objects.requireNonNull(file.getOriginalFilename()));
 
             Files.copy(file.getInputStream(), resolvePath, StandardCopyOption.REPLACE_EXISTING); // 덮어씌우기
 
             return Attachment.builder()
-                    .path(resolvePath.toUri().getPath())
+                    .path(SAVED_REMOTE_URL_PATH + file.getOriginalFilename())
                     .name(file.getOriginalFilename())
                     .build();
 

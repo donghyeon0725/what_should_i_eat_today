@@ -2,7 +2,6 @@ package today.what_should_i_eat_today.global.common.application.file;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,7 +25,8 @@ public class FileSystemStorageService implements StorageService {
 
     private final Path rootLocation; // static/file
     private Path uploadPath; // c:/~~~~/static/file
-    private static final String SAVED_LOCAL_URL_PATH = "http://localhost:8081/static/file/";
+    private static final String SAVED_LOCAL_URL_PATH = "http://localhost:8081/static/";
+    private static final String SAVED_LOCAL_TEMP_PATH = "c:/Temp";
 
     public FileSystemStorageService(AppProperties appProperties) {
         this.rootLocation = Paths.get(appProperties.getFileRootLocation());
@@ -35,15 +35,15 @@ public class FileSystemStorageService implements StorageService {
     @Override
     public void init() throws IOException {
 
-        ClassPathResource cr = new ClassPathResource(rootLocation.toString());
-
-        if (!cr.exists()) {
-            log.error("{} 디렉토리가 존재하지 않습니다", cr.getPath());
-        }
-
-        log.info("파일 업로드 디렉토리 경로 -> {}", cr.getURI().toString());
-
-        this.uploadPath = Paths.get(cr.getURI());
+//        ClassPathResource cr = new ClassPathResource(rootLocation.toString());
+//
+//        if (!cr.exists()) {
+//            log.error("{} 디렉토리가 존재하지 않습니다", cr.getPath());
+//        }
+//
+//        log.info("파일 업로드 디렉토리 경로 -> {}", cr.getURI().toString());
+//
+//        this.uploadPath = Paths.get(cr.getURI());
 
     }
 
@@ -54,7 +54,12 @@ public class FileSystemStorageService implements StorageService {
                 throw new InvalidStatusException(ErrorCode.INVALID_INPUT_VALUE_ARGUMENT);
             }
 
-            Path resolvePath = this.uploadPath.resolve(Objects.requireNonNull(file.getOriginalFilename()));
+//            Path path = Paths.get("/home");
+            Path path = Paths.get(SAVED_LOCAL_TEMP_PATH);
+
+
+//            Path resolvePath = this.uploadPath.resolve(Objects.requireNonNull(file.getOriginalFilename()));
+            Path resolvePath = path.resolve(Objects.requireNonNull(file.getOriginalFilename()));
 
             Files.copy(file.getInputStream(), resolvePath, StandardCopyOption.REPLACE_EXISTING); // 덮어씌우기
 
