@@ -44,7 +44,9 @@ public class FoodApi {
         return ResponseEntity.ok(foods);
     }
 
-
+    /**
+     * 음식 리스트 가져오기 (태그, 카테고리 국가가 포함된 음식 목록 가져오기)
+     */
     @GetMapping("/foods")
     public ResponseEntity<?> getFoodList(
             @PageableDefault @SortDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable page,
@@ -56,6 +58,9 @@ public class FoodApi {
         return ResponseEntity.ok(foods.map(FoodResponseDtoV1::new));
     }
 
+    /**
+     * 카테고리별로 음식 리스트 가져오기
+     */
     @GetMapping("/foods/categories/{id}")
     @Secured("ROLE_ADMIN")
     public ResponseEntity<?> getFoodsByCategory(@PageableDefault Pageable pageable, @PathVariable("id") Long categoryId) {
@@ -65,6 +70,9 @@ public class FoodApi {
         return ResponseEntity.ok(foodsByCategoryPage);
     }
 
+    /**
+     * 카테고리별로 음식 리스트 가져오기
+     */
     @GetMapping("/foods/categories")
     @Secured("ROLE_ADMIN")
     public ResponseEntity getFoods(@PageableDefault Pageable pageable, @RequestBody FoodDto foodDto) {
@@ -73,6 +81,9 @@ public class FoodApi {
         return ResponseEntity.ok(foods.map(s -> new FoodResponseDto(s)));
     }
 
+    /**
+     * 카테고리별로 음식 리스트 가져오기 (삭제된 음식은 제외)
+     */
     @GetMapping("/foods/{id}")
     public ResponseEntity getFood(@PathVariable("id") Long id) {
         FoodResponseDto dto = new FoodResponseDto(foodService.findById(id));
