@@ -60,9 +60,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
             if (!member.getProvider().equals(AuthProvider.valueOf(registrationId))) {
 
-                throw new OAuth2AuthenticationProcessingException("Looks like you're signed up with " +
-                        member.getProvider() + " account. Please use your " + member.getProvider() +
-                        " account to login.");
+                throw new OAuth2AuthenticationProcessingException(
+                        String.format("%s 계정으로 가입하신듯 합니다. %s 계정으로 로그인 해주세요.", member.getProvider(), member.getProvider())
+                );
             }
             member = updateExistingUser(member, oAuth2UserInfo);
         } else {
@@ -89,5 +89,4 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         existingUser.updateNameAndImage(oAuth2UserInfo.getName(), oAuth2UserInfo.getImageUrl());
         return memberRepository.save(existingUser);
     }
-
 }

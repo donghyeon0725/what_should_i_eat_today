@@ -17,6 +17,12 @@ public class MemberApi {
 
     private final MemberFindService memberFindService;
 
+    /**
+     * 멤버 단 건 조회
+     *
+     * @param id
+     * @return
+     */
     @GetMapping(value = "/members/{id}")
     public ResponseEntity<MemberResponseDto> findMember(@PathVariable Long id) {
 

@@ -27,6 +27,13 @@ public class ReviewApi {
 
     private final ReviewService reviewService;
 
+    /**
+     * 글에 대한 댓글 페이징 조회
+     *
+     * @param postId
+     * @param pageable
+     * @return
+     */
     @GetMapping("/reviews/posts/{postId}")
     public ResponseEntity<?> getReviewsForPost(
             @PathVariable("postId") Long postId,
@@ -44,6 +51,13 @@ public class ReviewApi {
         return ResponseEntity.ok(ReviewOfPostResponseDto.from(reviewPage, totalCountReviewsOfPost));
     }
 
+    /**
+     * 댓글에 대한 답글 리스트 조회
+     *
+     * @param reviewId
+     * @param postId
+     * @return
+     */
     @GetMapping("/reviews/{reviewId}/posts/{postId}")
     public ResponseEntity<?> getReviewsForReview(
             @PathVariable("reviewId") Long reviewId,
@@ -54,6 +68,13 @@ public class ReviewApi {
         return ResponseEntity.ok(reviews.stream().map(ReviewResponseDto::childFrom));
     }
 
+    /**
+     * 글에 대한 댓글 페이징 조회
+     *
+     * @param postId
+     * @param dto
+     * @return
+     */
     @PostMapping("/reviews/posts/{id}")
     @Secured("ROLE_USER")
     public ResponseEntity<?> writeReviewForPost(@PathVariable("id") Long postId, @RequestBody WriteReviewRequestDto dto) {
@@ -62,6 +83,14 @@ public class ReviewApi {
         return ResponseEntity.ok("OK");
     }
 
+    /**
+     * 댓글에 대한 답변 작성
+     *
+     * @param reviewId
+     * @param postId
+     * @param dto
+     * @return
+     */
     @PostMapping("/reviews/{reviewId}/posts/{postId}")
     @Secured("ROLE_USER")
     public ResponseEntity<?> writeReviewForReview(
@@ -75,6 +104,14 @@ public class ReviewApi {
         return ResponseEntity.ok("OK");
     }
 
+    /**
+     * 댓글 수정
+     *
+     * @param principal
+     * @param reviewId
+     * @param dto
+     * @return
+     */
     @PutMapping("/reviews/{reviewId}")
     @Secured("ROLE_USER")
     public ResponseEntity<?> updateReview(
@@ -88,6 +125,13 @@ public class ReviewApi {
         return ResponseEntity.ok("OK");
     }
 
+    /**
+     * 댓글 삭제
+     *
+     * @param principal
+     * @param reviewId
+     * @return
+     */
     @DeleteMapping("/reviews/{reviewId}")
     @Secured("ROLE_USER")
     public ResponseEntity<?> updateReview(

@@ -22,6 +22,14 @@ public class ReportApi {
 
     private final ReportService reportService;
 
+    /**
+     * 신고 페이징 조회
+     *
+     * @param pageable
+     * @param reportStatus
+     * @param title
+     * @return
+     */
     @GetMapping("/reports")
     @Secured("ROLE_ADMIN")
     public Page<ReportResponseDto> getReportList(@PageableDefault Pageable pageable, @RequestParam(required = false) ReportStatus reportStatus, @RequestParam(required = false) String title) {
@@ -33,6 +41,12 @@ public class ReportApi {
     }
 
 
+    /**
+     * 신고 하기
+     *
+     * @param reportRequestDto
+     * @return
+     */
     @PostMapping("/reports")
     @Secured("ROLE_USER")
     public ResponseEntity createReport(@Valid @RequestBody ReportRequestDto reportRequestDto) {
@@ -53,12 +67,25 @@ public class ReportApi {
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * 신고 단 건 조회
+     *
+     * @param id
+     * @return
+     */
     @GetMapping("/reports/{id}")
     @Secured("ROLE_ADMIN")
     public ResponseEntity findById(@PathVariable Long id) {
         return ResponseEntity.ok(new ReportResponseDto(reportService.findById(id)));
     }
 
+    /**
+     * 신고 처리하기
+     *
+     * @param id
+     * @param dto
+     * @return
+     */
     @PutMapping("/reports/{id}")
     @Secured("ROLE_ADMIN")
     public ResponseEntity processReport(@PathVariable Long id, @RequestBody ReportRequestDto dto) {

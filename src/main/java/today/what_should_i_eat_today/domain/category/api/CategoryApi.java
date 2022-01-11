@@ -81,6 +81,7 @@ public class CategoryApi {
     }
 
     @PutMapping("categories/foodCategory-mapping/{id}")
+    @Secured("ROLE_ADMIN")
     public void updateFoodCategoryMapping(
             @PathVariable("id") Long categoryId,
             @RequestParam(name = "foodId") Long foodId,

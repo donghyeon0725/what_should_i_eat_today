@@ -1,9 +1,6 @@
 package today.what_should_i_eat_today.domain.member.api;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import today.what_should_i_eat_today.domain.favorite.application.FavoriteService;
@@ -14,12 +11,10 @@ import today.what_should_i_eat_today.domain.member.dto.MemberProfileRequestDto;
 import today.what_should_i_eat_today.domain.member.dto.MemberResponseDto;
 import today.what_should_i_eat_today.domain.member.entity.Member;
 import today.what_should_i_eat_today.domain.post.application.PostService;
-import today.what_should_i_eat_today.domain.post.entity.Post;
 import today.what_should_i_eat_today.global.security.CurrentUser;
 import today.what_should_i_eat_today.global.security.UserPrincipal;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,6 +27,12 @@ public class MeApi {
     private final LikesService likesService;
     private final PostService postService;
 
+    /**
+     * 내 정보 불러오기
+     *
+     * @param principal
+     * @return
+     */
     @GetMapping("/me")
     public ResponseEntity<MemberResponseDto> getMe(@CurrentUser UserPrincipal principal) {
 

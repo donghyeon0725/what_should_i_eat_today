@@ -35,7 +35,6 @@ public class PostApi {
      * 글 단 건 조회
      */
     @GetMapping("/posts/{id}")
-    @Secured("ROLE_USER")
     public ResponseEntity<?> getPost(@CurrentUser UserPrincipal principal, @PathVariable("id") Long postId) {
 
         Post post = postService.getPost(principal, postId);
@@ -44,7 +43,7 @@ public class PostApi {
     }
 
     /**
-     * 글 리스트 조회
+     * 글 페이징 조회
      */
     @GetMapping("/posts")
     @Secured("ROLE_USER")

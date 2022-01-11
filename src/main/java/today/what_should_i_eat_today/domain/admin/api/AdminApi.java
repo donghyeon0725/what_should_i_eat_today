@@ -14,6 +14,12 @@ public class AdminApi {
 
     private final AdminService adminService;
 
+    /**
+     * 관리자 로그인
+     *
+     * @param requestDto
+     * @return
+     */
     @PostMapping("/admin/login")
     public ResponseEntity<String> auth(@RequestBody AdminLoginRequest requestDto) {
 
